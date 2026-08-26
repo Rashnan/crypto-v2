@@ -1,0 +1,1 @@
+import{n as e,t}from"./compiler-runtime-BGCKGvrs.js";import{t as n}from"./AppPage-CZ9HTs_n.js";var r=t(),i=e(),a=()=>{let e=(0,r.c)(1),t;return e[0]===Symbol.for(`react.memo_cache_sentinel`)?(t=(0,i.jsx)(n,{title:`Watchlist`,description:`Keep the assets you follow in one place.`}),e[0]=t):t=e[0],t};export{a as component};

@@ -11,6 +11,8 @@ export const devUser = {
   password: 'dev1234',
 } as const
 
+export const loginDisabled = import.meta.env.VITE_NO_LOGIN === 'true'
+
 export const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function useAuth() {

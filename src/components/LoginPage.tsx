@@ -1,13 +1,17 @@
 import { Box, Button, Field, Flex, Heading, Input, Text } from '@chakra-ui/react'
-import { useNavigate } from '@tanstack/react-router'
+import { Navigate, useNavigate } from '@tanstack/react-router'
 import { LockKeyhole } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { useAuth } from '../auth/auth'
+import { loginDisabled, useAuth } from '../auth/auth'
 
 export function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
   const [loginError, setLoginError] = useState('')
+
+  if (loginDisabled) {
+    return <Navigate to="/" />
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

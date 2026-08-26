@@ -1,6 +1,6 @@
 import { Box, Button, Flex, IconButton, Separator, Text } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
-import { useAuth } from "../auth/auth";
+import { loginDisabled, useAuth } from "../auth/auth";
 import {
   ChartNoAxesColumnIncreasing,
   House,
@@ -176,26 +176,28 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
         </Button>
       </Box>
 
-      <Box mt="auto">
-        <Separator mb="12px" borderColor="var(--border)" />
-        {open && (
-          <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
-            Account
-          </Text>
-        )}
-        <Button
-          asChild
-          variant="ghost"
-          {...navButtonStyles}
-          color="red.500"
-          _hover={{ color: 'red.600', bg: 'red.50' }}
-        >
-          <Link to="/login" onClick={logout}>
-            <LogOut size={20} />
-            {open && <Text>Log out</Text>}
-          </Link>
-        </Button>
-      </Box>
+      {!loginDisabled && (
+        <Box mt="auto">
+          <Separator mb="12px" borderColor="var(--border)" />
+          {open && (
+            <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
+              Account
+            </Text>
+          )}
+          <Button
+            asChild
+            variant="ghost"
+            {...navButtonStyles}
+            color="red.500"
+            _hover={{ color: 'red.600', bg: 'red.50' }}
+          >
+            <Link to="/login" onClick={logout}>
+              <LogOut size={20} />
+              {open && <Text>Log out</Text>}
+            </Link>
+          </Button>
+        </Box>
+      )}
     </Flex>
   );
 }

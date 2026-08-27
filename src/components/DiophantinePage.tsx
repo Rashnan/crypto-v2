@@ -257,13 +257,6 @@ export function DiophantinePage() {
                 borderRadius="12px"
                 bg="var(--accent-bg)"
               >
-                <Text fontSize="xs" color="var(--text)" mb="2px">
-                  x = x₀ + (b/d)·k
-                </Text>
-                <Text fontSize="xs" color="var(--text)" mb="10px">
-                  y = y₀ − (a/d)·k
-                </Text>
-                <Box borderBottomWidth="1px" borderColor="var(--border)" mb="10px" />
                 <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
                   x = <Text as="span" color="var(--accent)">{result.x0}</Text>
                   {result.xStep >= 0 ? ' + ' : ' − '}
@@ -276,6 +269,10 @@ export function DiophantinePage() {
                 </Text>
                 <Text mt="8px" fontSize="sm" color="var(--text)">
                   for any integer k
+                </Text>
+                <Box borderTopWidth="1px" borderColor="var(--border)" mt="10px" pt="10px" />
+                <Text fontSize="xs" color="var(--text)">
+                  x = x₀ + (b/d)·k,  y = y₀ − (a/d)·k
                 </Text>
               </Box>
 

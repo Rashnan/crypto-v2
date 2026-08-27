@@ -1,1 +1,0 @@
-import{C as e}from"./index-BB4ufTNV.js";var{withContext:t,PropsProvider:n}=e({key:`heading`}),r=t(`h2`);export{r as t};

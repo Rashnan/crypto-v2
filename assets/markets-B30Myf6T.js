@@ -1,0 +1,1 @@
+import{S as e,t}from"./compiler-runtime-D9vzCZWD.js";import{t as n}from"./AppPage-BB_ZzvM1.js";var r=t(),i=e(),a=()=>{let e=(0,r.c)(1),t;return e[0]===Symbol.for(`react.memo_cache_sentinel`)?(t=(0,i.jsx)(n,{title:`Markets`,description:`Track prices, market caps, and daily movement.`}),e[0]=t):t=e[0],t};export{a as component};

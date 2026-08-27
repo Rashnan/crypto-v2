@@ -42,8 +42,8 @@ interface DiophantineResult {
   solvable: boolean
   x0: number
   y0: number
-  stepX: number
-  stepY: number
+  xStep: number
+  yStep: number
 }
 
 function solve(a: number, b: number, c: number): DiophantineResult {
@@ -51,18 +51,22 @@ function solve(a: number, b: number, c: number): DiophantineResult {
   const absB = Math.abs(b)
   const { gcd: d, s, t } = extendedGcd(absA, absB)
   if (c % d !== 0) {
-    return { a, b, c, d, s, t, solvable: false, x0: 0, y0: 0, stepX: 0, stepY: 0 }
+    return { a, b, c, d, s, t, solvable: false, x0: 0, y0: 0, xStep: 0, yStep: 0 }
   }
   const scale = c / d
   const rawX0 = s * scale
   const rawY0 = t * scale
+  const x0 = a < 0 ? -rawX0 : rawX0
+  const y0 = b < 0 ? -rawY0 : rawY0
+  const xStep = b / d
+  const yStep = -(a / d)
   return {
     a, b, c, d, s, t,
     solvable: true,
-    x0: a < 0 ? -rawX0 : rawX0,
-    y0: b < 0 ? -rawY0 : rawY0,
-    stepX: absB / d,
-    stepY: absA / d,
+    x0,
+    y0,
+    xStep,
+    yStep,
   }
 }
 
@@ -112,7 +116,7 @@ export function DiophantinePage() {
         textOverflow="ellipsis"
       >
         {result
-          ? <>{result.a}x + {result.b}y = {result.c}</>
+          ? <>{result.a}x {result.b >= 0 ? '+' : '−'} {Math.abs(result.b)}y = {result.c}</>
           : <>{aRaw.trim() || 'a'}x + {bRaw.trim() || 'b'}y = {cRaw.trim() || 'c'}</>
         }
       </Text>
@@ -232,8 +236,8 @@ export function DiophantinePage() {
           {result.solvable && (
             <>
               <SimpleGrid columns={{ base: 1, sm: 2 }} gap="12px" mt="12px">
-                <ResultStat label="x₀ = (c/d)·s" value={String(result.x0)} mono />
-                <ResultStat label="y₀ = (c/d)·t" value={String(result.y0)} mono />
+                <ResultStat label="x₀ (particular)" value={String(result.x0)} mono />
+                <ResultStat label="y₀ (particular)" value={String(result.y0)} mono />
               </SimpleGrid>
 
               <Box
@@ -253,10 +257,14 @@ export function DiophantinePage() {
                 </Text>
                 <Box borderBottomWidth="1px" borderColor="var(--border)" mb="10px" />
                 <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
-                  x = <Text as="span" color="var(--accent)">{result.x0}</Text> + <Text as="span" color="var(--accent)">{result.stepX}</Text>k
+                  x = <Text as="span" color="var(--accent)">{result.x0}</Text>
+                  {result.xStep >= 0 ? ' + ' : ' − '}
+                  <Text as="span" color="var(--accent)">{Math.abs(result.xStep)}</Text>k
                 </Text>
                 <Text mt="4px" fontSize="lg" fontWeight="bold" color="var(--text-h)">
-                  y = <Text as="span" color="var(--accent)">{result.y0}</Text> − <Text as="span" color="var(--accent)">{result.stepY}</Text>k
+                  y = <Text as="span" color="var(--accent)">{result.y0}</Text>
+                  {result.yStep >= 0 ? ' + ' : ' − '}
+                  <Text as="span" color="var(--accent)">{Math.abs(result.yStep)}</Text>k
                 </Text>
                 <Text mt="8px" fontSize="sm" color="var(--text)">
                   for any integer k
@@ -281,8 +289,8 @@ export function DiophantinePage() {
                   </Table.Header>
                   <Table.Body>
                     {[-2, -1, 0, 1, 2].map((k) => {
-                      const x = result.x0 + result.stepX * k
-                      const y = result.y0 - result.stepY * k
+                      const x = result.x0 + result.xStep * k
+                      const y = result.y0 + result.yStep * k
                       const ax = result.a * x
                       const by = result.b * y
                       return (

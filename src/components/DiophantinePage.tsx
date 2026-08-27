@@ -245,33 +245,7 @@ export function DiophantinePage() {
                 <Text fontSize="sm" color="var(--text)">
                   General solution (d = {result.d}, s = {result.s}, t = {result.t}):
                 </Text>
-                <Flex mt="10px" gap="24px" flexWrap="wrap">
-                  <Box>
-                    <Text fontSize="xs" color="var(--text)" mb="2px">x₀ = (c/d)·s</Text>
-                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
-                      x₀ = <Text as="span" color="var(--accent)">{result.x0}</Text>
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text fontSize="xs" color="var(--text)" mb="2px">y₀ = (c/d)·t</Text>
-                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
-                      y₀ = <Text as="span" color="var(--accent)">{result.y0}</Text>
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text fontSize="xs" color="var(--text)" mb="2px">step_x = b/d</Text>
-                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
-                      <Text as="span" color="var(--accent)">{result.stepX}</Text>k
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text fontSize="xs" color="var(--text)" mb="2px">step_y = a/d</Text>
-                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
-                      <Text as="span" color="var(--accent)">{result.stepY}</Text>k
-                    </Text>
-                  </Box>
-                </Flex>
-                <Text mt="12px" fontSize="md" fontWeight="bold" color="var(--text-h)">
+                <Text mt="8px" fontSize="lg" fontWeight="bold" color="var(--text-h)">
                   x = <Text as="span" color="var(--accent)">{result.x0}</Text> + <Text as="span" color="var(--accent)">{result.stepX}</Text>k
                   {'  '}
                   y = <Text as="span" color="var(--accent)">{result.y0}</Text> − <Text as="span" color="var(--accent)">{result.stepY}</Text>k

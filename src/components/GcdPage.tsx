@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearch } from '@tanstack/react-router'
-import type { Route } from '../routes/basic/gcd'
+import { Route } from '../routes/basic/gcd'
 import {
   Box,
   Field,

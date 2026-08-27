@@ -27,8 +27,7 @@ export function Navbar({ onSearchOpen }: NavbarProps) {
       align="center"
       justify="flex-end"
       gap="8px"
-      borderBottomWidth="1px"
-      borderColor="var(--border)"
+
     >
       {pageTitle && (
         <Text

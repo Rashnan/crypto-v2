@@ -1,6 +1,6 @@
 import { Box, Grid } from '@chakra-ui/react'
 import { Navigate, Outlet, useLocation } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '../auth/auth'
 import { CommandPalette } from './CommandPalette'
 import { Navbar } from './Navbar'
@@ -13,6 +13,19 @@ export function RootLayout() {
     () => window.matchMedia('(min-width: 721px)').matches,
   )
   const [searchOpen, setSearchOpen] = useState(false)
+
+  // Sync sidebar open state with the viewport: a fullscreen drawer
+  // must never persist when the screen grows to desktop, and the
+  // desktop sidebar must not leave its fullscreen drawer open when
+  // the screen shrinks to mobile.
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 721px)')
+    const handle = (e: MediaQueryListEvent) => {
+      setSidebarOpen((curr) => (e.matches ? curr : false))
+    }
+    mq.addEventListener('change', handle)
+    return () => mq.removeEventListener('change', handle)
+  }, [])
 
   if (location.pathname === '/login') {
     return <Outlet />

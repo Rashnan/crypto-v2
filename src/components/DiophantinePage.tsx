@@ -213,6 +213,9 @@ export function DiophantinePage() {
                 <Stat.ValueText fontSize="2xl" fontWeight="bold" color="var(--accent)">
                   {result.d}
                 </Stat.ValueText>
+                <Text mt="4px" fontFamily="mono" fontSize="xs" color="var(--text)">
+                  s = {result.s},  t = {result.t}
+                </Text>
               </Stat.Root>
             </a>
             <ResultStat label="c mod d" value={String(result.c % result.d)} />

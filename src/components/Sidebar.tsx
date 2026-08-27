@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 import {
   Calculator,
+  LayoutGrid,
   PanelLeftClose,
   Settings,
   Variable,
@@ -20,6 +21,8 @@ interface NavItem {
   to: string;
   icon: LucideIcon;
 }
+
+const overviewItem: NavItem = { label: "Overview", to: "/", icon: LayoutGrid };
 
 const basicItems: NavItem[] = [
   { label: "GCD", to: "/basic/gcd", icon: Variable },
@@ -182,7 +185,11 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
 
       <Separator my="20px" borderColor="var(--border)" />
 
-      <Box>
+      <Box display="grid" gap="4px">
+        <NavButton item={overviewItem} open={open} />
+      </Box>
+
+      <Box mt="12px">
         {open && (
           <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
             Basic

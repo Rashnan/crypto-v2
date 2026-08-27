@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useSearch } from '@tanstack/react-router'
+import type { Route } from '../routes/basic/gcd'
 import {
   Box,
   Field,
@@ -53,8 +55,9 @@ function ResultStat({ label, value, mono }: { label: string; value: string; mono
 }
 
 export function GcdPage() {
-  const [aRaw, setARaw] = useState('240')
-  const [bRaw, setBRaw] = useState('46')
+  const search = useSearch({ from: Route.id })
+  const [aRaw, setARaw] = useState(search.a || '240')
+  const [bRaw, setBRaw] = useState(search.b || '46')
 
   const { result, error } = computeResult(aRaw, bRaw)
 

@@ -1,7 +1,6 @@
 import { Avatar, Button, Flex, Text } from '@chakra-ui/react'
 import { useLocation } from '@tanstack/react-router'
 import { Search } from 'lucide-react'
-import { useEffect, useState } from 'react'
 
 const pageNames: Record<string, string> = {
   '/': 'Overview',
@@ -17,35 +16,19 @@ interface NavbarProps {
 }
 
 export function Navbar({ onSearchOpen }: NavbarProps) {
-  const [stuck, setStuck] = useState(false)
   const { pathname } = useLocation()
   const pageTitle = pageNames[pathname] ?? ''
-
-  useEffect(() => {
-    const update = () => setStuck(window.scrollY > 0)
-
-    update()
-    window.addEventListener('scroll', update, { passive: true })
-    return () => window.removeEventListener('scroll', update)
-  }, [])
 
   return (
     <Flex
       as="header"
-      position="sticky"
-      top="0"
-      zIndex="10"
       h="64px"
       px={{ base: '12px', md: '20px' }}
       align="center"
       justify="flex-end"
       gap="8px"
       borderBottomWidth="1px"
-      borderColor={stuck ? 'var(--border)' : 'transparent'}
-      bg={stuck ? 'color-mix(in srgb, var(--bg) 82%, transparent)' : 'transparent'}
-      boxShadow={stuck ? '0 8px 24px rgb(0 0 0 / 5%)' : 'none'}
-      backdropFilter={stuck ? 'blur(14px)' : 'none'}
-      transition="background 150ms ease, border-color 150ms ease, box-shadow 150ms ease"
+      borderColor="var(--border)"
     >
       {pageTitle && (
         <Text

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import {
   Box,
   Field,
@@ -14,16 +15,19 @@ import { extendedGcd } from '../lib/gcd'
 
 const inputLimit = 10 ** 7
 
-function parsePositiveInt(raw: string): number | null {
+function parseNonZeroInt(raw: string): number | null {
   const trimmed = raw.trim()
-  if (!/^\d+$/.test(trimmed)) return null
+  if (!/^-?\d+$/.test(trimmed)) return null
   const n = Number(trimmed)
-  if (n < 1 || n > inputLimit) return null
+  if (n === 0 || Math.abs(n) > inputLimit) return null
   return n
 }
 
 function blockInvalidKeys(e: React.KeyboardEvent) {
-  if (['-', 'e', 'E', '+', '.', ' '].includes(e.key)) {
+  // Allow minus at start, digits only otherwise
+  const el = e.target as HTMLInputElement
+  if (e.key === '-' && el.selectionStart === 0 && !el.value.includes('-')) return
+  if (['e', 'E', '+', '.', ' '].includes(e.key)) {
     e.preventDefault()
   }
 }
@@ -32,7 +36,9 @@ interface DiophantineResult {
   a: number
   b: number
   c: number
-  g: number
+  d: number
+  s: number
+  t: number
   solvable: boolean
   x0: number
   y0: number
@@ -41,18 +47,22 @@ interface DiophantineResult {
 }
 
 function solve(a: number, b: number, c: number): DiophantineResult {
-  const { gcd: g, s, t } = extendedGcd(a, b)
-  if (c % g !== 0) {
-    return { a, b, c, g, solvable: false, x0: 0, y0: 0, stepX: 0, stepY: 0 }
+  const absA = Math.abs(a)
+  const absB = Math.abs(b)
+  const { gcd: d, s, t } = extendedGcd(absA, absB)
+  if (c % d !== 0) {
+    return { a, b, c, d, s, t, solvable: false, x0: 0, y0: 0, stepX: 0, stepY: 0 }
   }
-  const scale = c / g
+  const scale = c / d
+  const rawX0 = s * scale
+  const rawY0 = t * scale
   return {
-    a, b, c, g,
+    a, b, c, d, s, t,
     solvable: true,
-    x0: s * scale,
-    y0: t * scale,
-    stepX: b / g,
-    stepY: a / g,
+    x0: a < 0 ? -rawX0 : rawX0,
+    y0: b < 0 ? -rawY0 : rawY0,
+    stepX: absB / d,
+    stepY: absA / d,
   }
 }
 
@@ -72,9 +82,9 @@ export function DiophantinePage() {
   const [bRaw, setBRaw] = useState('46')
   const [cRaw, setCRaw] = useState('10')
 
-  const a = parsePositiveInt(aRaw)
-  const b = parsePositiveInt(bRaw)
-  const c = parsePositiveInt(cRaw)
+  const a = parseNonZeroInt(aRaw)
+  const b = parseNonZeroInt(bRaw)
+  const c = parseNonZeroInt(cRaw)
   const aInvalid = aRaw.trim() !== '' && a === null
   const bInvalid = bRaw.trim() !== '' && b === null
   const cInvalid = cRaw.trim() !== '' && c === null
@@ -87,7 +97,7 @@ export function DiophantinePage() {
         Linear Diophantine
       </Heading>
       <Text mt="8px" color="var(--text)">
-        Solve ax + by = c for integer x, y. Solutions exist iff gcd(a, b) divides c.
+        Solve ax + by = c for integer x, y. Solutions exist iff d = gcd(a, b) divides c.
       </Text>
 
       <Text
@@ -115,7 +125,6 @@ export function DiophantinePage() {
           </Field.Label>
           <Input
             type="number"
-            min="1"
             max={inputLimit}
             step="1"
             mt="8px"
@@ -132,7 +141,6 @@ export function DiophantinePage() {
           </Field.Label>
           <Input
             type="number"
-            min="1"
             max={inputLimit}
             step="1"
             mt="8px"
@@ -149,7 +157,6 @@ export function DiophantinePage() {
           </Field.Label>
           <Input
             type="number"
-            min="0"
             max={inputLimit}
             step="1"
             mt="8px"
@@ -163,7 +170,7 @@ export function DiophantinePage() {
       {hasError && (
         <Field.Root invalid maxW="160px">
           <Field.ErrorText mt="8px" fontSize="sm">
-            Must be a positive integer (1 – 10,000,000).
+            Must be a non-zero integer (up to ±10,000,000).
           </Field.ErrorText>
         </Field.Root>
       )}
@@ -175,8 +182,28 @@ export function DiophantinePage() {
           </Heading>
 
           <SimpleGrid columns={{ base: 1, sm: 3 }} gap="12px" mt="16px">
-            <ResultStat label="gcd(a, b)" value={String(result.g)} />
-            <ResultStat label="c mod gcd" value={String(result.c % result.g)} />
+            <Link
+              to="/basic/gcd"
+              params={{ a: String(result.a), b: String(result.b) }}
+              style={{ textDecoration: 'none' }}
+            >
+              <Stat.Root
+                p="16px 20px"
+                borderWidth="1px"
+                borderColor="var(--accent-border)"
+                borderRadius="12px"
+                bg="var(--accent-bg)"
+                _hover={{ boxShadow: '0 0 0 1px var(--accent)' }}
+                transition="box-shadow 120ms ease"
+                cursor="pointer"
+              >
+                <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">d = gcd(a, b)</Stat.Label>
+                <Stat.ValueText fontSize="2xl" fontWeight="bold" color="var(--accent)">
+                  {result.d}
+                </Stat.ValueText>
+              </Stat.Root>
+            </Link>
+            <ResultStat label="c mod d" value={String(result.c % result.d)} />
             <ResultStat label={result.solvable ? 'Solvable' : 'No solution'} value={result.solvable ? 'Yes' : 'No'} />
           </SimpleGrid>
 
@@ -191,7 +218,7 @@ export function DiophantinePage() {
               bg="red.50"
             >
               <Text fontSize="sm" color="var(--text)">
-                gcd({result.a}, {result.b}) = {result.g} does not divide {result.c}
+                d = gcd(|{result.a}|, |{result.b}|) = {result.d} does not divide {result.c}
               </Text>
               <Text mt="4px" fontSize="sm" color="var(--text)">
                 No integer solutions exist for {result.a}x + {result.b}y = {result.c}.
@@ -202,8 +229,8 @@ export function DiophantinePage() {
           {result.solvable && (
             <>
               <SimpleGrid columns={{ base: 1, sm: 2 }} gap="12px" mt="12px">
-                <ResultStat label="x₀ (particular)" value={String(result.x0)} mono />
-                <ResultStat label="y₀ (particular)" value={String(result.y0)} mono />
+                <ResultStat label="x₀ = (c/d)·s" value={String(result.x0)} mono />
+                <ResultStat label="y₀ = (c/d)·t" value={String(result.y0)} mono />
               </SimpleGrid>
 
               <Box
@@ -216,15 +243,40 @@ export function DiophantinePage() {
                 bg="var(--accent-bg)"
               >
                 <Text fontSize="sm" color="var(--text)">
-                  General solution:
+                  General solution (d = {result.d}, s = {result.s}, t = {result.t}):
                 </Text>
-                <Text mt="8px" fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                <Flex mt="10px" gap="24px" flexWrap="wrap">
+                  <Box>
+                    <Text fontSize="xs" color="var(--text)" mb="2px">x₀ = (c/d)·s</Text>
+                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                      x₀ = <Text as="span" color="var(--accent)">{result.x0}</Text>
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text fontSize="xs" color="var(--text)" mb="2px">y₀ = (c/d)·t</Text>
+                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                      y₀ = <Text as="span" color="var(--accent)">{result.y0}</Text>
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text fontSize="xs" color="var(--text)" mb="2px">step_x = b/d</Text>
+                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                      <Text as="span" color="var(--accent)">{result.stepX}</Text>k
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text fontSize="xs" color="var(--text)" mb="2px">step_y = a/d</Text>
+                    <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                      <Text as="span" color="var(--accent)">{result.stepY}</Text>k
+                    </Text>
+                  </Box>
+                </Flex>
+                <Text mt="12px" fontSize="md" fontWeight="bold" color="var(--text-h)">
                   x = <Text as="span" color="var(--accent)">{result.x0}</Text> + <Text as="span" color="var(--accent)">{result.stepX}</Text>k
-                </Text>
-                <Text mt="4px" fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                  {'  '}
                   y = <Text as="span" color="var(--accent)">{result.y0}</Text> − <Text as="span" color="var(--accent)">{result.stepY}</Text>k
                 </Text>
-                <Text mt="8px" fontSize="sm" color="var(--text)">
+                <Text mt="6px" fontSize="sm" color="var(--text)">
                   for any integer k
                 </Text>
               </Box>
@@ -238,7 +290,7 @@ export function DiophantinePage() {
                   <Table.Header>
                     <Table.Row>
                       <Table.ColumnHeader>k</Table.ColumnHeader>
-                      <Table.ColumnHeader>x</Table.ColumnHeader>
+                      <Table.ColumnHeader borderLeftWidth="1px" borderLeftColor="var(--border)">x</Table.ColumnHeader>
                       <Table.ColumnHeader>y</Table.ColumnHeader>
                       <Table.ColumnHeader borderLeftWidth="1px" borderLeftColor="var(--border)">a×x</Table.ColumnHeader>
                       <Table.ColumnHeader>b×y</Table.ColumnHeader>
@@ -254,7 +306,7 @@ export function DiophantinePage() {
                       return (
                         <Table.Row key={k} fontWeight={k === 0 ? 'semibold' : 'normal'} bg={k === 0 ? 'var(--accent-bg)' : 'transparent'}>
                           <Table.Cell>{k}</Table.Cell>
-                          <Table.Cell>{x}</Table.Cell>
+                          <Table.Cell borderLeftWidth="1px" borderLeftColor="var(--border)">{x}</Table.Cell>
                           <Table.Cell>{y}</Table.Cell>
                           <Table.Cell borderLeftWidth="1px" borderLeftColor="var(--border)">{ax.toLocaleString()}</Table.Cell>
                           <Table.Cell>{by.toLocaleString()}</Table.Cell>

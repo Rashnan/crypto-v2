@@ -185,7 +185,7 @@ export function DiophantinePage() {
           <SimpleGrid columns={{ base: 1, sm: 3 }} gap="12px" mt="16px">
             <Link
               to="/basic/gcd"
-              params={{ a: String(result.a), b: String(result.b) }}
+              search={{ a: String(result.a), b: String(result.b) }}
               style={{ textDecoration: 'none' }}
             >
               <Stat.Root

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { ExternalLink } from 'lucide-react'
 import {
   Box,
   Field,
@@ -196,7 +197,11 @@ export function DiophantinePage() {
                 _hover={{ boxShadow: '0 0 0 1px var(--accent)' }}
                 transition="box-shadow 120ms ease"
                 cursor="pointer"
+                position="relative"
               >
+                <Box position="absolute" top="12px" right="12px" color="var(--accent)" opacity={0.6}>
+                  <ExternalLink size={14} />
+                </Box>
                 <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">d = gcd(a, b)</Stat.Label>
                 <Stat.ValueText fontSize="2xl" fontWeight="bold" color="var(--accent)">
                   {result.d}
@@ -242,15 +247,20 @@ export function DiophantinePage() {
                 borderRadius="12px"
                 bg="var(--accent-bg)"
               >
-                <Text fontSize="sm" color="var(--text)">
-                  General solution (d = {result.d}, s = {result.s}, t = {result.t}):
+                <Text fontSize="xs" color="var(--text)" mb="2px">
+                  x = x₀ + (b/d)·k
                 </Text>
-                <Text mt="8px" fontSize="lg" fontWeight="bold" color="var(--text-h)">
+                <Text fontSize="xs" color="var(--text)" mb="10px">
+                  y = y₀ − (a/d)·k
+                </Text>
+                <Box borderBottomWidth="1px" borderColor="var(--border)" mb="10px" />
+                <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
                   x = <Text as="span" color="var(--accent)">{result.x0}</Text> + <Text as="span" color="var(--accent)">{result.stepX}</Text>k
-                  {'  '}
+                </Text>
+                <Text mt="4px" fontSize="lg" fontWeight="bold" color="var(--text-h)">
                   y = <Text as="span" color="var(--accent)">{result.y0}</Text> − <Text as="span" color="var(--accent)">{result.stepY}</Text>k
                 </Text>
-                <Text mt="6px" fontSize="sm" color="var(--text)">
+                <Text mt="8px" fontSize="sm" color="var(--text)">
                   for any integer k
                 </Text>
               </Box>

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
 import { ExternalLink } from 'lucide-react'
 import {
   Box,
@@ -183,9 +182,8 @@ export function DiophantinePage() {
           </Heading>
 
           <SimpleGrid columns={{ base: 1, sm: 3 }} gap="12px" mt="16px">
-            <Link
-              to="/basic/gcd"
-              search={{ a: String(result.a), b: String(result.b) }}
+            <a
+              href={`${import.meta.env.BASE_URL}basic/gcd?a=${result.a}&b=${result.b}`}
               style={{ textDecoration: 'none' }}
             >
               <Stat.Root
@@ -207,7 +205,7 @@ export function DiophantinePage() {
                   {result.d}
                 </Stat.ValueText>
               </Stat.Root>
-            </Link>
+            </a>
             <ResultStat label="c mod d" value={String(result.c % result.d)} />
             <ResultStat label={result.solvable ? 'Solvable' : 'No solution'} value={result.solvable ? 'Yes' : 'No'} />
           </SimpleGrid>

@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import { useSearch } from '@tanstack/react-router'
-import { Route } from '../routes/basic/gcd'
 import {
   Box,
   Field,
@@ -54,10 +52,19 @@ function ResultStat({ label, value, mono }: { label: string; value: string; mono
   )
 }
 
+function getInitialParams() {
+  if (typeof window === 'undefined') return { a: '240', b: '46' }
+  const params = new URLSearchParams(window.location.search)
+  return {
+    a: params.get('a') || '240',
+    b: params.get('b') || '46',
+  }
+}
+
 export function GcdPage() {
-  const search = useSearch({ from: Route.id })
-  const [aRaw, setARaw] = useState(search.a || '240')
-  const [bRaw, setBRaw] = useState(search.b || '46')
+  const initial = getInitialParams()
+  const [aRaw, setARaw] = useState(initial.a)
+  const [bRaw, setBRaw] = useState(initial.b)
 
   const { result, error } = computeResult(aRaw, bRaw)
 

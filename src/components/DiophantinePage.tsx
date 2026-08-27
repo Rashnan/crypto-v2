@@ -11,7 +11,7 @@ import {
   Table,
   Text,
 } from '@chakra-ui/react'
-import { extendedGcd } from '../lib/gcd'
+import { solveDiophantine } from '../lib/diophantine'
 
 const inputLimit = 10 ** 7
 
@@ -29,44 +29,6 @@ function blockInvalidKeys(e: React.KeyboardEvent) {
   if (e.key === '-' && el.selectionStart === 0 && !el.value.includes('-')) return
   if (['e', 'E', '+', '.', ' '].includes(e.key)) {
     e.preventDefault()
-  }
-}
-
-interface DiophantineResult {
-  a: number
-  b: number
-  c: number
-  d: number
-  s: number
-  t: number
-  solvable: boolean
-  x0: number
-  y0: number
-  xStep: number
-  yStep: number
-}
-
-function solve(a: number, b: number, c: number): DiophantineResult {
-  const absA = Math.abs(a)
-  const absB = Math.abs(b)
-  const { gcd: d, s, t } = extendedGcd(absA, absB)
-  if (c % d !== 0) {
-    return { a, b, c, d, s, t, solvable: false, x0: 0, y0: 0, xStep: 0, yStep: 0 }
-  }
-  const scale = c / d
-  const rawX0 = s * scale
-  const rawY0 = t * scale
-  const x0 = a < 0 ? -rawX0 : rawX0
-  const y0 = b < 0 ? -rawY0 : rawY0
-  const xStep = b / d
-  const yStep = -(a / d)
-  return {
-    a, b, c, d, s, t,
-    solvable: true,
-    x0,
-    y0,
-    xStep,
-    yStep,
   }
 }
 
@@ -98,7 +60,7 @@ export function DiophantinePage() {
   const bInvalid = bRaw.trim() !== '' && b === null
   const cInvalid = cRaw.trim() !== '' && c === null
   const hasError = aInvalid || bInvalid || cInvalid
-  const result = a !== null && b !== null && c !== null ? solve(a, b, c) : null
+  const result = a !== null && b !== null && c !== null ? solveDiophantine(a, b, c) : null
 
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">

@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate } from '@tanstack/react-router'
 import {
+  Calculator,
   ChartNoAxesColumnIncreasing,
   House,
   Search,
@@ -30,6 +31,7 @@ const pages: Page[] = [
   { label: 'Markets', to: '/markets', icon: ChartNoAxesColumnIncreasing },
   { label: 'Watchlist', to: '/watchlist', icon: Star },
   { label: 'GCD', to: '/basic/gcd', icon: Variable },
+  { label: 'Diophantine', to: '/basic/diophantine', icon: Calculator },
   { label: 'Settings', to: '/settings', icon: Settings },
 ]
 

@@ -3,6 +3,7 @@ import { Tooltip } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 import {
+  Calculator,
   PanelLeftClose,
   Settings,
   Variable,
@@ -22,6 +23,7 @@ interface NavItem {
 
 const basicItems: NavItem[] = [
   { label: "GCD", to: "/basic/gcd", icon: Variable },
+  { label: "Diophantine", to: "/basic/diophantine", icon: Calculator },
 ];
 
 const prefItems: NavItem[] = [

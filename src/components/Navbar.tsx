@@ -9,6 +9,7 @@ const pageNames: Record<string, string> = {
   '/watchlist': 'Watchlist',
   '/settings': 'Settings',
   '/basic/gcd': 'GCD',
+  '/basic/diophantine': 'Diophantine',
 }
 
 interface NavbarProps {

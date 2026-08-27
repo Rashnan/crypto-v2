@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as WatchlistRouteImport } from './routes/watchlist'
+import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const WatchlistRoute = WatchlistRouteImport.update({
   path: '/watchlist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BasicGcdRoute = BasicGcdRouteImport.update({
+  id: '/basic/gcd',
+  path: '/basic/gcd',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/markets': typeof MarketsRoute
   '/settings': typeof SettingsRoute
   '/watchlist': typeof WatchlistRoute
+  '/basic/gcd': typeof BasicGcdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/markets': typeof MarketsRoute
   '/settings': typeof SettingsRoute
   '/watchlist': typeof WatchlistRoute
+  '/basic/gcd': typeof BasicGcdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/markets': typeof MarketsRoute
   '/settings': typeof SettingsRoute
   '/watchlist': typeof WatchlistRoute
+  '/basic/gcd': typeof BasicGcdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/markets' | '/settings' | '/watchlist'
+  fullPaths:
+    '/' | '/login' | '/markets' | '/settings' | '/watchlist' | '/basic/gcd'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/markets' | '/settings' | '/watchlist'
-  id: '__root__' | '/' | '/login' | '/markets' | '/settings' | '/watchlist'
+  to: '/' | '/login' | '/markets' | '/settings' | '/watchlist' | '/basic/gcd'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/markets'
+    | '/settings'
+    | '/watchlist'
+    | '/basic/gcd'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   MarketsRoute: typeof MarketsRoute
   SettingsRoute: typeof SettingsRoute
   WatchlistRoute: typeof WatchlistRoute
+  BasicGcdRoute: typeof BasicGcdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchlistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/basic/gcd': {
+      id: '/basic/gcd'
+      path: '/basic/gcd'
+      fullPath: '/basic/gcd'
+      preLoaderRoute: typeof BasicGcdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketsRoute: MarketsRoute,
   SettingsRoute: SettingsRoute,
   WatchlistRoute: WatchlistRoute,
+  BasicGcdRoute: BasicGcdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

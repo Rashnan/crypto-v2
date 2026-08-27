@@ -2,6 +2,7 @@ import { Box, Grid } from '@chakra-ui/react'
 import { Navigate, Outlet, useLocation } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuth } from '../auth/auth'
+import { CommandPalette } from './CommandPalette'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
 
@@ -11,6 +12,7 @@ export function RootLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.matchMedia('(min-width: 721px)').matches,
   )
+  const [searchOpen, setSearchOpen] = useState(false)
 
   if (location.pathname === '/login') {
     return <Outlet />
@@ -36,7 +38,7 @@ export function RootLayout() {
       />
 
       <Box minW="0" gridColumn="2">
-        <Navbar />
+        <Navbar onSearchOpen={() => setSearchOpen(true)} />
         <Box
           as="main"
           w="1126px"
@@ -45,13 +47,13 @@ export function RootLayout() {
           mx="auto"
           display="flex"
           flexDirection="column"
-          borderInlineWidth={{ base: '0', lg: '1px' }}
-          borderColor="var(--border)"
           textAlign="center"
         >
           <Outlet />
         </Box>
       </Box>
+
+      <CommandPalette open={searchOpen} onOpenChange={setSearchOpen} />
     </Grid>
   )
 }

@@ -1,19 +1,32 @@
 import { Box, Button, Flex, IconButton, Separator, Text } from "@chakra-ui/react";
+import { Tooltip } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
-import { loginDisabled, useAuth } from "../auth/auth";
+import type { ReactElement } from "react";
 import {
-  ChartNoAxesColumnIncreasing,
-  House,
-  LogOut,
   PanelLeftClose,
   Settings,
-  Star,
+  Variable,
+  type LucideIcon,
 } from "lucide-react";
 
 interface SidebarProps {
   open: boolean;
   onToggle: () => void;
 }
+
+interface NavItem {
+  label: string;
+  to: string;
+  icon: LucideIcon;
+}
+
+const basicItems: NavItem[] = [
+  { label: "GCD", to: "/basic/gcd", icon: Variable },
+];
+
+const prefItems: NavItem[] = [
+  { label: "Settings", to: "/settings", icon: Settings },
+];
 
 const navButtonStyles = {
   w: "full",
@@ -27,9 +40,37 @@ const navButtonStyles = {
   _focusVisible: { outline: "2px solid var(--accent)", outlineOffset: "2px" },
 } as const;
 
-export function Sidebar({ open, onToggle }: SidebarProps) {
-  const { logout } = useAuth();
+function SideTooltip({ label, children }: { label: string; children: ReactElement }) {
+  return (
+    <Tooltip.Root openDelay={200} positioning={{ placement: "right" }}>
+      <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
+      <Tooltip.Positioner>
+        <Tooltip.Content>{label}</Tooltip.Content>
+      </Tooltip.Positioner>
+    </Tooltip.Root>
+  );
+}
 
+function NavButton({ item, open }: { item: NavItem; open: boolean }) {
+  const Icon = item.icon;
+
+  const button = (
+    <Button asChild variant="ghost" {...navButtonStyles}>
+      <Link to={item.to} activeProps={{ style: activeLinkStyles }}>
+        <Icon size={20} />
+        {open && <Text>{item.label}</Text>}
+      </Link>
+    </Button>
+  );
+
+  if (open) {
+    return button;
+  }
+
+  return <SideTooltip label={item.label}>{button}</SideTooltip>;
+}
+
+export function Sidebar({ open, onToggle }: SidebarProps) {
   return (
     <Flex
       as="aside"
@@ -90,30 +131,32 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
             </Link>
           </Flex>
         ) : (
-          <Button
-            w="40px"
-            h="40px"
-            minW="40px"
-            p="4px"
-            variant="ghost"
-            aria-label="Expand sidebar"
-            aria-expanded="false"
-            onClick={onToggle}
-          >
-            <Flex
-              w="32px"
-              h="32px"
-              align="center"
-              justify="center"
-              borderRadius="10px"
-              color="white"
-              bg="var(--accent)"
-              fontSize="sm"
-              fontWeight="semibold"
+          <SideTooltip label="Expand sidebar">
+            <Button
+              w="40px"
+              h="40px"
+              minW="40px"
+              p="4px"
+              variant="ghost"
+              aria-label="Expand sidebar"
+              aria-expanded="false"
+              onClick={onToggle}
             >
-              C
-            </Flex>
-          </Button>
+              <Flex
+                w="32px"
+                h="32px"
+                align="center"
+                justify="center"
+                borderRadius="10px"
+                color="white"
+                bg="var(--accent)"
+                fontSize="sm"
+                fontWeight="semibold"
+              >
+                C
+              </Flex>
+            </Button>
+          </SideTooltip>
         )}
         {open && (
           <IconButton
@@ -132,72 +175,32 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
 
       <Separator my="20px" borderColor="var(--border)" />
 
-      <Box as="nav" display="grid" gap="4px">
+      <Box>
         {open && (
           <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
-            Workspace
+            Basic
           </Text>
         )}
-        <Button asChild variant="ghost" {...navButtonStyles}>
-          <Link
-            to="/"
-            activeProps={{ style: activeLinkStyles }}
-          >
-            <House size={20} />
-            {open && <Text>Overview</Text>}
-          </Link>
-        </Button>
-        <Button asChild variant="ghost" {...navButtonStyles}>
-          <Link to="/markets" activeProps={{ style: activeLinkStyles }}>
-            <ChartNoAxesColumnIncreasing size={20} />
-            {open && <Text>Markets</Text>}
-          </Link>
-        </Button>
-        <Button asChild variant="ghost" {...navButtonStyles}>
-          <Link to="/watchlist" activeProps={{ style: activeLinkStyles }}>
-            <Star size={20} />
-            {open && <Text>Watchlist</Text>}
-          </Link>
-        </Button>
+        <Box display="grid" gap="4px">
+          {basicItems.map((item) => (
+            <NavButton key={item.to} item={item} open={open} />
+          ))}
+        </Box>
       </Box>
 
-      <Box mt="20px">
+      <Box mt="auto">
         <Separator mb="12px" borderColor="var(--border)" />
         {open && (
           <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
             Preferences
           </Text>
         )}
-        <Button asChild variant="ghost" {...navButtonStyles}>
-          <Link to="/settings" activeProps={{ style: activeLinkStyles }}>
-            <Settings size={20} />
-            {open && <Text>Settings</Text>}
-          </Link>
-        </Button>
-      </Box>
-
-      {!loginDisabled && (
-        <Box mt="auto">
-          <Separator mb="12px" borderColor="var(--border)" />
-          {open && (
-            <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
-              Account
-            </Text>
-          )}
-          <Button
-            asChild
-            variant="ghost"
-            {...navButtonStyles}
-            color="red.500"
-            _hover={{ color: 'red.600', bg: 'red.50' }}
-          >
-            <Link to="/login" onClick={logout}>
-              <LogOut size={20} />
-              {open && <Text>Log out</Text>}
-            </Link>
-          </Button>
+        <Box display="grid" gap="4px">
+          {prefItems.map((item) => (
+            <NavButton key={item.to} item={item} open={open} />
+          ))}
         </Box>
-      )}
+      </Box>
     </Flex>
   );
 }

@@ -27,7 +27,7 @@ export function RootLayout() {
       minH="100svh"
       bg="var(--bg)"
       templateColumns={{
-        base: sidebarOpen ? '240px minmax(0, 1fr)' : '64px minmax(0, 1fr)',
+        base: '64px minmax(0, 1fr)',
         md: sidebarOpen ? '240px minmax(0, 1fr)' : '72px minmax(0, 1fr)',
       }}
       transition="grid-template-columns 180ms ease"
@@ -38,7 +38,10 @@ export function RootLayout() {
       />
 
       <Box minW="0" gridColumn="2">
-        <Navbar onSearchOpen={() => setSearchOpen(true)} />
+        <Navbar
+          onSearchOpen={() => setSearchOpen(true)}
+          onMenuOpen={() => setSidebarOpen(true)}
+        />
         <Box
           as="main"
           w="1126px"

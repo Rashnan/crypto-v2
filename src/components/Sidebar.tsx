@@ -38,6 +38,7 @@ const navButtonStyles = {
   justifyContent: "flex-start",
   color: "var(--text)",
   borderRadius: "10px",
+  _hover: { color: "var(--accent)", bg: "var(--accent-bg)" },
   _focusVisible: { outline: "2px solid var(--accent)", outlineOffset: "2px" },
 } as const;
 
@@ -59,14 +60,9 @@ function NavButton({ item, open }: { item: NavItem; open: boolean }) {
     background: "var(--accent-bg)",
     boxShadow: open ? "inset 2px 0 var(--accent)" : "inset -2px 0 var(--accent)",
   };
-  const hoverStyles = {
-    color: "var(--accent)",
-    bg: "var(--accent-bg)",
-    boxShadow: open ? "inset 2px 0 var(--accent)" : "inset -2px 0 var(--accent)",
-  };
 
   const button = (
-    <Button asChild variant="ghost" {...navButtonStyles} _hover={hoverStyles}>
+    <Button asChild variant="ghost" {...navButtonStyles}>
       <Link to={item.to} activeProps={{ style: activeStyles }}>
         <Icon size={20} />
         {open && <Text>{item.label}</Text>}

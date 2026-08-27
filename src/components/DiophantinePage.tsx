@@ -70,13 +70,18 @@ function solve(a: number, b: number, c: number): DiophantineResult {
   }
 }
 
-function ResultStat({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function ResultStat({ label, value, sub, mono }: { label: string; value: string; sub?: string; mono?: boolean }) {
   return (
     <Stat.Root p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
       <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">{label}</Stat.Label>
       <Stat.ValueText fontSize="2xl" fontWeight="bold" color="var(--accent)" fontFamily={mono ? 'mono' : undefined}>
         {value}
       </Stat.ValueText>
+      {sub && (
+        <Text mt="4px" fontFamily="mono" fontSize="xs" color="var(--text)">
+          {sub}
+        </Text>
+      )}
     </Stat.Root>
   )
 }
@@ -236,8 +241,8 @@ export function DiophantinePage() {
           {result.solvable && (
             <>
               <SimpleGrid columns={{ base: 1, sm: 2 }} gap="12px" mt="12px">
-                <ResultStat label="x₀ (particular)" value={String(result.x0)} mono />
-                <ResultStat label="y₀ (particular)" value={String(result.y0)} mono />
+                <ResultStat label="x₀" value={String(result.x0)} sub={`x₀ = (c/d)·s = (${result.c}/${result.d})·${result.s}`} mono />
+                <ResultStat label="y₀" value={String(result.y0)} sub={`y₀ = (c/d)·t = (${result.c}/${result.d})·${result.t}`} mono />
               </SimpleGrid>
 
               <Box

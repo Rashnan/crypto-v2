@@ -55,10 +55,15 @@ function SideTooltip({ label, children }: { label: string; children: ReactElemen
 
 function NavButton({ item, open }: { item: NavItem; open: boolean }) {
   const Icon = item.icon;
+  const activeStyles = {
+    color: "var(--accent)",
+    background: "var(--accent-bg)",
+    boxShadow: open ? "inset 2px 0 var(--accent)" : "inset -2px 0 var(--accent)",
+  };
 
   const button = (
     <Button asChild variant="ghost" {...navButtonStyles}>
-      <Link to={item.to} activeProps={{ style: activeLinkStyles }}>
+      <Link to={item.to} activeProps={{ style: activeStyles }}>
         <Icon size={20} />
         {open && <Text>{item.label}</Text>}
       </Link>
@@ -207,8 +212,3 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
   );
 }
 
-const activeLinkStyles = {
-  color: "var(--accent)",
-  background: "var(--accent-bg)",
-  boxShadow: "inset 2px 0 var(--accent)",
-};

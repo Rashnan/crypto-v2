@@ -2,7 +2,7 @@ import { Box, Button, Flex, IconButton, Separator, Text } from "@chakra-ui/react
 import { Drawer } from "@chakra-ui/react";
 import { Tooltip } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
-import type { ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import {
   Calculator,
   LayoutGrid,
@@ -168,9 +168,21 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
 }
 
 export function Sidebar({ open, onToggle }: SidebarProps) {
+  const [isMobile, setIsMobile] = useState(
+    () => !window.matchMedia("(min-width: 721px)").matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 721px)");
+    const handle = (e: MediaQueryListEvent) => setIsMobile(!e.matches);
+    mq.addEventListener("change", handle);
+    return () => mq.removeEventListener("change", handle);
+  }, []);
+
   return (
     <>
-      {/* Mobile: fullscreen drawer */}
+      {/* Mobile: fullscreen drawer. Mounted only below the md breakpoint so
+          an open desktop sidebar never renders the overlay on wider screens. */}
+      {isMobile && (
       <Drawer.Root
         open={open}
         onOpenChange={({ open }) => {
@@ -213,6 +225,7 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
           </Drawer.Content>
         </Drawer.Positioner>
       </Drawer.Root>
+      )}
 
       {/* Desktop: inline sidebar */}
       <Flex

@@ -144,3 +144,82 @@ export function matrixInverseDetail(a: Matrix, m: number): MatrixInverseDetail {
   const adjugate = adjugateMod(a, m)
   return { ...base, cofactors, cofactorMatrix, adjugate }
 }
+
+/** One term of the Laplace expansion of a determinant along a row. */
+export interface DeterminantTerm {
+  /** Column of the entry used for this term. */
+  j: number
+  /** Sign factor (−1)^(0+j), +1 for even columns, −1 for odd. */
+  sign: 1 | -1
+  /** The entry a[0][j] being expanded. */
+  a0j: number
+  /** The (n−1)x(n−1) minor after deleting row 0 and column j. */
+  minor: Matrix
+  /** det(minor) reduced mod m. */
+  minorDet: number
+  /** Cofactor = (−1)^j · det(minor) mod m. */
+  cofactor: number
+  /** Term contributed to the sum: a[0][j] · cofactor mod m. */
+  product: number
+}
+
+export interface DeterminantDetail {
+  /** The determinant reduced mod m. */
+  det: number
+  /** Each term of the expansion. */
+  terms: DeterminantTerm[]
+  /** True when this is the direct 2×2 formula rather than a 3×3 expansion. */
+  is2x2: boolean
+}
+
+/**
+ * Determinant with the Laplace (cofactor) expansion shown, expanded along row 0:
+ *
+ *     det(A) = Σ_j a[0][j] · C[0][j],
+ *     C[0][j] = (−1)^j · det(minor(a, 0, j))
+ *
+ * For a 2×2 matrix this reduces to the direct cross-product formula. All
+ * arithmetic is kept modulo m, matching determinantMod.
+ */
+export function determinantModDetail(a: Matrix, m: number): DeterminantDetail {
+  const n = a.length
+  if (n === 0) throw new Error('empty matrix has no determinant')
+  if (!a.every((row) => row.length === n)) {
+    throw new Error('matrix must be square')
+  }
+  if (n === 2) {
+    return {
+      det: determinantMod(a, m),
+      terms: [
+        {
+          j: 0, sign: 1, a0j: a[0][0],
+          minor: minor(a, 0, 0), minorDet: mod(a[1][1], m),
+          cofactor: mod(a[1][1], m),
+          product: mod(a[0][0] * a[1][1], m),
+        },
+        {
+          j: 1, sign: -1, a0j: a[0][1],
+          minor: minor(a, 0, 1), minorDet: mod(a[1][0], m),
+          cofactor: mod(-a[1][0], m),
+          product: mod(-a[0][1] * a[1][0], m),
+        },
+      ],
+      is2x2: true,
+    }
+  }
+  const terms: DeterminantTerm[] = []
+  let det = 0
+  for (let j = 0; j < n; j++) {
+    const sign: 1 | -1 = j % 2 === 0 ? 1 : -1
+    const minorMatrix = minor(a, 0, j)
+    const minorDet = determinantMod(minorMatrix, m)
+    const cofactor = mod(sign * minorDet, m)
+    // cofactor already carries the (−1)^j sign, so the term contribution is
+    // just a[0][j] · cofactor.
+    const product = mod(a[0][j] * cofactor, m)
+    det = mod(det + product, m)
+    terms.push({ j, sign, a0j: a[0][j], minor: minorMatrix, minorDet, cofactor, product })
+  }
+  det = mod(det, m)
+  return { det, terms, is2x2: false }
+}

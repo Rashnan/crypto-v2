@@ -11,7 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { gcd } from '../lib/modular'
-import { matrixInverseDetail, type Matrix } from '../lib/matmod'
+import { determinantModDetail, matrixInverseDetail, type Matrix } from '../lib/matmod'
 
 const sizeCollection = createListCollection({
   items: [
@@ -46,7 +46,7 @@ function buildMatrix(size: number, raw: string[]): { matrix: Matrix; ok: boolean
   return { matrix, ok }
 }
 
-function MathMatrix({ data, signs }: { data: number[][]; signs?: string[][] }) {
+function MathMatrix({ data, signs, hideValue }: { data: number[][]; signs?: string[][]; hideValue?: boolean }) {
   return (
     <math style={{ display: 'inline-block' }}>
       <mrow>
@@ -59,7 +59,7 @@ function MathMatrix({ data, signs }: { data: number[][]; signs?: string[][] }) {
                   {signs && (
                     <mrow>
                       <mo style={{ color: 'var(--text)', fontSize: '0.85em' }}>{signs[i][j]}</mo>
-                      <mn style={{ fontSize: '1.15em' }}>{v}</mn>
+                      {!hideValue && <mn style={{ fontSize: '1.15em' }}>{v}</mn>}
                     </mrow>
                   )}
                   {!signs && <mn style={{ fontSize: '1.15em' }}>{v}</mn>}
@@ -109,19 +109,20 @@ export function MatrixInversePage() {
   const { matrix, ok } = buildMatrix(size, entries)
   const valueMode = m !== null && ok
 
+  let detDetail: import('../lib/matmod').DeterminantDetail | null = null
   let result:
     | {
         invertible: true
         det: number
         detInverse: number
         inverse: Matrix
-        cofactors: import('../lib/matmod').MinorStep[]
         cofactorMatrix: Matrix
         adjugate: Matrix
       }
     | { invertible: false; det: number; reason: string }
     | null = null
   if (valueMode) {
+    detDetail = determinantModDetail(matrix, m!)
     const r = matrixInverseDetail(matrix, m!)
     if (r.invertible) {
       result = {
@@ -129,7 +130,6 @@ export function MatrixInversePage() {
         det: r.det,
         detInverse: r.detInverse!,
         inverse: r.inverse!,
-        cofactors: r.cofactors,
         cofactorMatrix: r.cofactorMatrix,
         adjugate: r.adjugate,
       }
@@ -202,34 +202,48 @@ export function MatrixInversePage() {
         <Heading as="h2" fontSize="lg" m="0" mb="12px">
           Matrix A
         </Heading>
-        <Box maxW={`${size === 2 ? 260 : 380}px`}>
-          <Table.Root size="sm">
-            <Table.Body>
-              {Array.from({ length: size }).map((_, i) => (
-                <Table.Row key={i}>
-                  {Array.from({ length: size }).map((_, j) => {
-                    const idx = i * size + j
-                    return (
-                      <Table.Cell key={j} p="4px">
-                        <Input
-                          type="number"
-                          step="1"
-                          value={entries[idx] ?? ''}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntry(idx, e.target.value)}
-                          textAlign="center"
-                          fontFamily="mono"
-                        />
-                      </Table.Cell>
-                    )
-                  })}
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Root>
-        </Box>
+        <Flex gap="28px" flexWrap="wrap" align="flex-start">
+          <Box maxW={`${size === 2 ? 260 : 380}px`}>
+            <Table.Root size="sm">
+              <Table.Body>
+                {Array.from({ length: size }).map((_, i) => (
+                  <Table.Row key={i}>
+                    {Array.from({ length: size }).map((_, j) => {
+                      const idx = i * size + j
+                      return (
+                        <Table.Cell key={j} p="4px">
+                          <Input
+                            type="number"
+                            step="1"
+                            value={entries[idx] ?? ''}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntry(idx, e.target.value)}
+                            textAlign="center"
+                            fontFamily="mono"
+                          />
+                        </Table.Cell>
+                      )
+                    })}
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Box>
+          {valueMode && (
+            <Box
+              p="10px 14px"
+              borderWidth="1px"
+              borderColor="var(--accent-border)"
+              borderRadius="12px"
+              bg="var(--accent-bg)"
+            >
+              <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">A =</Text>
+              <MathMatrix data={matrix} />
+            </Box>
+          )}
+        </Flex>
       </Box>
 
-      {result && result.invertible && (
+      {result && result.invertible && detDetail && (
         <Box mt="32px">
           <Heading as="h2" fontSize="lg" m="0">Result</Heading>
           <Flex gap="16px" flexWrap="wrap" mt="16px">
@@ -247,63 +261,98 @@ export function MatrixInversePage() {
           </Text>
 
           <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
-            A⁻¹ mod {m}
+            Determinant (cofactor expansion, mod {m})
           </Heading>
-          <Box
-            p="8px 12px"
-            display="inline-block"
-            borderWidth="1px"
-            borderColor="var(--border)"
-            borderRadius="12px"
-          >
-            <MathMatrix data={result.inverse} />
-          </Box>
+          {detDetail.is2x2 ? (
+            <Flex alignItems="center" gap="12px" flexWrap="wrap">
+              <MathMatrix data={matrix} />
+              <MathOp>=</MathOp>
+              <Box fontFamily="mono" fontSize="lg" color="var(--text-h)">
+                {detDetail.terms[0].a0j}·{detDetail.terms[0].minorDet} − {detDetail.terms[1].a0j}·{detDetail.terms[1].minorDet}
+              </Box>
+              <MathOp>=</MathOp>
+              <Box fontFamily="mono" fontSize="lg" color="var(--accent)">
+                {detDetail.det} (mod {m})
+              </Box>
+            </Flex>
+          ) : (
+            <Box>
+              <Text mt="4px" fontSize="sm" color="var(--text)">
+                Expand along row 0: det(A) = Σ a(0,j)·C(0,j), C(0,j) = (−1)^j · det(M(0,j)).
+                Each term below is reduced mod {m}.
+              </Text>
+              <Box mt="12px" overflow="auto" maxH="440px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+                <Table.Root size="sm" variant="line">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColumnHeader>j</Table.ColumnHeader>
+                      <Table.ColumnHeader>sign</Table.ColumnHeader>
+                      <Table.ColumnHeader>a(0,j)</Table.ColumnHeader>
+                      <Table.ColumnHeader>minor M(0,j)</Table.ColumnHeader>
+                      <Table.ColumnHeader>det(M) mod {m}</Table.ColumnHeader>
+                      <Table.ColumnHeader>cofactor mod {m}</Table.ColumnHeader>
+                      <Table.ColumnHeader>term mod {m}</Table.ColumnHeader>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {detDetail.terms.map((t) => (
+                      <Table.Row key={t.j}>
+                        <Table.Cell fontWeight="semibold">{t.j}</Table.Cell>
+                        <Table.Cell fontFamily="mono">{t.sign > 0 ? '+' : '−'}</Table.Cell>
+                        <Table.Cell fontFamily="mono">{t.a0j}</Table.Cell>
+                        <Table.Cell>
+                          <MathMatrix data={t.minor} />
+                        </Table.Cell>
+                        <Table.Cell fontFamily="mono">{t.minorDet}</Table.Cell>
+                        <Table.Cell fontFamily="mono" color="var(--text)">{t.cofactor}</Table.Cell>
+                        <Table.Cell fontFamily="mono" color="var(--accent)" fontWeight="semibold">{t.product}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table.Root>
+              </Box>
+              <Flex alignItems="center" gap="12px" flexWrap="wrap" mt="14px">
+                <Box fontSize="sm" color="var(--text)">
+                  det(A) ≡ Σ terms = {detDetail.terms.map((t) => t.product).join(' + ')} ≡
+                </Box>
+                <Box fontFamily="mono" fontSize="lg" color="var(--accent)" fontWeight="bold">{result.det} (mod {m})</Box>
+              </Flex>
+            </Box>
+          )}
 
           <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
             How A⁻¹ is computed
           </Heading>
           <Text mt="4px" fontSize="sm" color="var(--text)">
-            A⁻¹ = adj(A) · (det A)⁻¹ mod {m}, where adj(A) is the transpose of the
-            cofactor matrix. Each cofactor is (+/−)(det of the minor formed by
-            deleting that entry's row and column), with the checkerboard sign pattern.
+            A⁻¹ = adj(A) · (det A)⁻¹ mod {m}. Every cofactor is C(i,j) = (−1)^(i+j) · det(M(i,j)),
+            using the determinant of the minor M(i,j) with the checkerboard sign pattern below.
           </Text>
 
-          <Flex alignItems="center" gap="20px" flexWrap="wrap" mt="16px">
-            <Box
-              p="10px 14px"
-              borderWidth="1px"
-              borderColor="var(--border)"
-              borderRadius="12px"
-            >
-              <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">cofactor matrix</Text>
-              <MathMatrix data={result.cofactorMatrix} signs={signPattern(size)} />
-            </Box>
-            <MathOp>=</MathOp>
-            <Box
-              p="10px 14px"
-              borderWidth="1px"
-              borderColor="var(--border)"
-              borderRadius="12px"
-            >
-              <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">adj(A) (transpose)</Text>
+          <Box mt="16px" p="12px 14px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+            <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">step 1 · sign pattern (−1)^(i+j)</Text>
+            <MathMatrix data={Array.from({ length: size }, () => Array(size).fill(0))} signs={signPattern(size)} hideValue />
+          </Box>
+
+          <Box mt="12px" p="12px 14px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+            <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">step 2 · cofactor values C(i,j) = sign · det(M(i,j)) mod {m}</Text>
+            <MathMatrix data={result.cofactorMatrix} signs={signPattern(size)} />
+          </Box>
+
+          <Box mt="12px" p="12px 14px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+            <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">step 3 · adj(A) = transpose of cofactor matrix</Text>
+            <MathMatrix data={result.adjugate} />
+          </Box>
+
+          <Box mt="12px" p="12px 14px" borderWidth="1px" borderColor="var(--accent-border)" borderRadius="12px" bg="var(--accent-bg)">
+            <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">step 4 · A⁻¹ = adj(A) · (det A)⁻¹ mod {m}</Text>
+            <Flex alignItems="center" gap="12px" flexWrap="wrap">
               <MathMatrix data={result.adjugate} />
-            </Box>
-            <MathOp>·</MathOp>
-            <Box borderWidth="1px" borderColor="var(--border)" borderRadius="12px" p="10px 14px">
-              <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">(det A)⁻¹ mod {m}</Text>
-              <Text textAlign="center" fontFamily="mono" fontSize="2xl" fontWeight="bold" color="var(--accent)">{result.detInverse}</Text>
-            </Box>
-            <MathOp>=</MathOp>
-            <Box
-              p="10px 14px"
-              borderWidth="1px"
-              borderColor="var(--border)"
-              borderRadius="12px"
-            >
-              <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">A⁻¹</Text>
+              <MathOp>·</MathOp>
+              <Box fontFamily="mono" fontSize="lg" color="var(--accent)">{result.detInverse}</Box>
+              <MathOp>=</MathOp>
               <MathMatrix data={result.inverse} />
-            </Box>
-          </Flex>
+            </Flex>
+          </Box>
 
           <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
             Proof: A · A⁻¹ ≡ I (mod {m})
@@ -321,13 +370,55 @@ export function MatrixInversePage() {
         </Box>
       )}
 
-      {result && !result.invertible && (
+      {result && !result.invertible && detDetail && (
         <Box mt="32px">
-          <Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+          <Box p="16px 20px" borderWidth="1px" borderColor="red.300" borderRadius="12px" bg="red.50">
             <Text fontSize="sm" color="var(--text)" fontWeight="medium">det(A) mod {m}</Text>
             <Text mt="4px" fontFamily="mono" fontSize="2xl" fontWeight="bold" color="#ef4444">{result.det}</Text>
             <Text mt="8px" fontFamily="mono" color="#ef4444">{result.reason}</Text>
           </Box>
+
+          <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
+            Determinant (cofactor expansion, mod {m})
+          </Heading>
+          {detDetail.is2x2 ? (
+            <Flex alignItems="center" gap="12px" flexWrap="wrap">
+              <MathMatrix data={matrix} />
+              <MathOp>=</MathOp>
+              <Box fontFamily="mono" fontSize="lg" color="var(--text-h)">
+                {detDetail.terms[0].a0j}·{detDetail.terms[0].minorDet} − {detDetail.terms[1].a0j}·{detDetail.terms[1].minorDet}
+              </Box>
+              <MathOp>=</MathOp>
+              <Box fontFamily="mono" fontSize="lg" color="#ef4444">
+                {result.det} (mod {m})
+              </Box>
+            </Flex>
+          ) : (
+            <Box mt="12px" overflow="auto" maxH="440px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+              <Table.Root size="sm" variant="line">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader>j</Table.ColumnHeader>
+                    <Table.ColumnHeader>sign</Table.ColumnHeader>
+                    <Table.ColumnHeader>a(0,j)</Table.ColumnHeader>
+                    <Table.ColumnHeader>det(M) mod {m}</Table.ColumnHeader>
+                    <Table.ColumnHeader>term mod {m}</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {detDetail.terms.map((t) => (
+                    <Table.Row key={t.j}>
+                      <Table.Cell fontWeight="semibold">{t.j}</Table.Cell>
+                      <Table.Cell fontFamily="mono">{t.sign > 0 ? '+' : '−'}</Table.Cell>
+                      <Table.Cell fontFamily="mono">{t.a0j}</Table.Cell>
+                      <Table.Cell fontFamily="mono">{t.minorDet}</Table.Cell>
+                      <Table.Cell fontFamily="mono" color="var(--text)">{t.product}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Root>
+            </Box>
+          )}
         </Box>
       )}
     </Box>

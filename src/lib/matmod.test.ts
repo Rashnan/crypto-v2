@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { adjugateMod, determinantMod, matrixInverseDetail, matrixInverseMod, minor } from './matmod'
+import {
+  adjugateMod,
+  determinantMod,
+  determinantModDetail,
+  matrixInverseDetail,
+  matrixInverseMod,
+  minor,
+} from './matmod'
 import { mod } from './modular'
 
 function matmulMod(a: number[][], b: number[][], m: number): number[][] {
@@ -40,6 +47,40 @@ describe('determinantMod', () => {
 
   it('reduces the result modulo m', () => {
     expect(determinantMod([[4, 1], [2, 2]], 5)).toBe(1)
+  })
+})
+
+describe('determinantModDetail', () => {
+  it('handles the 2x2 direct formula', () => {
+    const d = determinantModDetail([[1, 2], [3, 4]], 100)
+    expect(d.is2x2).toBe(true)
+    expect(d.det).toBe(98)
+    expect(d.terms).toHaveLength(2)
+    expect(d.terms[0].cofactor).toBe(mod(4, 100))
+    expect(d.terms[1].cofactor).toBe(mod(-3, 100))
+  })
+
+  it('expands a 3x3 matrix along row 0 to the same determinant as determinantMod', () => {
+    const a = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 10],
+    ]
+    const m = 7
+    const d = determinantModDetail(a, m)
+    expect(d.is2x2).toBe(false)
+    expect(d.terms).toHaveLength(3)
+    expect(d.det).toBe(determinantMod(a, m))
+    expect(d.det).toBe(mod(-3, 7))
+    // each cofactor is sign * minorDet, and each product = a[0][j] * cofactor
+    for (const t of d.terms) {
+      expect(t.cofactor).toBe(mod(t.sign * t.minorDet, m))
+      expect(t.product).toBe(mod(t.a0j * t.cofactor, m))
+      expect(t.minor).toHaveLength(2)
+    }
+    // sum of the products reduces to the determinant
+    const sum = d.terms.reduce((acc, t) => acc + t.product, 0)
+    expect(mod(sum, m)).toBe(d.det)
   })
 })
 

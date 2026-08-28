@@ -39,7 +39,7 @@ const basicItems: NavItem[] = [
 const modularItems: NavItem[] = [
   { label: "Additive Inverse", to: "/modular/additive-inverse", icon: Plus },
   { label: "Multiplicative Inverse", to: "/modular/multiplicative-inverse", icon: X },
-  { label: "Matrix Inverse", to: "/modular/matrix-inverse", icon: Grid3x3, incomplete: true },
+  { label: "Matrix Inverse", to: "/modular/matrix-inverse", icon: Grid3x3 },
 ];
 
 const diophantineItems: NavItem[] = [

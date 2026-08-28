@@ -9,6 +9,7 @@ const pageNames: Record<string, string> = {
   '/diophantine/linear': 'Linear Diophantine',
   '/modular/additive-inverse': 'Additive Inverse (mod)',
   '/modular/multiplicative-inverse': 'Multiplicative Inverse (mod)',
+  '/modular/matrix-inverse': 'Matrix Inverse (mod)',
 }
 
 interface NavbarProps {

@@ -15,6 +15,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
 import { Route as ModularAdditiveInverseRouteImport } from './routes/modular/additive-inverse'
+import { Route as ModularMatrixInverseRouteImport } from './routes/modular/matrix-inverse'
 import { Route as ModularMultiplicativeInverseRouteImport } from './routes/modular/multiplicative-inverse'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +48,11 @@ const ModularAdditiveInverseRoute = ModularAdditiveInverseRouteImport.update({
   path: '/modular/additive-inverse',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModularMatrixInverseRoute = ModularMatrixInverseRouteImport.update({
+  id: '/modular/matrix-inverse',
+  path: '/modular/matrix-inverse',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModularMultiplicativeInverseRoute =
   ModularMultiplicativeInverseRouteImport.update({
     id: '/modular/multiplicative-inverse',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/basic/gcd': typeof BasicGcdRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
+  '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
 }
 export interface FileRoutesByTo {
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/basic/gcd': typeof BasicGcdRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
+  '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
 }
 export interface FileRoutesById {
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/basic/gcd': typeof BasicGcdRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
+  '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
 }
 export interface FileRouteTypes {
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/basic/gcd'
     | '/diophantine/linear'
     | '/modular/additive-inverse'
+    | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/basic/gcd'
     | '/diophantine/linear'
     | '/modular/additive-inverse'
+    | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
   id:
     | '__root__'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/basic/gcd'
     | '/diophantine/linear'
     | '/modular/additive-inverse'
+    | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
   fileRoutesById: FileRoutesById
 }
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   BasicGcdRoute: typeof BasicGcdRoute
   DiophantineLinearRoute: typeof DiophantineLinearRoute
   ModularAdditiveInverseRoute: typeof ModularAdditiveInverseRoute
+  ModularMatrixInverseRoute: typeof ModularMatrixInverseRoute
   ModularMultiplicativeInverseRoute: typeof ModularMultiplicativeInverseRoute
 }
 
@@ -166,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModularAdditiveInverseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modular/matrix-inverse': {
+      id: '/modular/matrix-inverse'
+      path: '/modular/matrix-inverse'
+      fullPath: '/modular/matrix-inverse'
+      preLoaderRoute: typeof ModularMatrixInverseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modular/multiplicative-inverse': {
       id: '/modular/multiplicative-inverse'
       path: '/modular/multiplicative-inverse'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   BasicGcdRoute: BasicGcdRoute,
   DiophantineLinearRoute: DiophantineLinearRoute,
   ModularAdditiveInverseRoute: ModularAdditiveInverseRoute,
+  ModularMatrixInverseRoute: ModularMatrixInverseRoute,
   ModularMultiplicativeInverseRoute: ModularMultiplicativeInverseRoute,
 }
 export const routeTree = rootRouteImport

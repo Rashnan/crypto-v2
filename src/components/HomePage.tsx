@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
-import { Calculator, ExternalLink, Variable } from 'lucide-react'
+import { ExternalLink, Plus, Sigma, Variable } from 'lucide-react'
 
 interface PageCard {
   title: string
@@ -30,6 +30,18 @@ const sections: Section[] = [
     ],
   },
   {
+    label: 'Inverses',
+    pages: [
+      {
+        title: 'Additive Inverse',
+        description: 'The unique y with (x + y) mod m = 0, for any element of ℤ/mℤ.',
+        example: 'additive inverse of 3 mod 8 = 5',
+        to: '/modular/additive-inverse',
+        icon: Plus,
+      },
+    ],
+  },
+  {
     label: 'Equations',
     pages: [
       {
@@ -37,7 +49,7 @@ const sections: Section[] = [
         description: 'Solve linear Diophantine equations ax + by = c for all integer solutions.',
         example: '240x + 46y = 10  →  x = −45 + 23k,  y = 235 − 120k',
         to: '/diophantine/linear',
-        icon: Calculator,
+        icon: Sigma,
       },
     ],
   },

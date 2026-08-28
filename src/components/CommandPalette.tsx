@@ -10,13 +10,18 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate } from '@tanstack/react-router'
 import {
-  Calculator,
+  Braces,
   ChartNoAxesColumnIncreasing,
+  FunctionSquare,
+  Grid3x3,
   House,
+  Plus,
   Search,
   Settings,
+  Sigma,
   Star,
   Variable,
+  X,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -31,8 +36,12 @@ const pages: Page[] = [
   { label: 'Markets', to: '/markets', icon: ChartNoAxesColumnIncreasing },
   { label: 'Watchlist', to: '/watchlist', icon: Star },
   { label: 'GCD', to: '/basic/gcd', icon: Variable },
-  { label: 'Linear Diophantine', to: '/diophantine/linear', icon: Calculator },
-  { label: 'Additive Inverse (mod)', to: '/modular/additive-inverse', icon: Calculator },
+  { label: 'Linear Diophantine', to: '/diophantine/linear', icon: Sigma },
+  { label: 'Single Variable', to: '/diophantine/single-var', icon: FunctionSquare },
+  { label: 'Simultaneous', to: '/diophantine/simultaneous', icon: Braces },
+  { label: 'Additive Inverse', to: '/modular/additive-inverse', icon: Plus },
+  { label: 'Multiplicative Inverse', to: '/modular/multiplicative-inverse', icon: X },
+  { label: 'Matrix Inverse', to: '/modular/matrix-inverse', icon: Grid3x3 },
   { label: 'Settings', to: '/settings', icon: Settings },
 ]
 

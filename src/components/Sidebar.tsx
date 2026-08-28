@@ -4,11 +4,16 @@ import { Tooltip } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ReactElement } from "react";
 import {
-  Calculator,
+  Braces,
+  FunctionSquare,
+  Grid3x3,
   LayoutGrid,
   PanelLeftClose,
+  Plus,
   Settings,
+  Sigma,
   Variable,
+  X,
   type LucideIcon,
 } from "lucide-react";
 
@@ -30,15 +35,15 @@ const basicItems: NavItem[] = [
 ];
 
 const modularItems: NavItem[] = [
-  { label: "Additive Inverse", to: "/modular/additive-inverse", icon: Calculator },
-  { label: "Multiplicative Inverse", to: "/modular/multiplicative-inverse", icon: Calculator },
-  { label: "Inverse Matrix", to: "/modular/matrix-inverse", icon: Calculator },
+  { label: "Additive Inverse", to: "/modular/additive-inverse", icon: Plus },
+  { label: "Multiplicative Inverse", to: "/modular/multiplicative-inverse", icon: X },
+  { label: "Matrix Inverse", to: "/modular/matrix-inverse", icon: Grid3x3 },
 ];
 
 const diophantineItems: NavItem[] = [
-  { label: "Linear Diophantine", to: "/diophantine/linear", icon: Calculator },
-  { label: "Single Variable", to: "/diophantine/single-var", icon: Calculator },
-  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Calculator },
+  { label: "Linear Diophantine", to: "/diophantine/linear", icon: Sigma },
+  { label: "Single Variable", to: "/diophantine/single-var", icon: FunctionSquare },
+  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Braces },
 ];
 
 const prefItems: NavItem[] = [
@@ -146,7 +151,7 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
 
       <Section title="Basic" items={basicItems} open={open} onNavigate={onNavigate} />
 
-      <Section title="Modular Arithmetic" items={modularItems} open={open} onNavigate={onNavigate} />
+      <Section title="Inverses" items={modularItems} open={open} onNavigate={onNavigate} />
 
       <Section title="Equations" items={diophantineItems} open={open} onNavigate={onNavigate} />
 

@@ -8,7 +8,8 @@ const pageNames: Record<string, string> = {
   '/watchlist': 'Watchlist',
   '/settings': 'Settings',
   '/basic/gcd': 'GCD',
-  '/basic/diophantine': 'Diophantine',
+  '/diophantine/linear': 'Linear Diophantine',
+  '/modular/additive-inverse': 'Additive Inverse (mod)',
 }
 
 interface NavbarProps {

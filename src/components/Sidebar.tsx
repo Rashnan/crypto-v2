@@ -27,7 +27,18 @@ const overviewItem: NavItem = { label: "Overview", to: "/", icon: LayoutGrid };
 
 const basicItems: NavItem[] = [
   { label: "GCD", to: "/basic/gcd", icon: Variable },
-  { label: "Diophantine", to: "/basic/diophantine", icon: Calculator },
+];
+
+const modularItems: NavItem[] = [
+  { label: "Additive Inverse", to: "/modular/additive-inverse", icon: Calculator },
+  { label: "Multiplicative Inverse", to: "/modular/multiplicative-inverse", icon: Calculator },
+  { label: "Inverse Matrix", to: "/modular/matrix-inverse", icon: Calculator },
+];
+
+const diophantineItems: NavItem[] = [
+  { label: "Linear Diophantine", to: "/diophantine/linear", icon: Calculator },
+  { label: "Single Variable", to: "/diophantine/single-var", icon: Calculator },
+  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Calculator },
 ];
 
 const prefItems: NavItem[] = [
@@ -133,20 +144,11 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
         </Box>
       </Box>
 
-      <Box mt="12px">
-        {open && (
-          <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
-            Basic
-          </Text>
-        )}
-        <Box display="grid" gap="4px">
-          {basicItems.map((item) => (
-            <Box key={item.to} onClick={onNavigate}>
-              <NavButton item={item} open={open} />
-            </Box>
-          ))}
-        </Box>
-      </Box>
+      <Section title="Basic" items={basicItems} open={open} onNavigate={onNavigate} />
+
+      <Section title="Modular Arithmetic" items={modularItems} open={open} onNavigate={onNavigate} />
+
+      <Section title="Equations" items={diophantineItems} open={open} onNavigate={onNavigate} />
 
       <Box mt="auto">
         <Separator mb="12px" borderColor="var(--border)" />
@@ -164,6 +166,35 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
         </Box>
       </Box>
     </>
+  );
+}
+
+function Section({
+  title,
+  items,
+  open,
+  onNavigate,
+}: {
+  title: string;
+  items: NavItem[];
+  open: boolean;
+  onNavigate?: () => void;
+}) {
+  return (
+    <Box mt="12px">
+      {open && (
+        <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
+          {title}
+        </Text>
+      )}
+      <Box display="grid" gap="4px">
+        {items.map((item) => (
+          <Box key={item.to} onClick={onNavigate}>
+            <NavButton item={item} open={open} />
+          </Box>
+        ))}
+      </Box>
+    </Box>
   );
 }
 

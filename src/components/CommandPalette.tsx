@@ -31,7 +31,8 @@ const pages: Page[] = [
   { label: 'Markets', to: '/markets', icon: ChartNoAxesColumnIncreasing },
   { label: 'Watchlist', to: '/watchlist', icon: Star },
   { label: 'GCD', to: '/basic/gcd', icon: Variable },
-  { label: 'Diophantine', to: '/basic/diophantine', icon: Calculator },
+  { label: 'Linear Diophantine', to: '/diophantine/linear', icon: Calculator },
+  { label: 'Additive Inverse (mod)', to: '/modular/additive-inverse', icon: Calculator },
   { label: 'Settings', to: '/settings', icon: Settings },
 ]
 

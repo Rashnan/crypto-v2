@@ -27,11 +27,16 @@ const sections: Section[] = [
         to: '/basic/gcd',
         icon: Variable,
       },
+    ],
+  },
+  {
+    label: 'Equations',
+    pages: [
       {
-        title: 'Diophantine',
+        title: 'Linear Diophantine',
         description: 'Solve linear Diophantine equations ax + by = c for all integer solutions.',
         example: '240x + 46y = 10  →  x = −45 + 23k,  y = 235 − 120k',
-        to: '/basic/diophantine',
+        to: '/diophantine/linear',
         icon: Calculator,
       },
     ],

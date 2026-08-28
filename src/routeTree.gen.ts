@@ -14,8 +14,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as WatchlistRouteImport } from './routes/watchlist'
-import { Route as BasicDiophantineRouteImport } from './routes/basic/diophantine'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
+import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
+import { Route as ModularAdditiveInverseRouteImport } from './routes/modular/additive-inverse'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,14 +43,19 @@ const WatchlistRoute = WatchlistRouteImport.update({
   path: '/watchlist',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BasicDiophantineRoute = BasicDiophantineRouteImport.update({
-  id: '/basic/diophantine',
-  path: '/basic/diophantine',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BasicGcdRoute = BasicGcdRouteImport.update({
   id: '/basic/gcd',
   path: '/basic/gcd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiophantineLinearRoute = DiophantineLinearRouteImport.update({
+  id: '/diophantine/linear',
+  path: '/diophantine/linear',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModularAdditiveInverseRoute = ModularAdditiveInverseRouteImport.update({
+  id: '/modular/additive-inverse',
+  path: '/modular/additive-inverse',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -59,8 +65,9 @@ export interface FileRoutesByFullPath {
   '/markets': typeof MarketsRoute
   '/settings': typeof SettingsRoute
   '/watchlist': typeof WatchlistRoute
-  '/basic/diophantine': typeof BasicDiophantineRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/diophantine/linear': typeof DiophantineLinearRoute
+  '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,8 +75,9 @@ export interface FileRoutesByTo {
   '/markets': typeof MarketsRoute
   '/settings': typeof SettingsRoute
   '/watchlist': typeof WatchlistRoute
-  '/basic/diophantine': typeof BasicDiophantineRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/diophantine/linear': typeof DiophantineLinearRoute
+  '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +86,9 @@ export interface FileRoutesById {
   '/markets': typeof MarketsRoute
   '/settings': typeof SettingsRoute
   '/watchlist': typeof WatchlistRoute
-  '/basic/diophantine': typeof BasicDiophantineRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/diophantine/linear': typeof DiophantineLinearRoute
+  '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,8 +98,9 @@ export interface FileRouteTypes {
     | '/markets'
     | '/settings'
     | '/watchlist'
-    | '/basic/diophantine'
     | '/basic/gcd'
+    | '/diophantine/linear'
+    | '/modular/additive-inverse'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,8 +108,9 @@ export interface FileRouteTypes {
     | '/markets'
     | '/settings'
     | '/watchlist'
-    | '/basic/diophantine'
     | '/basic/gcd'
+    | '/diophantine/linear'
+    | '/modular/additive-inverse'
   id:
     | '__root__'
     | '/'
@@ -107,8 +118,9 @@ export interface FileRouteTypes {
     | '/markets'
     | '/settings'
     | '/watchlist'
-    | '/basic/diophantine'
     | '/basic/gcd'
+    | '/diophantine/linear'
+    | '/modular/additive-inverse'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,8 +129,9 @@ export interface RootRouteChildren {
   MarketsRoute: typeof MarketsRoute
   SettingsRoute: typeof SettingsRoute
   WatchlistRoute: typeof WatchlistRoute
-  BasicDiophantineRoute: typeof BasicDiophantineRoute
   BasicGcdRoute: typeof BasicGcdRoute
+  DiophantineLinearRoute: typeof DiophantineLinearRoute
+  ModularAdditiveInverseRoute: typeof ModularAdditiveInverseRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,18 +171,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchlistRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/basic/diophantine': {
-      id: '/basic/diophantine'
-      path: '/basic/diophantine'
-      fullPath: '/basic/diophantine'
-      preLoaderRoute: typeof BasicDiophantineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/basic/gcd': {
       id: '/basic/gcd'
       path: '/basic/gcd'
       fullPath: '/basic/gcd'
       preLoaderRoute: typeof BasicGcdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diophantine/linear': {
+      id: '/diophantine/linear'
+      path: '/diophantine/linear'
+      fullPath: '/diophantine/linear'
+      preLoaderRoute: typeof DiophantineLinearRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modular/additive-inverse': {
+      id: '/modular/additive-inverse'
+      path: '/modular/additive-inverse'
+      fullPath: '/modular/additive-inverse'
+      preLoaderRoute: typeof ModularAdditiveInverseRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -181,8 +201,9 @@ const rootRouteChildren: RootRouteChildren = {
   MarketsRoute: MarketsRoute,
   SettingsRoute: SettingsRoute,
   WatchlistRoute: WatchlistRoute,
-  BasicDiophantineRoute: BasicDiophantineRoute,
   BasicGcdRoute: BasicGcdRoute,
+  DiophantineLinearRoute: DiophantineLinearRoute,
+  ModularAdditiveInverseRoute: ModularAdditiveInverseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

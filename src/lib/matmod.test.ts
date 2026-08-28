@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { adjugateMod, determinantMod, matrixInverseMod, minor } from './matmod'
+import { adjugateMod, determinantMod, matrixInverseDetail, matrixInverseMod, minor } from './matmod'
 import { mod } from './modular'
 
 function matmulMod(a: number[][], b: number[][], m: number): number[][] {
@@ -132,6 +132,59 @@ describe('matrixInverseMod', () => {
           expect(v).toBeLessThan(5)
         }
       }
+    }
+  })
+})
+
+describe('matrixInverseDetail', () => {
+  it('returns the cofactor matrix, adjugate and the same inverse', () => {
+    const a = [
+      [3, 4],
+      [2, 3],
+    ]
+    const m = 5
+    const d = matrixInverseDetail(a, m)
+    expect(d.invertible).toBe(true)
+    // Cofactor matrix: C[i][j] = (-1)^(i+j) * det(minor)
+    // C[0][0] = +det([3]) = 3 ; C[0][1] = -det([2]) = -2 = 3
+    // C[1][0] = -det([4]) = -4 = 1 ; C[1][1] = +det([3]) = 3
+    expect(d.cofactorMatrix).toEqual([
+      [3, 3],
+      [1, 3],
+    ])
+    // adjugate = transpose of cofactor matrix
+    expect(d.adjugate).toEqual([
+      [3, 1],
+      [3, 3],
+    ])
+    expect(d.cofactors).toHaveLength(4)
+    // (det A)^-1 = 1, so inverse == adjugate mod 5
+    expect(d.inverse).toEqual(d.adjugate)
+  })
+
+  it('reports not invertible without building steps', () => {
+    const d = matrixInverseDetail([[2, 1], [2, 2]], 4)
+    expect(d.invertible).toBe(false)
+    expect(d.cofactors).toEqual([])
+    expect(d.cofactorMatrix).toEqual([])
+    expect(d.adjugate).toEqual([])
+  })
+
+  it('produces the correct cofactor steps for a 3x3 matrix', () => {
+    const a = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 10],
+    ]
+    const m = 7
+    const d = matrixInverseDetail(a, m)
+    expect(d.invertible).toBe(true)
+    for (const step of d.cofactors) {
+      expect(step.minorMatrix).toHaveLength(2)
+      // cofactor = sign * det(minor) mod m, as produced by determinantMod
+      expect(step.cofactor).toBe(mod(step.sign * step.minorDet, m))
+      // cofactor matrix should hold the same value
+      expect(d.cofactorMatrix[step.i][step.j]).toBe(step.cofactor)
     }
   })
 })

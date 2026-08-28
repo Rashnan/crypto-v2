@@ -11,7 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { gcd } from '../lib/modular'
-import { matrixInverseMod, type Matrix } from '../lib/matmod'
+import { matrixInverseDetail, type Matrix } from '../lib/matmod'
 
 const sizeCollection = createListCollection({
   items: [
@@ -98,17 +98,26 @@ export function MatrixInversePage() {
   const valueMode = m !== null && ok
 
   let result:
-    | { invertible: true; det: number; detInverse: number; inverse: Matrix }
+    | {
+        invertible: true
+        det: number
+        detInverse: number
+        inverse: Matrix
+        cofactors: import('../lib/matmod').MinorStep[]
+        adjugate: Matrix
+      }
     | { invertible: false; det: number; reason: string }
     | null = null
   if (valueMode) {
-    const r = matrixInverseMod(matrix, m!)
+    const r = matrixInverseDetail(matrix, m!)
     if (r.invertible) {
       result = {
         invertible: true,
         det: r.det,
         detInverse: r.detInverse!,
         inverse: r.inverse!,
+        cofactors: r.cofactors,
+        adjugate: r.adjugate,
       }
     } else {
       result = {
@@ -235,6 +244,49 @@ export function MatrixInversePage() {
           >
             <MathMatrix data={result.inverse} />
           </Box>
+
+          <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
+            How A⁻¹ is computed
+          </Heading>
+          <Text mt="4px" fontSize="sm" color="var(--text)">
+            Cofactor expansion. With M(i,j) the minor of entry a(i,j) (delete row i, column j),
+            and coeff(i,j) = (−1)^(i+j) · det(M(i,j)) mod {m}, the adjugate is the transposed
+            cofactor matrix, so A⁻¹ = adj(A) · (det A)⁻¹ mod {m}.
+          </Text>
+
+          <Box mt="16px" overflow="auto" maxH="440px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+            <Table.Root size="sm" variant="line">
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeader>entry (i,j)</Table.ColumnHeader>
+                  <Table.ColumnHeader>sign (−1)^(i+j)</Table.ColumnHeader>
+                  <Table.ColumnHeader>minor M(i,j)</Table.ColumnHeader>
+                  <Table.ColumnHeader>det(M) mod {m}</Table.ColumnHeader>
+                  <Table.ColumnHeader>cofactor mod {m}</Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {result.cofactors.map((cf) => (
+                  <Table.Row key={`${cf.i}-${cf.j}`}>
+                    <Table.Cell fontFamily="mono">({cf.i}, {cf.j})</Table.Cell>
+                    <Table.Cell fontFamily="mono">{cf.sign > 0 ? '+' : '−'}</Table.Cell>
+                    <Table.Cell>
+                      <MathMatrix data={cf.minorMatrix} />
+                    </Table.Cell>
+                    <Table.Cell fontFamily="mono">{cf.minorDet}</Table.Cell>
+                    <Table.Cell fontFamily="mono" color="var(--accent)" fontWeight="semibold">{cf.cofactor}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Box>
+
+          <Flex alignItems="center" gap="16px" flexWrap="wrap" mt="20px">
+            <Text fontSize="sm" color="var(--text)" fontWeight="medium">adj(A) =</Text>
+            <MathMatrix data={result.adjugate} />
+            <MathOp>=</MathOp>
+            <MathMatrix data={result.inverse} />
+          </Flex>
 
           <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
             Proof: A · A⁻¹ ≡ I (mod {m})

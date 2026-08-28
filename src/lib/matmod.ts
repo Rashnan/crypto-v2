@@ -96,3 +96,51 @@ export function matrixInverseMod(a: Matrix, m: number): MatrixInverseResult {
   const inverse = adj.map((row) => row.map((x) => mod(x * detInverse, m)))
   return { invertible: true, det, detInverse, inverse }
 }
+
+export interface MinorStep {
+  /** Row index of the entry (0-based). */
+  i: number
+  /** Column index of the entry (0-based). */
+  j: number
+  /** Sign factor (-1)^(i+j). */
+  sign: 1 | -1
+  /** The (n-1)x(n-1) minor after deleting row i and column j. */
+  minorMatrix: Matrix
+  /** det(minor) reduced mod m. */
+  minorDet: number
+  /** cofactor = sign * minorDet, reduced mod m. */
+  cofactor: number
+}
+
+export interface MatrixInverseDetail extends MatrixInverseResult {
+  /** Cofactor expansion steps for every entry. */
+  cofactors: MinorStep[]
+  /** Cofactor matrix C, where C[i][j] = (-1)^(i+j) · M(i,j) mod m. */
+  cofactorMatrix: Matrix
+  /** Adjugate = transpose of the cofactor matrix. */
+  adjugate: Matrix
+}
+
+/**
+ * Same as matrixInverseMod but also returns the intermediate cofactor /
+ * adjugate steps used to reach the inverse, so the computation can be shown.
+ */
+export function matrixInverseDetail(a: Matrix, m: number): MatrixInverseDetail {
+  const base = matrixInverseMod(a, m)
+  if (!base.invertible) return { ...base, cofactors: [], cofactorMatrix: [], adjugate: [] }
+  const n = a.length
+  const cofactors: MinorStep[] = []
+  const cofactorMatrix: Matrix = Array.from({ length: n }, () => Array(n).fill(0))
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const sign: 1 | -1 = (i + j) % 2 === 0 ? 1 : -1
+      const minorMatrix = minor(a, i, j)
+      const minorDet = determinantMod(minorMatrix, m)
+      const cofactor = mod(sign * minorDet, m)
+      cofactorMatrix[i][j] = cofactor
+      cofactors.push({ i, j, sign, minorMatrix, minorDet, cofactor })
+    }
+  }
+  const adjugate = adjugateMod(a, m)
+  return { ...base, cofactors, cofactorMatrix, adjugate }
+}

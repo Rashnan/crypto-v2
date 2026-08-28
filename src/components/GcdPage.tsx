@@ -247,7 +247,18 @@ export function GcdPage() {
             </Table.Root>
           </Box>
           <Text mt="8px" color="var(--text)" fontSize="sm">
-            Each row computes r = r₁ − q × r₂, s = s₁ − q × s₂, t = t₁ − q × t₂.
+            Each row computes:
+          </Text>
+          <Text mt="4px" color="var(--text)" fontSize="sm" fontFamily="mono">
+            r = r₁ − q × r₂
+          </Text>
+          <Text color="var(--text)" fontSize="sm" fontFamily="mono">
+            s = s₁ − q × s₂
+          </Text>
+          <Text color="var(--text)" fontSize="sm" fontFamily="mono">
+            t = t₁ − q × t₂
+          </Text>
+          <Text mt="8px" color="var(--text)" fontSize="sm">
             The loop stops at r = 0, where gcd = r₂ with coefficients (s₂, t₂).
           </Text>
         </Box>

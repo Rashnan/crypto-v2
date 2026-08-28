@@ -234,7 +234,10 @@ export function DiophantinePage() {
                 </Text>
                 <Box borderTopWidth="1px" borderColor="var(--border)" mt="10px" pt="10px" />
                 <Text fontSize="xs" color="var(--text)">
-                  x = x₀ + (b/d)·k,  y = y₀ − (a/d)·k
+                  x = x₀ + (b/d)·k
+                </Text>
+                <Text fontSize="xs" color="var(--text)">
+                  y = y₀ − (a/d)·k
                 </Text>
               </Box>
 

@@ -4,12 +4,11 @@ import { Menu, Search } from 'lucide-react'
 
 const pageNames: Record<string, string> = {
   '/': 'Overview',
-  '/markets': 'Markets',
-  '/watchlist': 'Watchlist',
   '/settings': 'Settings',
   '/basic/gcd': 'GCD',
   '/diophantine/linear': 'Linear Diophantine',
   '/modular/additive-inverse': 'Additive Inverse (mod)',
+  '/modular/multiplicative-inverse': 'Multiplicative Inverse (mod)',
 }
 
 interface NavbarProps {

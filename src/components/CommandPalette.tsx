@@ -11,7 +11,6 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import {
   Braces,
-  ChartNoAxesColumnIncreasing,
   FunctionSquare,
   Grid3x3,
   House,
@@ -19,7 +18,6 @@ import {
   Search,
   Settings,
   Sigma,
-  Star,
   Variable,
   X,
   type LucideIcon,
@@ -33,8 +31,6 @@ interface Page {
 
 const pages: Page[] = [
   { label: 'Overview', to: '/', icon: House },
-  { label: 'Markets', to: '/markets', icon: ChartNoAxesColumnIncreasing },
-  { label: 'Watchlist', to: '/watchlist', icon: Star },
   { label: 'GCD', to: '/basic/gcd', icon: Variable },
   { label: 'Linear Diophantine', to: '/diophantine/linear', icon: Sigma },
   { label: 'Single Variable', to: '/diophantine/single-var', icon: FunctionSquare },

@@ -1,0 +1,181 @@
+import { useState } from 'react'
+import {
+  Box,
+  Field,
+  Flex,
+  Heading,
+  Input,
+  SimpleGrid,
+  Stat,
+  Table,
+  Text,
+} from '@chakra-ui/react'
+import {
+  allMultiplicativeInverses,
+  isCoprime,
+  mod,
+  multiplicativeInverse,
+  type MultiplicativeInverse,
+} from '../lib/modular'
+
+const tableLimit = 2000
+
+function parseModulus(raw: string): number | null {
+  const trimmed = raw.trim()
+  if (!/^\d+$/.test(trimmed)) return null
+  const n = Number(trimmed)
+  if (n < 2) return null
+  return n
+}
+
+function parseElement(raw: string): number | null {
+  const trimmed = raw.trim()
+  if (!/^\d+$/.test(trimmed)) return null
+  const n = Number(trimmed)
+  if (n < 0) return null
+  return n
+}
+
+function ResultStat({ label, value, mono, color }: { label: string; value: string; mono?: boolean; color?: string }) {
+  return (
+    <Stat.Root p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
+      <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">{label}</Stat.Label>
+      <Stat.ValueText fontSize="2xl" fontWeight="bold" color={color ?? 'var(--accent)'} fontFamily={mono ? 'mono' : undefined}>
+        {value}
+      </Stat.ValueText>
+    </Stat.Root>
+  )
+}
+
+export function MultiplicativeInversePage() {
+  const [mRaw, setMRaw] = useState('7')
+  const [xRaw, setXRaw] = useState('3')
+
+  const m = parseModulus(mRaw)
+  const mValid = m !== null
+  const mInvalid = mRaw.trim() !== '' && !mValid
+
+  const xParsed = parseElement(xRaw)
+  const xValid = m !== null && xParsed !== null
+  const xInvalid = xRaw.trim() !== '' && !xValid
+
+  const pairs: MultiplicativeInverse[] | null = m !== null ? allMultiplicativeInverses(m) : null
+
+  let singleResult: { ok: boolean; text: string } | null = null
+  if (m !== null && xParsed !== null) {
+    const r = multiplicativeInverse(xParsed, m)
+    if (r.exists) {
+      singleResult = { ok: true, text: String(r.inverse) }
+    } else if (!isCoprime(mod(xParsed, m), m)) {
+      singleResult = { ok: false, text: 'No inverse (not coprime)' }
+    } else {
+      singleResult = { ok: false, text: 'No inverse' }
+    }
+  }
+
+  const showTable = m !== null && m <= tableLimit
+
+  return (
+    <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
+      <Heading as="h1" m="0" fontSize={{ base: '2xl', md: '3xl' }} letterSpacing="tight">
+        Multiplicative Inverse (mod)
+      </Heading>
+      <Text mt="8px" color="var(--text)">
+        The multiplicative inverse of x mod m is an element y with (x·y) mod m = 1.
+        It exists only when gcd(x, m) = 1.
+      </Text>
+
+      <Flex gap="16px" flexWrap="wrap" align="flex-end" mt="24px">
+        <Field.Root invalid={mInvalid} maxW="200px">
+          <Field.Label color="var(--text-h)" fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="6px">
+            m
+            <Box
+              w="8px"
+              h="8px"
+              borderRadius="full"
+              bg={mValid ? 'var(--accent)' : 'var(--text)'}
+              opacity={mValid ? 1 : 0.2}
+            />
+          </Field.Label>
+          <Input
+            type="number"
+            min="2"
+            step="1"
+            mt="8px"
+            value={mRaw}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMRaw(e.target.value)}
+            placeholder="e.g. 7"
+          />
+        </Field.Root>
+        <Field.Root invalid={xInvalid} maxW="200px">
+          <Field.Label color="var(--text-h)" fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="6px">
+            x
+            <Box
+              w="8px"
+              h="8px"
+              borderRadius="full"
+              bg={xValid ? 'var(--accent)' : 'var(--text)'}
+              opacity={xValid ? 1 : 0.2}
+            />
+          </Field.Label>
+          <Input
+            type="number"
+            min="0"
+            step="1"
+            mt="8px"
+            value={xRaw}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setXRaw(e.target.value)}
+            placeholder="e.g. 3"
+          />
+        </Field.Root>
+      </Flex>
+
+      {singleResult && (
+        <Box mt="24px">
+          <SimpleGrid columns={{ base: 1, sm: 2 }} gap="12px">
+            <ResultStat
+              label={`inverse of ${xRaw} mod ${m}`}
+              value={singleResult.text}
+              mono
+              color={singleResult.ok ? undefined : '#ef4444'}
+            />
+          </SimpleGrid>
+        </Box>
+      )}
+
+      {pairs && showTable && (
+        <Box mt="32px">
+          <Heading as="h2" fontSize="lg" m="0">
+            Units of ℤ/{m}ℤ and their inverses
+          </Heading>
+          <Box overflowX="auto" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+            <Table.Root size="sm" variant="line">
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeader>x</Table.ColumnHeader>
+                  <Table.ColumnHeader>inverse (x⁻¹ mod m)</Table.ColumnHeader>
+                  <Table.ColumnHeader>x · inverse</Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {pairs.map((p) => (
+                  <Table.Row key={p.x}>
+                    <Table.Cell>{p.x}</Table.Cell>
+                    <Table.Cell color="var(--accent)" fontWeight="semibold">{p.inverse}</Table.Cell>
+                    <Table.Cell>{p.x} × {p.inverse} ≡ 1 (mod {m})</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Box>
+        </Box>
+      )}
+
+      {m !== null && !showTable && (
+        <Text mt="8px" color="var(--text)" fontSize="sm">
+          Table hidden for m &gt; {tableLimit.toLocaleString()}.
+        </Text>
+      )}
+    </Box>
+  )
+}

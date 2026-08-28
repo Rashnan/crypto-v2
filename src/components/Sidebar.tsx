@@ -26,6 +26,8 @@ interface NavItem {
   label: string;
   to: string;
   icon: LucideIcon;
+  /** Marks a tool whose page isn't implemented yet. */
+  incomplete?: boolean;
 }
 
 const overviewItem: NavItem = { label: "Overview", to: "/", icon: LayoutGrid };
@@ -37,13 +39,13 @@ const basicItems: NavItem[] = [
 const modularItems: NavItem[] = [
   { label: "Additive Inverse", to: "/modular/additive-inverse", icon: Plus },
   { label: "Multiplicative Inverse", to: "/modular/multiplicative-inverse", icon: X },
-  { label: "Matrix Inverse", to: "/modular/matrix-inverse", icon: Grid3x3 },
+  { label: "Matrix Inverse", to: "/modular/matrix-inverse", icon: Grid3x3, incomplete: true },
 ];
 
 const diophantineItems: NavItem[] = [
   { label: "Linear Diophantine", to: "/diophantine/linear", icon: Sigma },
-  { label: "Single Variable", to: "/diophantine/single-var", icon: FunctionSquare },
-  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Braces },
+  { label: "Single Variable", to: "/diophantine/single-var", icon: FunctionSquare, incomplete: true },
+  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Braces, incomplete: true },
 ];
 
 const prefItems: NavItem[] = [
@@ -90,6 +92,17 @@ function NavButton({ item, open }: { item: NavItem; open: boolean }) {
       <Link to={item.to} activeProps={{ style: activeStyles }}>
         <Icon size={20} />
         {open && <Text>{item.label}</Text>}
+        {item.incomplete && (
+          <Box
+            w="6px"
+            h="6px"
+            ml="auto"
+            borderRadius="full"
+            bg="gold"
+            opacity={0.9}
+            aria-label="In progress"
+          />
+        )}
       </Link>
     </Button>
   );

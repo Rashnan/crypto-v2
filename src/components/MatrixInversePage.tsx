@@ -51,11 +51,11 @@ function MathMatrix({ data }: { data: number[][] }) {
     <math>
       <mrow>
         <mo>(</mo>
-        <mtable>
+        <mtable columnspacing="1em" rowspacing="0.35em">
           {data.map((row, i) => (
             <mtr key={i}>
               {row.map((v, j) => (
-                <mtd key={j}>
+                <mtd key={j} style={{ padding: '0 0.25em', textAlign: 'center' }}>
                   <mn>{v}</mn>
                 </mtd>
               ))}
@@ -65,6 +65,14 @@ function MathMatrix({ data }: { data: number[][] }) {
         <mo>)</mo>
       </mrow>
     </math>
+  )
+}
+
+function MathOp({ children }: { children: React.ReactNode }) {
+  return (
+    <span style={{ margin: '0 0.9em', fontSize: '1.4em', color: 'var(--text-h)' }}>
+      {children}
+    </span>
   )
 }
 
@@ -233,9 +241,9 @@ export function MatrixInversePage() {
           </Heading>
           <Flex alignItems="center" gap="16px" flexWrap="wrap">
             <MathMatrix data={matrix} />
-            <Text fontFamily="mono" fontSize="xl" color="var(--text-h)">·</Text>
+            <MathOp>·</MathOp>
             <MathMatrix data={result.inverse} />
-            <Text fontFamily="mono" fontSize="xl" color="var(--text-h)">=</Text>
+            <MathOp>=</MathOp>
             <MathMatrix data={matmulMod(matrix, result.inverse, m!)} />
           </Flex>
           <Text mt="12px" fontSize="sm" color="var(--text)">

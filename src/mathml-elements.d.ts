@@ -5,7 +5,10 @@ declare module 'react' {
     interface IntrinsicElements {
       math: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
       mrow: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
-      mtable: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
+      mtable: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        columnspacing?: string
+        rowspacing?: string
+      }
       mtr: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
       mtd: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>
       mn: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>

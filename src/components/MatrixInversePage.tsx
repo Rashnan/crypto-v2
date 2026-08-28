@@ -46,6 +46,36 @@ function buildMatrix(size: number, raw: string[]): { matrix: Matrix; ok: boolean
   return { matrix, ok }
 }
 
+function MathMatrix({ data }: { data: number[][] }) {
+  return (
+    <math>
+      <mrow>
+        <mo>(</mo>
+        <mtable>
+          {data.map((row, i) => (
+            <mtr key={i}>
+              {row.map((v, j) => (
+                <mtd key={j}>
+                  <mn>{v}</mn>
+                </mtd>
+              ))}
+            </mtr>
+          ))}
+        </mtable>
+        <mo>)</mo>
+      </mrow>
+    </math>
+  )
+}
+
+function matmulMod(a: number[][], b: number[][], m: number): number[][] {
+  return a.map((row) =>
+    b[0].map((_, j) =>
+      ((row.reduce((acc, v, k) => acc + v * b[k][j], 0) % m) + m) % m,
+    ),
+  )
+}
+
 export function MatrixInversePage() {
   const [mRaw, setMRaw] = useState('5')
   const [size, setSize] = useState(2)
@@ -188,21 +218,29 @@ export function MatrixInversePage() {
           <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
             A⁻¹ mod {m}
           </Heading>
-          <Box maxW={`${size === 2 ? 260 : 380}px`}>
-            <Table.Root size="sm">
-              <Table.Body>
-                {result.inverse.map((row, i) => (
-                  <Table.Row key={i}>
-                    {row.map((v, j) => (
-                      <Table.Cell key={j} p="8px" textAlign="center" fontFamily="mono" fontSize="lg" color="var(--accent)" fontWeight="bold">
-                        {v}
-                      </Table.Cell>
-                    ))}
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table.Root>
+          <Box
+            p="8px 12px"
+            display="inline-block"
+            borderWidth="1px"
+            borderColor="var(--border)"
+            borderRadius="12px"
+          >
+            <MathMatrix data={result.inverse} />
           </Box>
+
+          <Heading as="h2" fontSize="lg" m="0" mt="28px" mb="12px">
+            Proof: A · A⁻¹ ≡ I (mod {m})
+          </Heading>
+          <Flex alignItems="center" gap="16px" flexWrap="wrap">
+            <MathMatrix data={matrix} />
+            <Text fontFamily="mono" fontSize="xl" color="var(--text-h)">·</Text>
+            <MathMatrix data={result.inverse} />
+            <Text fontFamily="mono" fontSize="xl" color="var(--text-h)">=</Text>
+            <MathMatrix data={matmulMod(matrix, result.inverse, m!)} />
+          </Flex>
+          <Text mt="12px" fontSize="sm" color="var(--text)">
+            Since A · A⁻¹ is the identity matrix I mod {m}, the inverse is verified.
+          </Text>
         </Box>
       )}
 

@@ -128,13 +128,13 @@ export function AdditiveInversePage() {
           <Heading as="h2" fontSize="lg" m="0">
             All additive inverses in ℤ/{m}ℤ
           </Heading>
-          <Box overflowX="auto" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+          <Box overflow="auto" maxH="440px" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
             <Table.Root size="sm" variant="line">
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeader>x</Table.ColumnHeader>
                   <Table.ColumnHeader>inverse (&minus;x mod m)</Table.ColumnHeader>
-                  <Table.ColumnHeader>x + inverse</Table.ColumnHeader>
+                  <Table.ColumnHeader>proof (x + inverse)</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -142,7 +142,7 @@ export function AdditiveInversePage() {
                   <Table.Row key={p.x}>
                     <Table.Cell>{p.x}</Table.Cell>
                     <Table.Cell color="var(--accent)" fontWeight="semibold">{p.inverse}</Table.Cell>
-                    <Table.Cell>{p.x + p.inverse} ≡ 0 (mod {m})</Table.Cell>
+                    <Table.Cell>{p.x} + {p.inverse} = {p.x + p.inverse} ≡ 0 (mod {m})</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>

@@ -45,7 +45,7 @@ const modularItems: NavItem[] = [
 const diophantineItems: NavItem[] = [
   { label: "Linear Diophantine", to: "/diophantine/linear", icon: Sigma },
   { label: "Single Variable", to: "/diophantine/single-var", icon: FunctionSquare },
-  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Braces, incomplete: true },
+  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Braces },
 ];
 
 const prefItems: NavItem[] = [

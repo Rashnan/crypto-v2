@@ -12,7 +12,7 @@ export function mod(n: number, m: number): number {
 /**
  * Greatest common divisor of two non-negative integers (Euclid's algorithm).
  */
-function gcdNumbers(a: number, b: number): number {
+export function gcd(a: number, b: number): number {
   let x = a
   let y = b
   while (y !== 0) {
@@ -20,7 +20,7 @@ function gcdNumbers(a: number, b: number): number {
     x = y
     y = t
   }
-  return x
+  return Math.abs(x)
 }
 
 export interface AdditiveInversePair {
@@ -60,7 +60,7 @@ export function allAdditiveInverses(m: number): AdditiveInversePair[] {
 
 /** Whether a and m are coprime, i.e. a has a multiplicative inverse mod m. */
 export function isCoprime(a: number, m: number): boolean {
-  return gcdNumbers(mod(a, m), m) === 1
+  return gcd(mod(a, m), m) === 1
 }
 
 export interface MultiplicativeInverse {

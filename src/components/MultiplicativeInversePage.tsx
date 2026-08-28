@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import {
   allMultiplicativeInverses,
-  isCoprime,
+  gcd,
   mod,
   multiplicativeInverse,
   type MultiplicativeInverse,
@@ -63,11 +63,13 @@ export function MultiplicativeInversePage() {
 
   let singleResult: { ok: boolean; text: string } | null = null
   if (m !== null && xParsed !== null) {
+    const normalized = mod(xParsed, m)
+    const g = gcd(normalized, m)
     const r = multiplicativeInverse(xParsed, m)
     if (r.exists) {
       singleResult = { ok: true, text: String(r.inverse) }
-    } else if (!isCoprime(mod(xParsed, m), m)) {
-      singleResult = { ok: false, text: 'No inverse (not coprime)' }
+    } else if (g !== 1) {
+      singleResult = { ok: false, text: `No inverse — gcd(${xParsed}, ${m}) = ${g} ≠ 1` }
     } else {
       singleResult = { ok: false, text: 'No inverse' }
     }
@@ -85,7 +87,23 @@ export function MultiplicativeInversePage() {
         It exists only when gcd(x, m) = 1.
       </Text>
 
-      <Flex gap="16px" flexWrap="wrap" align="flex-end" mt="24px">
+      <Text
+        mt="24px"
+        mb="24px"
+        fontSize={{ base: 'xl', md: '2xl' }}
+        fontWeight="bold"
+        color="var(--accent)"
+        fontFamily="mono"
+        whiteSpace="nowrap"
+        overflow="hidden"
+        textOverflow="ellipsis"
+      >
+        {mValid && xParsed !== null
+          ? <>{xParsed}<sup>−1</sup> (mod {m})</>
+          : <>x<sup>−1</sup> (mod m)</>}
+      </Text>
+
+      <Flex gap="16px" flexWrap="wrap" align="flex-end">
         <Field.Root invalid={mInvalid} maxW="200px">
           <Field.Label color="var(--text-h)" fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="6px">
             m

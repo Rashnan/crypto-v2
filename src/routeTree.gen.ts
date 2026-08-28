@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
+import { Route as DiophantineSingleVarRouteImport } from './routes/diophantine/single-var'
 import { Route as ModularAdditiveInverseRouteImport } from './routes/modular/additive-inverse'
 import { Route as ModularMatrixInverseRouteImport } from './routes/modular/matrix-inverse'
 import { Route as ModularMultiplicativeInverseRouteImport } from './routes/modular/multiplicative-inverse'
@@ -43,6 +44,11 @@ const DiophantineLinearRoute = DiophantineLinearRouteImport.update({
   path: '/diophantine/linear',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiophantineSingleVarRoute = DiophantineSingleVarRouteImport.update({
+  id: '/diophantine/single-var',
+  path: '/diophantine/single-var',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModularAdditiveInverseRoute = ModularAdditiveInverseRouteImport.update({
   id: '/modular/additive-inverse',
   path: '/modular/additive-inverse',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
+  '/diophantine/single-var': typeof DiophantineSingleVarRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
   '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
+  '/diophantine/single-var': typeof DiophantineSingleVarRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
   '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
+  '/diophantine/single-var': typeof DiophantineSingleVarRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
   '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/basic/gcd'
     | '/diophantine/linear'
+    | '/diophantine/single-var'
     | '/modular/additive-inverse'
     | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/basic/gcd'
     | '/diophantine/linear'
+    | '/diophantine/single-var'
     | '/modular/additive-inverse'
     | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/basic/gcd'
     | '/diophantine/linear'
+    | '/diophantine/single-var'
     | '/modular/additive-inverse'
     | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   BasicGcdRoute: typeof BasicGcdRoute
   DiophantineLinearRoute: typeof DiophantineLinearRoute
+  DiophantineSingleVarRoute: typeof DiophantineSingleVarRoute
   ModularAdditiveInverseRoute: typeof ModularAdditiveInverseRoute
   ModularMatrixInverseRoute: typeof ModularMatrixInverseRoute
   ModularMultiplicativeInverseRoute: typeof ModularMultiplicativeInverseRoute
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiophantineLinearRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diophantine/single-var': {
+      id: '/diophantine/single-var'
+      path: '/diophantine/single-var'
+      fullPath: '/diophantine/single-var'
+      preLoaderRoute: typeof DiophantineSingleVarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modular/additive-inverse': {
       id: '/modular/additive-inverse'
       path: '/modular/additive-inverse'
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   BasicGcdRoute: BasicGcdRoute,
   DiophantineLinearRoute: DiophantineLinearRoute,
+  DiophantineSingleVarRoute: DiophantineSingleVarRoute,
   ModularAdditiveInverseRoute: ModularAdditiveInverseRoute,
   ModularMatrixInverseRoute: ModularMatrixInverseRoute,
   ModularMultiplicativeInverseRoute: ModularMultiplicativeInverseRoute,

@@ -7,6 +7,7 @@ const pageNames: Record<string, string> = {
   '/settings': 'Settings',
   '/basic/gcd': 'GCD',
   '/diophantine/linear': 'Linear Diophantine',
+  '/diophantine/single-var': 'Single Variable (mod)',
   '/modular/additive-inverse': 'Additive Inverse (mod)',
   '/modular/multiplicative-inverse': 'Multiplicative Inverse (mod)',
   '/modular/matrix-inverse': 'Matrix Inverse (mod)',

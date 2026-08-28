@@ -48,15 +48,15 @@ function buildMatrix(size: number, raw: string[]): { matrix: Matrix; ok: boolean
 
 function MathMatrix({ data }: { data: number[][] }) {
   return (
-    <math>
+    <math style={{ display: 'inline-block' }}>
       <mrow>
         <mo>(</mo>
-        <mtable columnspacing="1em" rowspacing="0.35em">
+        <mtable>
           {data.map((row, i) => (
             <mtr key={i}>
               {row.map((v, j) => (
-                <mtd key={j} style={{ padding: '0 0.25em', textAlign: 'center' }}>
-                  <mn>{v}</mn>
+                <mtd key={j} style={{ padding: '0.6em 0.7em' }}>
+                  <mn style={{ fontSize: '1.15em' }}>{v}</mn>
                 </mtd>
               ))}
             </mtr>

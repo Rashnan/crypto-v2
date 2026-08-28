@@ -214,32 +214,25 @@ export function GcdPage() {
               <Table.Body>
                 {result.rows.map((row, i) => {
                   const isFinal = i === result.rows.length - 1
-                  const highlight = (idx: number) => isFinal && (idx === 2 || idx === 5 || idx === 8)
+                  const cellStyle = {
+                    fontWeight: isFinal ? 'bold' : undefined,
+                    color: isFinal ? 'var(--accent)' : undefined,
+                  }
                   return (
                     <Table.Row
                       key={i}
-                      fontWeight={isFinal ? 'semibold' : 'normal'}
                       bg={isFinal ? 'var(--accent-bg)' : 'transparent'}
                     >
                       <Table.Cell>{row.quotient}</Table.Cell>
                       <Table.Cell borderLeftWidth="1px" borderLeftColor="var(--border)">{row.r1.toLocaleString()}</Table.Cell>
-                      <Table.Cell>{row.r2.toLocaleString()}</Table.Cell>
-                      <Table.Cell
-                        fontWeight={highlight(3) ? 'bold' : undefined}
-                        color={highlight(3) ? 'var(--accent)' : undefined}
-                      >{row.r.toLocaleString()}</Table.Cell>
+                      <Table.Cell {...cellStyle}>{row.r2.toLocaleString()}</Table.Cell>
+                      <Table.Cell>{row.r.toLocaleString()}</Table.Cell>
                       <Table.Cell borderLeftWidth="1px" borderLeftColor="var(--border)">{row.s1.toLocaleString()}</Table.Cell>
-                      <Table.Cell>{row.s2.toLocaleString()}</Table.Cell>
-                      <Table.Cell
-                        fontWeight={highlight(6) ? 'bold' : undefined}
-                        color={highlight(6) ? 'var(--accent)' : undefined}
-                      >{row.s.toLocaleString()}</Table.Cell>
+                      <Table.Cell {...cellStyle}>{row.s2.toLocaleString()}</Table.Cell>
+                      <Table.Cell>{row.s.toLocaleString()}</Table.Cell>
                       <Table.Cell borderLeftWidth="1px" borderLeftColor="var(--border)">{row.t1.toLocaleString()}</Table.Cell>
-                      <Table.Cell>{row.t2.toLocaleString()}</Table.Cell>
-                      <Table.Cell
-                        fontWeight={highlight(9) ? 'bold' : undefined}
-                        color={highlight(9) ? 'var(--accent)' : undefined}
-                      >{row.t.toLocaleString()}</Table.Cell>
+                      <Table.Cell {...cellStyle}>{row.t2.toLocaleString()}</Table.Cell>
+                      <Table.Cell>{row.t.toLocaleString()}</Table.Cell>
                     </Table.Row>
                   )
                 })}

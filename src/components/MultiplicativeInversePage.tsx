@@ -50,7 +50,7 @@ export function MultiplicativeInversePage() {
 
   const pairs: MultiplicativeInverse[] | null = m !== null ? allMultiplicativeInverses(m) : null
 
-  let singleResult: { ok: boolean; text: string; statusLine: string } | null = null
+  let singleResult: { ok: boolean; text: string; statusLine: string; note?: string } | null = null
   if (m !== null && xParsed !== null) {
     const normalized = mod(xParsed, m)
     const g = gcd(normalized, m)
@@ -60,6 +60,7 @@ export function MultiplicativeInversePage() {
         ok: true,
         text: String(r.inverse),
         statusLine: `gcd(${xParsed}, ${m}) = ${g}`,
+        note: 'coprime, so an inverse exists',
       }
     } else {
       singleResult = {
@@ -153,6 +154,11 @@ export function MultiplicativeInversePage() {
               <Text mt="8px" fontFamily="mono" fontSize="md" color="var(--text)">
                 {singleResult.statusLine}
               </Text>
+              {singleResult.note && (
+                <Text mt="4px" fontSize="md" color={singleResult.ok ? 'var(--accent)' : undefined}>
+                  {singleResult.note}
+                </Text>
+              )}
               <Text mt="4px" fontFamily="mono" fontSize="2xl" fontWeight="bold" color={singleResult.ok ? 'var(--accent)' : '#ef4444'}>
                 {singleResult.text}
               </Text>

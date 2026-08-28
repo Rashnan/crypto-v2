@@ -36,17 +36,6 @@ function parseElement(raw: string): number | null {
   return n
 }
 
-function ResultStat({ label, value, mono, color }: { label: string; value: string; mono?: boolean; color?: string }) {
-  return (
-    <Stat.Root p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
-      <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">{label}</Stat.Label>
-      <Stat.ValueText fontSize="2xl" fontWeight="bold" color={color ?? 'var(--accent)'} fontFamily={mono ? 'mono' : undefined}>
-        {value}
-      </Stat.ValueText>
-    </Stat.Root>
-  )
-}
-
 export function MultiplicativeInversePage() {
   const [mRaw, setMRaw] = useState('7')
   const [xRaw, setXRaw] = useState('3')
@@ -61,21 +50,23 @@ export function MultiplicativeInversePage() {
 
   const pairs: MultiplicativeInverse[] | null = m !== null ? allMultiplicativeInverses(m) : null
 
-  let singleResult: { ok: boolean; text: string; statusLine?: string } | null = null
+  let singleResult: { ok: boolean; text: string; statusLine: string } | null = null
   if (m !== null && xParsed !== null) {
     const normalized = mod(xParsed, m)
     const g = gcd(normalized, m)
     const r = multiplicativeInverse(xParsed, m)
     if (r.exists) {
-      singleResult = { ok: true, text: String(r.inverse) }
-    } else if (g !== 1) {
+      singleResult = {
+        ok: true,
+        text: String(r.inverse),
+        statusLine: `gcd(${xParsed}, ${m}) = ${g}`,
+      }
+    } else {
       singleResult = {
         ok: false,
         text: 'No inverse',
         statusLine: `gcd(${xParsed}, ${m}) = ${g} ≠ 1`,
       }
-    } else {
-      singleResult = { ok: false, text: 'No inverse' }
     }
   }
 
@@ -155,26 +146,17 @@ export function MultiplicativeInversePage() {
       {singleResult && (
         <Box mt="24px">
           <SimpleGrid columns={{ base: 1, sm: 2 }} gap="12px">
-            {singleResult.statusLine ? (
-              <Stat.Root p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
-                <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">
-                  {`inverse of ${xRaw} mod ${m}`}
-                </Stat.Label>
-                <Text mt="8px" fontFamily="mono" fontSize="md" color="var(--text)">
-                  {singleResult.statusLine}
-                </Text>
-                <Text mt="4px" fontFamily="mono" fontSize="2xl" fontWeight="bold" color="#ef4444">
-                  {singleResult.text}
-                </Text>
-              </Stat.Root>
-            ) : (
-              <ResultStat
-                label={`inverse of ${xRaw} mod ${m}`}
-                value={singleResult.text}
-                mono
-                color={singleResult.ok ? undefined : '#ef4444'}
-              />
-            )}
+            <Stat.Root p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
+              <Stat.Label color="var(--text)" fontSize="sm" fontWeight="medium">
+                {`inverse of ${xRaw} mod ${m}`}
+              </Stat.Label>
+              <Text mt="8px" fontFamily="mono" fontSize="md" color="var(--text)">
+                {singleResult.statusLine}
+              </Text>
+              <Text mt="4px" fontFamily="mono" fontSize="2xl" fontWeight="bold" color={singleResult.ok ? 'var(--accent)' : '#ef4444'}>
+                {singleResult.text}
+              </Text>
+            </Stat.Root>
           </SimpleGrid>
         </Box>
       )}

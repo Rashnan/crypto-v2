@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
-import { ExternalLink, Plus, Sigma, Variable } from 'lucide-react'
+import { Braces, ExternalLink, FunctionSquare, Grid3x3, Plus, Sigma, Variable, X } from 'lucide-react'
 
 interface PageCard {
   title: string
@@ -39,6 +39,20 @@ const sections: Section[] = [
         to: '/modular/additive-inverse',
         icon: Plus,
       },
+      {
+        title: 'Multiplicative Inverse',
+        description: 'The unique y with (x·y) mod m = 1, which exists iff gcd(x, m) = 1.',
+        example: '3·5 = 15 ≡ 1 (mod 7), so 3⁻¹ mod 7 = 5',
+        to: '/modular/multiplicative-inverse',
+        icon: X,
+      },
+      {
+        title: 'Matrix Inverse',
+        description: 'Invert a matrix over ℤ/mℤ via A⁻¹ = adj(A)·(det A)⁻¹, with full cofactor steps.',
+        example: 'over ℤ/5ℤ,  [[3,4],[2,3]]⁻¹ = [[3,1],[3,3]]',
+        to: '/modular/matrix-inverse',
+        icon: Grid3x3,
+      },
     ],
   },
   {
@@ -50,6 +64,20 @@ const sections: Section[] = [
         example: '240x + 46y = 10  →  x = −45 + 23k,  y = 235 − 120k',
         to: '/diophantine/linear',
         icon: Sigma,
+      },
+      {
+        title: 'Single Variable',
+        description: 'Solve a·x ≡ b (mod m), with exactly d = gcd(a, m) solutions when one exists.',
+        example: '3x ≡ 1 (mod 7)  →  x ≡ 5 (mod 7)',
+        to: '/diophantine/single-var',
+        icon: FunctionSquare,
+      },
+      {
+        title: 'Simultaneous',
+        description: 'Solve a system x ≡ aᵢ (mod mᵢ) using the Chinese Remainder Theorem.',
+        example: 'x ≡ 2 (mod 3),  x ≡ 3 (mod 5)  →  x ≡ 8 (mod 15)',
+        to: '/diophantine/simultaneous',
+        icon: Braces,
       },
     ],
   },

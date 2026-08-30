@@ -70,8 +70,8 @@ export function GcdPage() {
 
   const aValid = parsePositiveInt(aRaw) !== null
   const bValid = parsePositiveInt(bRaw) !== null
-  const aInvalid = aRaw.trim() !== '' && !aValid
-  const bInvalid = bRaw.trim() !== '' && !bValid
+  const aInvalid = !aValid
+  const bInvalid = !bValid
 
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
@@ -170,8 +170,7 @@ export function GcdPage() {
             mt="12px"
             p="16px 20px"
             fontFamily="mono"
-            borderWidth="1px"
-            borderColor="var(--accent-border)"
+            boxShadow="0 4px 14px rgb(0 0 0 / 8%)"
             borderRadius="12px"
             bg="var(--accent-bg)"
           >
@@ -191,7 +190,7 @@ export function GcdPage() {
           </Heading>
 
           <Box overflowX="auto" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-            <Table.Root size="sm" variant="line">
+            <Table.Root size="sm" variant="line" striped>
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeader rowSpan={2}>q</Table.ColumnHeader>

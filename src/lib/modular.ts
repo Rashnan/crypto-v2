@@ -93,17 +93,11 @@ export function multiplicativeInverse(
     return { exists: false, reason: 'invalid' }
   }
   const a = mod(x, m)
-  if (!isCoprime(a, m)) {
+  if (a === 0 || !isCoprime(a, m)) {
     return { exists: false, reason: 'not coprime' }
   }
-  // x·y ≡ 1 (mod m) with gcd(x, m) = 1; brute-force over [0, m) is exact
-  // for the small moduli this tool is meant for. m is capped by the caller.
-  for (let y = 0; y < m; y++) {
-    if ((a * y) % m === 1) {
-      return { exists: true, inverse: mod(y, m) }
-    }
-  }
-  return { exists: false, reason: 'not coprime' }
+  const result = extendedGcd(a, m)
+  return { exists: true, inverse: mod(result.s, m) }
 }
 
 /**
@@ -127,3 +121,4 @@ export function allMultiplicativeInverses(m: number): MultiplicativeInverse[] {
   }
   return pairs
 }
+import { extendedGcd } from './gcd'

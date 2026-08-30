@@ -13,6 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
+import { Route as CiphersAdditiveRouteImport } from './routes/ciphers/additive'
+import { Route as CiphersAffineRouteImport } from './routes/ciphers/affine'
+import { Route as CiphersMultiplicativeRouteImport } from './routes/ciphers/multiplicative'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
 import { Route as DiophantineSimultaneousRouteImport } from './routes/diophantine/simultaneous'
 import { Route as DiophantineSingleVarRouteImport } from './routes/diophantine/single-var'
@@ -38,6 +41,21 @@ const SettingsRoute = SettingsRouteImport.update({
 const BasicGcdRoute = BasicGcdRouteImport.update({
   id: '/basic/gcd',
   path: '/basic/gcd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersAdditiveRoute = CiphersAdditiveRouteImport.update({
+  id: '/ciphers/additive',
+  path: '/ciphers/additive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersAffineRoute = CiphersAffineRouteImport.update({
+  id: '/ciphers/affine',
+  path: '/ciphers/affine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersMultiplicativeRoute = CiphersMultiplicativeRouteImport.update({
+  id: '/ciphers/multiplicative',
+  path: '/ciphers/multiplicative',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiophantineLinearRoute = DiophantineLinearRouteImport.update({
@@ -77,6 +95,9 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/ciphers/additive': typeof CiphersAdditiveRoute
+  '/ciphers/affine': typeof CiphersAffineRoute
+  '/ciphers/multiplicative': typeof CiphersMultiplicativeRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
@@ -89,6 +110,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/ciphers/additive': typeof CiphersAdditiveRoute
+  '/ciphers/affine': typeof CiphersAffineRoute
+  '/ciphers/multiplicative': typeof CiphersMultiplicativeRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
@@ -102,6 +126,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/ciphers/additive': typeof CiphersAdditiveRoute
+  '/ciphers/affine': typeof CiphersAffineRoute
+  '/ciphers/multiplicative': typeof CiphersMultiplicativeRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
@@ -116,6 +143,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/basic/gcd'
+    | '/ciphers/additive'
+    | '/ciphers/affine'
+    | '/ciphers/multiplicative'
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
@@ -128,6 +158,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/basic/gcd'
+    | '/ciphers/additive'
+    | '/ciphers/affine'
+    | '/ciphers/multiplicative'
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
@@ -140,6 +173,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/basic/gcd'
+    | '/ciphers/additive'
+    | '/ciphers/affine'
+    | '/ciphers/multiplicative'
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
@@ -153,6 +189,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SettingsRoute: typeof SettingsRoute
   BasicGcdRoute: typeof BasicGcdRoute
+  CiphersAdditiveRoute: typeof CiphersAdditiveRoute
+  CiphersAffineRoute: typeof CiphersAffineRoute
+  CiphersMultiplicativeRoute: typeof CiphersMultiplicativeRoute
   DiophantineLinearRoute: typeof DiophantineLinearRoute
   DiophantineSimultaneousRoute: typeof DiophantineSimultaneousRoute
   DiophantineSingleVarRoute: typeof DiophantineSingleVarRoute
@@ -189,6 +228,27 @@ declare module '@tanstack/react-router' {
       path: '/basic/gcd'
       fullPath: '/basic/gcd'
       preLoaderRoute: typeof BasicGcdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/additive': {
+      id: '/ciphers/additive'
+      path: '/ciphers/additive'
+      fullPath: '/ciphers/additive'
+      preLoaderRoute: typeof CiphersAdditiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/affine': {
+      id: '/ciphers/affine'
+      path: '/ciphers/affine'
+      fullPath: '/ciphers/affine'
+      preLoaderRoute: typeof CiphersAffineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/multiplicative': {
+      id: '/ciphers/multiplicative'
+      path: '/ciphers/multiplicative'
+      fullPath: '/ciphers/multiplicative'
+      preLoaderRoute: typeof CiphersMultiplicativeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diophantine/linear': {
@@ -241,6 +301,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SettingsRoute: SettingsRoute,
   BasicGcdRoute: BasicGcdRoute,
+  CiphersAdditiveRoute: CiphersAdditiveRoute,
+  CiphersAffineRoute: CiphersAffineRoute,
+  CiphersMultiplicativeRoute: CiphersMultiplicativeRoute,
   DiophantineLinearRoute: DiophantineLinearRoute,
   DiophantineSimultaneousRoute: DiophantineSimultaneousRoute,
   DiophantineSingleVarRoute: DiophantineSingleVarRoute,

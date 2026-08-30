@@ -45,9 +45,9 @@ export function SingleVariablePage() {
   const a = parseInteger(aRaw)
   const b = parseInteger(bRaw)
   const m = parseModulus(mRaw)
-  const aInvalid = aRaw.trim() !== '' && a === null
-  const bInvalid = bRaw.trim() !== '' && b === null
-  const mInvalid = mRaw.trim() !== '' && m === null
+  const aInvalid = a === null
+  const bInvalid = b === null
+  const mInvalid = m === null
   const hasError = aInvalid || bInvalid || mInvalid
   const result = a !== null && b !== null && m !== null ? solveLinearCongruence(a, b, m) : null
 
@@ -144,7 +144,7 @@ export function SingleVariablePage() {
                 />
               </SimpleGrid>
 
-              <Box mt="12px" p="16px 20px" fontFamily="mono" borderWidth="1px" borderColor="var(--accent-border)" borderRadius="12px" bg="var(--accent-bg)">
+              <Box mt="12px" p="16px 20px" fontFamily="mono" boxShadow="0 4px 14px rgb(0 0 0 / 8%)" borderRadius="12px" bg="var(--accent-bg)">
                 {result.period === 1 ? (
                   <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
                     Every residue is a solution: x ≡ 0, 1, …, {result.m - 1} (mod {result.m})
@@ -167,7 +167,7 @@ export function SingleVariablePage() {
                 Verification table
               </Heading>
               <Box overflowX="auto" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-                <Table.Root size="sm" variant="line">
+                <Table.Root size="sm" variant="line" striped>
                   <Table.Header>
                     <Table.Row>
                       <Table.ColumnHeader>x</Table.ColumnHeader>

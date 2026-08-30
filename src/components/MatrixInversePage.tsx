@@ -104,7 +104,7 @@ export function MatrixInversePage() {
 
   const m = parseModulus(mRaw)
   const mValid = m !== null
-  const mInvalid = mRaw.trim() !== '' && !mValid
+  const mInvalid = !mValid
 
   const { matrix, ok } = buildMatrix(size, entries)
   const valueMode = m !== null && ok
@@ -210,6 +210,7 @@ export function MatrixInversePage() {
                   <Table.Row key={i}>
                     {Array.from({ length: size }).map((_, j) => {
                       const idx = i * size + j
+                      const entryInvalid = Number.isNaN(Number(entries[idx])) || (entries[idx] ?? '').trim() === ''
                       return (
                         <Table.Cell key={j} p="4px">
                           <Input
@@ -219,6 +220,9 @@ export function MatrixInversePage() {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEntry(idx, e.target.value)}
                             textAlign="center"
                             fontFamily="mono"
+                            aria-invalid={entryInvalid}
+                            borderColor={entryInvalid ? '#ef4444' : undefined}
+                            _focus={entryInvalid ? { borderColor: '#ef4444' } : undefined}
                           />
                         </Table.Cell>
                       )
@@ -231,8 +235,7 @@ export function MatrixInversePage() {
           {valueMode && (
             <Box
               p="10px 14px"
-              borderWidth="1px"
-              borderColor="var(--accent-border)"
+              boxShadow="0 4px 14px rgb(0 0 0 / 8%)"
               borderRadius="12px"
               bg="var(--accent-bg)"
             >
@@ -282,7 +285,7 @@ export function MatrixInversePage() {
                 Each term below is reduced mod {m}.
               </Text>
               <Box mt="12px" overflow="auto" maxH="440px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-                <Table.Root size="sm" variant="line">
+                <Table.Root size="sm" variant="line" striped>
                   <Table.Header>
                     <Table.Row>
                       <Table.ColumnHeader>j</Table.ColumnHeader>
@@ -343,7 +346,7 @@ export function MatrixInversePage() {
             <MathMatrix data={result.adjugate} />
           </Box>
 
-          <Box mt="12px" p="12px 14px" borderWidth="1px" borderColor="var(--accent-border)" borderRadius="12px" bg="var(--accent-bg)">
+          <Box mt="12px" p="12px 14px" boxShadow="0 4px 14px rgb(0 0 0 / 8%)" borderRadius="12px" bg="var(--accent-bg)">
             <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">step 4 · A⁻¹ = adj(A) · (det A)⁻¹ mod {m}</Text>
             <Flex alignItems="center" gap="12px" flexWrap="wrap">
               <MathMatrix data={result.adjugate} />
@@ -395,7 +398,7 @@ export function MatrixInversePage() {
             </Flex>
           ) : (
             <Box mt="12px" overflow="auto" maxH="440px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-              <Table.Root size="sm" variant="line">
+              <Table.Root size="sm" variant="line" striped>
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader>j</Table.ColumnHeader>

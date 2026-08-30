@@ -3,54 +3,14 @@ import { Drawer } from "@chakra-ui/react";
 import { Tooltip } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ReactElement } from "react";
-import {
-  Braces,
-  FunctionSquare,
-  Grid3x3,
-  LayoutGrid,
-  PanelLeftClose,
-  Plus,
-  Settings,
-  Sigma,
-  Variable,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { PanelLeftClose } from "lucide-react";
+import { navigationSections, overviewItem, preferenceItems, type NavigationItem } from '../lib/navigation';
 
 interface SidebarProps {
   open: boolean;
   onToggle: () => void;
 }
 
-interface NavItem {
-  label: string;
-  to: string;
-  icon: LucideIcon;
-  /** Marks a tool whose page isn't implemented yet. */
-  incomplete?: boolean;
-}
-
-const overviewItem: NavItem = { label: "Overview", to: "/", icon: LayoutGrid };
-
-const basicItems: NavItem[] = [
-  { label: "GCD", to: "/basic/gcd", icon: Variable },
-];
-
-const modularItems: NavItem[] = [
-  { label: "Additive Inverse", to: "/modular/additive-inverse", icon: Plus },
-  { label: "Multiplicative Inverse", to: "/modular/multiplicative-inverse", icon: X },
-  { label: "Matrix Inverse", to: "/modular/matrix-inverse", icon: Grid3x3 },
-];
-
-const diophantineItems: NavItem[] = [
-  { label: "Linear Diophantine", to: "/diophantine/linear", icon: Sigma },
-  { label: "Single Variable", to: "/diophantine/single-var", icon: FunctionSquare },
-  { label: "Simultaneous", to: "/diophantine/simultaneous", icon: Braces },
-];
-
-const prefItems: NavItem[] = [
-  { label: "Settings", to: "/settings", icon: Settings },
-];
 
 const navButtonStyles = {
   w: "full",
@@ -74,7 +34,7 @@ function SideTooltip({ label, children }: { label: string; children: ReactElemen
   );
 }
 
-function NavButton({ item, open }: { item: NavItem; open: boolean }) {
+function NavButton({ item, open }: { item: NavigationItem; open: boolean }) {
   const Icon = item.icon;
   const activeStyles = {
     color: "var(--accent)",
@@ -92,17 +52,6 @@ function NavButton({ item, open }: { item: NavItem; open: boolean }) {
       <Link to={item.to} activeProps={{ style: activeStyles }}>
         <Icon size={20} />
         {open && <Text>{item.label}</Text>}
-        {item.incomplete && (
-          <Box
-            w="6px"
-            h="6px"
-            ml="auto"
-            borderRadius="full"
-            bg="gold"
-            opacity={0.9}
-            aria-label="In progress"
-          />
-        )}
       </Link>
     </Button>
   );
@@ -162,11 +111,9 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
         </Box>
       </Box>
 
-      <Section title="Basic" items={basicItems} open={open} onNavigate={onNavigate} />
-
-      <Section title="Inverses" items={modularItems} open={open} onNavigate={onNavigate} />
-
-      <Section title="Equations" items={diophantineItems} open={open} onNavigate={onNavigate} />
+      {navigationSections.map((section) => (
+        <Section key={section.label} title={section.label} items={section.items} open={open} onNavigate={onNavigate} />
+      ))}
 
       <Box mt="auto">
         <Separator mb="12px" borderColor="var(--border)" />
@@ -176,7 +123,7 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
           </Text>
         )}
         <Box display="grid" gap="4px">
-          {prefItems.map((item) => (
+          {preferenceItems.map((item) => (
             <Box key={item.to} onClick={onNavigate}>
               <NavButton item={item} open={open} />
             </Box>
@@ -194,7 +141,7 @@ function Section({
   onNavigate,
 }: {
   title: string;
-  items: NavItem[];
+  items: NavigationItem[];
   open: boolean;
   onNavigate?: () => void;
 }) {
@@ -288,7 +235,8 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
         h="100svh"
         p="16px 12px"
         direction="column"
-        overflow="hidden"
+        overflowX="hidden"
+        overflowY="auto"
         borderRightWidth="1px"
         borderColor="var(--border)"
         bg="var(--bg)"

@@ -15,19 +15,16 @@ import { solveDiophantine } from '../lib/diophantine'
 
 const inputLimit = 10 ** 7
 
-function parseNonZeroInt(raw: string): number | null {
+function parsePositiveInt(raw: string): number | null {
   const trimmed = raw.trim()
-  if (!/^-?\d+$/.test(trimmed)) return null
+  if (!/^\d+$/.test(trimmed)) return null
   const n = Number(trimmed)
-  if (n === 0 || Math.abs(n) > inputLimit) return null
+  if (n < 1 || n > inputLimit) return null
   return n
 }
 
 function blockInvalidKeys(e: React.KeyboardEvent) {
-  // Allow minus at start, digits only otherwise
-  const el = e.target as HTMLInputElement
-  if (e.key === '-' && el.selectionStart === 0 && !el.value.includes('-')) return
-  if (['e', 'E', '+', '.', ' '].includes(e.key)) {
+  if (['-', 'e', 'E', '+', '.', ' '].includes(e.key)) {
     e.preventDefault()
   }
 }
@@ -53,12 +50,12 @@ export function DiophantinePage() {
   const [bRaw, setBRaw] = useState('46')
   const [cRaw, setCRaw] = useState('10')
 
-  const a = parseNonZeroInt(aRaw)
-  const b = parseNonZeroInt(bRaw)
-  const c = parseNonZeroInt(cRaw)
-  const aInvalid = aRaw.trim() !== '' && a === null
-  const bInvalid = bRaw.trim() !== '' && b === null
-  const cInvalid = cRaw.trim() !== '' && c === null
+  const a = parsePositiveInt(aRaw)
+  const b = parsePositiveInt(bRaw)
+  const c = parsePositiveInt(cRaw)
+  const aInvalid = a === null
+  const bInvalid = b === null
+  const cInvalid = c === null
   const hasError = aInvalid || bInvalid || cInvalid
   const result = a !== null && b !== null && c !== null ? solveDiophantine(a, b, c) : null
 
@@ -96,6 +93,7 @@ export function DiophantinePage() {
           </Field.Label>
           <Input
             type="number"
+            min="1"
             max={inputLimit}
             step="1"
             mt="8px"
@@ -112,6 +110,7 @@ export function DiophantinePage() {
           </Field.Label>
           <Input
             type="number"
+            min="1"
             max={inputLimit}
             step="1"
             mt="8px"
@@ -128,6 +127,7 @@ export function DiophantinePage() {
           </Field.Label>
           <Input
             type="number"
+            min="1"
             max={inputLimit}
             step="1"
             mt="8px"
@@ -141,7 +141,7 @@ export function DiophantinePage() {
       {hasError && (
         <Field.Root invalid maxW="160px">
           <Field.ErrorText mt="8px" fontSize="sm">
-            Must be a non-zero integer (up to ±10,000,000).
+            Must be a positive integer (up to 10,000,000).
           </Field.ErrorText>
         </Field.Root>
       )}
@@ -159,11 +159,10 @@ export function DiophantinePage() {
             >
               <Stat.Root
                 p="16px 20px"
-                borderWidth="1px"
-                borderColor="var(--accent-border)"
+                boxShadow="0 4px 14px rgb(0 0 0 / 8%)"
                 borderRadius="12px"
                 bg="var(--accent-bg)"
-                _hover={{ boxShadow: '0 0 0 1px var(--accent)' }}
+                _hover={{ boxShadow: '0 6px 18px rgb(0 0 0 / 12%)' }}
                 transition="box-shadow 120ms ease"
                 cursor="pointer"
                 position="relative"
@@ -214,8 +213,7 @@ export function DiophantinePage() {
                 mt="12px"
                 p="16px 20px"
                 fontFamily="mono"
-                borderWidth="1px"
-                borderColor="var(--accent-border)"
+                boxShadow="0 4px 14px rgb(0 0 0 / 8%)"
                 borderRadius="12px"
                 bg="var(--accent-bg)"
               >
@@ -246,7 +244,7 @@ export function DiophantinePage() {
               </Heading>
 
               <Box overflowX="auto" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-                <Table.Root size="sm" variant="line">
+                <Table.Root size="sm" variant="line" striped>
                   <Table.Header>
                     <Table.Row>
                       <Table.ColumnHeader>k</Table.ColumnHeader>

@@ -1,18 +1,7 @@
 import { Avatar, Button, Flex, IconButton, Text } from '@chakra-ui/react'
 import { useLocation } from '@tanstack/react-router'
 import { Menu, Search } from 'lucide-react'
-
-const pageNames: Record<string, string> = {
-  '/': 'Overview',
-  '/settings': 'Settings',
-  '/basic/gcd': 'GCD',
-  '/diophantine/linear': 'Linear Diophantine',
-  '/diophantine/single-var': 'Single Variable (mod)',
-  '/diophantine/simultaneous': 'Simultaneous (mod)',
-  '/modular/additive-inverse': 'Additive Inverse (mod)',
-  '/modular/multiplicative-inverse': 'Multiplicative Inverse (mod)',
-  '/modular/matrix-inverse': 'Matrix Inverse (mod)',
-}
+import { pageTitleByPath } from '../lib/navigation'
 
 interface NavbarProps {
   onSearchOpen: () => void
@@ -21,7 +10,7 @@ interface NavbarProps {
 
 export function Navbar({ onSearchOpen, onMenuOpen }: NavbarProps) {
   const { pathname } = useLocation()
-  const pageTitle = pageNames[pathname] ?? ''
+  const pageTitle = pageTitleByPath[pathname] ?? ''
 
   return (
     <Flex

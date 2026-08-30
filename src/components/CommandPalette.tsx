@@ -9,37 +9,8 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useNavigate } from '@tanstack/react-router'
-import {
-  Braces,
-  FunctionSquare,
-  Grid3x3,
-  House,
-  Plus,
-  Search,
-  Settings,
-  Sigma,
-  Variable,
-  X,
-  type LucideIcon,
-} from 'lucide-react'
-
-interface Page {
-  label: string
-  to: string
-  icon: LucideIcon
-}
-
-const pages: Page[] = [
-  { label: 'Overview', to: '/', icon: House },
-  { label: 'GCD', to: '/basic/gcd', icon: Variable },
-  { label: 'Linear Diophantine', to: '/diophantine/linear', icon: Sigma },
-  { label: 'Single Variable', to: '/diophantine/single-var', icon: FunctionSquare },
-  { label: 'Simultaneous', to: '/diophantine/simultaneous', icon: Braces },
-  { label: 'Additive Inverse', to: '/modular/additive-inverse', icon: Plus },
-  { label: 'Multiplicative Inverse', to: '/modular/multiplicative-inverse', icon: X },
-  { label: 'Matrix Inverse', to: '/modular/matrix-inverse', icon: Grid3x3 },
-  { label: 'Settings', to: '/settings', icon: Settings },
-]
+import { Search } from 'lucide-react'
+import { navigationItems, type NavigationItem } from '../lib/navigation'
 
 interface CommandPaletteProps {
   open: boolean
@@ -53,7 +24,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const listRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
 
-  const filtered = pages.filter((p) =>
+  const filtered = navigationItems.filter((p) =>
     p.label.toLowerCase().includes(query.trim().toLowerCase()),
   )
 
@@ -80,7 +51,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [open, onOpenChange])
 
-  function navigateTo(page: Page) {
+  function navigateTo(page: NavigationItem) {
     onOpenChange(false)
     navigate({ to: page.to })
   }

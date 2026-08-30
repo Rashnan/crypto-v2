@@ -77,8 +77,8 @@ export function SimultaneousPage() {
 
       <Flex gap="12px" flexWrap="wrap" align="center" mt="24px">
         {rows.map((row, i) => {
-          const aInvalid = row.a.trim() !== '' && parseInteger(row.a) === null
-          const mInvalid = row.m.trim() !== '' && parseModulus(row.m) === null
+          const aInvalid = parseInteger(row.a) === null
+          const mInvalid = parseModulus(row.m) === null
           return (
             <Flex key={i} gap="8px" align="flex-end" wrap="wrap">
               <Field.Root invalid={aInvalid} maxW="120px">
@@ -108,7 +108,7 @@ export function SimultaneousPage() {
         </Button>
       </Flex>
 
-      {rows.some((r) => (r.a.trim() !== '' && parseInteger(r.a) === null) || (r.m.trim() !== '' && parseModulus(r.m) === null)) && (
+      {rows.some((r) => parseInteger(r.a) === null || parseModulus(r.m) === null) && (
         <Field.Root invalid maxW="300px">
           <Field.ErrorText mt="8px" fontSize="sm">
             a must be an integer; m must be an integer ≥ 2 (up to 100,000).
@@ -150,7 +150,7 @@ export function SimultaneousPage() {
 
           {result.solvable && (
             <>
-              <Box mt="12px" p="16px 20px" fontFamily="mono" borderWidth="1px" borderColor="var(--accent-border)" borderRadius="12px" bg="var(--accent-bg)">
+              <Box mt="12px" p="16px 20px" fontFamily="mono" boxShadow="0 4px 14px rgb(0 0 0 / 8%)" borderRadius="12px" bg="var(--accent-bg)">
                 <Text fontSize="lg" fontWeight="bold" color="var(--text-h)">
                   x ≡ <Text as="span" color="var(--accent)">{result.x0}</Text> (mod {result.M})
                 </Text>
@@ -188,7 +188,7 @@ export function SimultaneousPage() {
                 Verification table
               </Heading>
               <Box overflowX="auto" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-                <Table.Root size="sm" variant="line">
+                <Table.Root size="sm" variant="line" striped>
                   <Table.Header>
                     <Table.Row>
                       <Table.ColumnHeader>x₀</Table.ColumnHeader>

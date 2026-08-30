@@ -47,10 +47,10 @@ export function AdditiveInversePage() {
 
   const m = parseModulus(mRaw)
   const mValid = m !== null
-  const mInvalid = mRaw.trim() !== '' && !mValid
+  const mInvalid = !mValid
 
   const xValid = m !== null && parseElement(xRaw) !== null
-  const xInvalid = xRaw.trim() !== '' && !xValid
+  const xInvalid = !xValid
 
   const pairs: AdditiveInversePair[] | null = m !== null ? allAdditiveInverses(m) : null
   const mValidX = xValid && m !== null && parseElement(xRaw) !== null
@@ -129,7 +129,7 @@ export function AdditiveInversePage() {
             All additive inverses in ℤ<sub>{m}</sub>
           </Heading>
           <Box overflow="auto" maxH="440px" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
-            <Table.Root size="sm" variant="line">
+            <Table.Root size="sm" variant="line" striped>
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeader>x</Table.ColumnHeader>

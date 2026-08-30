@@ -81,6 +81,32 @@ const sections: Section[] = [
       },
     ],
   },
+  {
+    label: 'Ciphers',
+    pages: [
+      {
+        title: 'Additive Cipher',
+        description: 'Shift each letter by a fixed key modulo 26.',
+        example: 'ATTACK + 7  →  HAAHJR',
+        to: '/ciphers/additive',
+        icon: Plus,
+      },
+      {
+        title: 'Multiplicative Cipher',
+        description: 'Multiply each letter by an invertible key modulo 26.',
+        example: 'HELLO × 5  →  JUDDM',
+        to: '/ciphers/multiplicative',
+        icon: X,
+      },
+      {
+        title: 'Affine Cipher',
+        description: 'Combine multiplication by a with a shift by b modulo 26.',
+        example: 'E(x) = (5x + 8) mod 26',
+        to: '/ciphers/affine',
+        icon: Braces,
+      },
+    ],
+  },
 ]
 
 function Card({ page }: { page: PageCard }) {
@@ -93,8 +119,8 @@ function Card({ page }: { page: PageCard }) {
         borderColor="var(--border)"
         borderRadius="14px"
         bg="var(--bg)"
-        _hover={{ boxShadow: '0 0 0 1px var(--accent)', borderColor: 'var(--accent)' }}
-        transition="box-shadow 120ms ease, border-color 120ms ease"
+        _hover={{ boxShadow: '0 6px 18px rgb(0 0 0 / 12%)' }}
+        transition="box-shadow 120ms ease"
         cursor="pointer"
         h="full"
         display="flex"

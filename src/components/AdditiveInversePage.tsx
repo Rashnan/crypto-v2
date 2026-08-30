@@ -62,7 +62,7 @@ export function AdditiveInversePage() {
       </Heading>
       <Text mt="8px" color="var(--text)">
         The additive inverse of x mod m is the unique y with (x + y) mod m = 0.
-        Every element of ℤ/mℤ has one.
+        Every element of ℤₘ has one.
       </Text>
 
       <Flex gap="16px" flexWrap="wrap" align="flex-end" mt="24px">
@@ -126,7 +126,7 @@ export function AdditiveInversePage() {
       {pairs && (
         <Box mt="32px">
           <Heading as="h2" fontSize="lg" m="0">
-            All additive inverses in ℤ/{m}ℤ
+            All additive inverses in ℤ<sub>{m}</sub>
           </Heading>
           <Box overflow="auto" maxH="440px" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
             <Table.Root size="sm" variant="line">

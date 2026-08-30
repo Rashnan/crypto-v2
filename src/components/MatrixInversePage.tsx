@@ -160,7 +160,7 @@ export function MatrixInversePage() {
         Matrix Inverse (mod)
       </Heading>
       <Text mt="8px" color="var(--text)">
-        A matrix is invertible over ℤ/{m ?? 'm'}ℤ iff det(A) and the modulus are coprime,
+        A matrix is invertible over ℤ<sub>{m ?? 'm'}</sub> iff det(A) and the modulus are coprime,
         in which case A⁻¹ = adj(A) · (det A)⁻¹ (mod m).
       </Text>
 

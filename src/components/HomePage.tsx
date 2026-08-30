@@ -34,7 +34,7 @@ const sections: Section[] = [
     pages: [
       {
         title: 'Additive Inverse',
-        description: 'The unique y with (x + y) mod m = 0, for any element of ℤ/mℤ.',
+        description: 'The unique y with (x + y) mod m = 0, for any element of ℤₘ.',
         example: 'additive inverse of 3 mod 8 = 5',
         to: '/modular/additive-inverse',
         icon: Plus,
@@ -48,8 +48,8 @@ const sections: Section[] = [
       },
       {
         title: 'Matrix Inverse',
-        description: 'Invert a matrix over ℤ/mℤ via A⁻¹ = adj(A)·(det A)⁻¹, with full cofactor steps.',
-        example: 'over ℤ/5ℤ,  [[3,4],[2,3]]⁻¹ = [[3,1],[3,3]]',
+        description: 'Invert a matrix over ℤₘ via A⁻¹ = adj(A)·(det A)⁻¹, with full cofactor steps.',
+        example: 'over ℤ₅,  [[3,4],[2,3]]⁻¹ = [[3,1],[3,3]]',
         to: '/modular/matrix-inverse',
         icon: Grid3x3,
       },

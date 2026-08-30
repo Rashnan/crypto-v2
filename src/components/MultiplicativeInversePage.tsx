@@ -170,7 +170,7 @@ export function MultiplicativeInversePage() {
       {pairs && showTable && (
         <Box mt="32px">
           <Heading as="h2" fontSize="lg" m="0">
-            Units of ℤ/{m}ℤ and their inverses
+            Units of ℤ<sub>{m}</sub> and their inverses
           </Heading>
           <Box overflow="auto" maxH="440px" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
             <Table.Root size="sm" variant="line">

@@ -176,8 +176,6 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile: fullscreen drawer. Mounted only below the md breakpoint so
-          an open desktop sidebar never renders the overlay on wider screens. */}
       {isMobile && (
       <Drawer.Root
         open={open}
@@ -223,7 +221,6 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
       </Drawer.Root>
       )}
 
-      {/* Desktop: inline sidebar */}
       <Flex
         as="aside"
         aria-label="Primary navigation"

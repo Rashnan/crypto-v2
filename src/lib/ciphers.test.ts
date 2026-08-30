@@ -3,7 +3,12 @@ import {
   additiveCipher,
   additiveCipherResult,
   affineCipher,
+  autokeyCipher,
+  hillCipher,
   multiplicativeCipher,
+  playfairCipher,
+  substitutionCipher,
+  vigenereCipher,
 } from './ciphers'
 
 describe('additiveCipher', () => {
@@ -33,6 +38,43 @@ describe('additiveCipher', () => {
         outputLetter: 'i',
       },
     ])
+  })
+})
+
+describe('classical ciphers', () => {
+  it('encrypts and decrypts a substitution alphabet', () => {
+    const key = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+    expect(substitutionCipher('Attack!', key, 'encrypt')).toBe('Qzzqea!')
+    expect(substitutionCipher('Qzzqea!', key, 'decrypt')).toBe('Attack!')
+  })
+
+  it('encrypts and decrypts Vigenère text', () => {
+    expect(vigenereCipher('ATTACKATDAWN', 'LEMON', 'encrypt')).toBe('LXFOPVEFRNHR')
+    expect(vigenereCipher('LXFOPVEFRNHR', 'LEMON', 'decrypt')).toBe('ATTACKATDAWN')
+  })
+
+  it('encrypts and decrypts autokey text', () => {
+    const encrypted = autokeyCipher('ATTACKATDAWN', 'QUEENLY', 'encrypt')
+    expect(encrypted).toBe('QNXEPVYTWTWP')
+    expect(autokeyCipher(encrypted, 'QUEENLY', 'decrypt')).toBe('ATTACKATDAWN')
+  })
+
+  it('encrypts and decrypts Playfair pairs', () => {
+    const encrypted = playfairCipher('HIDETHEGOLDINTHETREESTUMP', 'PLAYFAIR EXAMPLE', 'encrypt')
+    expect(encrypted).toBe('BMODZBXDNABEKUDMUIXMMOUVIF')
+    expect(playfairCipher(encrypted, 'PLAYFAIR EXAMPLE', 'decrypt')).toBe('HIDETHEGOLDINTHETREXESTUMP')
+  })
+
+  it('encrypts and decrypts Hill pairs', () => {
+    expect(hillCipher('HELP', [3, 3, 2, 5], 'encrypt')).toBe('HIAT')
+    expect(hillCipher('HIAT', [3, 3, 2, 5], 'decrypt')).toBe('HELP')
+  })
+
+  it('encrypts and decrypts Hill blocks with a 3 × 3 matrix', () => {
+    const key = [6, 24, 1, 13, 16, 10, 20, 17, 15]
+    const encrypted = hillCipher('ACT', key, 'encrypt')
+    expect(encrypted).toBe('POH')
+    expect(hillCipher(encrypted, key, 'decrypt')).toBe('ACT')
   })
 })
 

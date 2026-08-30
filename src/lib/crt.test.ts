@@ -58,4 +58,8 @@ describe('solveCrtSystem', () => {
     expect(r.steps[0].consistent).toBe(true)
     expect(r.steps[0].d).toBe(1)
   })
+
+  it('rejects combined moduli outside the safe integer range', () => {
+    expect(() => solveCrtSystem([{ a: 0, m: 100_000 }, { a: 0, m: 99_991 }, { a: 0, m: 99_989 }, { a: 0, m: 99_971 }])).toThrow('Number.MAX_SAFE_INTEGER')
+  })
 })

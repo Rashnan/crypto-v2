@@ -13,6 +13,7 @@ import {
 import { additiveInverse, allAdditiveInverses, type AdditiveInversePair } from '../lib/modular'
 
 const modulusLimit = 10 ** 7
+const tableLimit = 500
 
 function parseModulus(raw: string): number | null {
   const trimmed = raw.trim()
@@ -52,7 +53,7 @@ export function AdditiveInversePage() {
   const xValid = m !== null && parseElement(xRaw) !== null
   const xInvalid = !xValid
 
-  const pairs: AdditiveInversePair[] | null = m !== null ? allAdditiveInverses(m) : null
+  const pairs: AdditiveInversePair[] | null = m !== null ? allAdditiveInverses(m, tableLimit) : null
   const mValidX = xValid && m !== null && parseElement(xRaw) !== null
 
   return (
@@ -128,6 +129,7 @@ export function AdditiveInversePage() {
           <Heading as="h2" fontSize="lg" m="0">
             All additive inverses in ℤ<sub>{m}</sub>
           </Heading>
+          {m !== null && m > tableLimit && <Text mt="8px" fontSize="sm" color="var(--text)">Showing the first {tableLimit} of {m.toLocaleString()} elements.</Text>}
           <Box overflow="auto" maxH="440px" mt="16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
             <Table.Root size="sm" variant="line" striped>
               <Table.Header>

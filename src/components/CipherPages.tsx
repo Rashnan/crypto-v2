@@ -4,12 +4,15 @@ import { Link } from '@tanstack/react-router'
 import { ExternalLink } from 'lucide-react'
 import {
   additiveCipherResult,
+  additiveKeyDetails,
   affineCipherResult,
+  multiplicativeKeyDetails,
   multiplicativeCipherResult,
+  type AdditiveKeyDetails,
   type CipherMode,
   type CipherStep,
+  type MultiplicativeKeyDetails,
 } from '../lib/ciphers'
-import { gcd, mod, multiplicativeInverse } from '../lib/modular'
 
 interface CipherShellProps {
   title: string
@@ -165,35 +168,32 @@ function CipherShell({
   )
 }
 
-function AdditiveInverseNote({ keyValue }: { keyValue: number }) {
-  const inverse = mod(-keyValue, 26)
+function AdditiveInverseNote({ details }: { details: AdditiveKeyDetails }) {
   return (
     <Box p="16px 20px" fontFamily="mono" boxShadow="0 4px 14px rgb(0 0 0 / 8%)" borderRadius="12px" bg="var(--accent-bg)">
-      <Text fontSize="sm" color="var(--text)">Additive inverse: −{keyValue} mod 26 = {inverse}</Text>
-      <Text mt="4px" fontSize="sm" color="var(--text)">Decryption shifts each letter by {inverse}.</Text>
+      <Text fontSize="sm" color="var(--text)">Additive inverse: −{details.key} mod 26 = {details.inverse}</Text>
+      <Text mt="4px" fontSize="sm" color="var(--text)">Decryption shifts each letter by {details.inverse}.</Text>
     </Box>
   )
 }
 
-function MultiplicativeInverseNote({ keyValue, label = 'Multiplicative inverse' }: { keyValue: number; label?: string }) {
-  const inverseResult = multiplicativeInverse(keyValue, 26)
-  if (!inverseResult.exists) return null
-  const inverse = inverseResult.inverse
+function MultiplicativeInverseNote({ details, label = 'Multiplicative inverse' }: { details: MultiplicativeKeyDetails; label?: string }) {
+  if (details.inverse === null) return null
 
   return (
     <Box p="16px 20px" fontFamily="mono" boxShadow="0 4px 14px rgb(0 0 0 / 8%)" borderRadius="12px" bg="var(--accent-bg)" position="relative">
       <Link
         to="/basic/gcd"
-        search={{ a: keyValue, b: 26 }}
-        aria-label={`View gcd(${keyValue}, 26) calculation`}
+        search={{ a: details.key, b: 26 }}
+        aria-label={`View gcd(${details.key}, 26) calculation`}
         title="View the GCD calculation"
         style={{ position: 'absolute', top: '12px', right: '12px', color: 'var(--accent)' }}
       >
         <ExternalLink size={15} />
       </Link>
-      <Text fontSize="sm" color="var(--text)">gcd({keyValue}, 26) = 1</Text>
+      <Text fontSize="sm" color="var(--text)">gcd({details.key}, 26) = {details.gcd}</Text>
       <Text mt="4px" fontSize="sm" color="var(--text)">
-        {label}: {keyValue}⁻¹ = {inverse}, since {keyValue} × {inverse} ≡ 1 (mod 26).
+        {label}: {details.key}⁻¹ = {details.inverse}, since {details.key} × {details.inverse} ≡ 1 (mod 26).
       </Text>
     </Box>
   )
@@ -221,13 +221,11 @@ function integer(raw: string): number | null {
   return /^\d+$/.test(raw.trim()) ? Number(raw) : null
 }
 
-function CoprimeCheck({ keyValue }: { keyValue: number }) {
-  const normalizedKey = Math.abs(keyValue)
-  const divisor = gcd(keyValue, 26)
-  if (normalizedKey === 0) {
+function CoprimeCheck({ details }: { details: MultiplicativeKeyDetails }) {
+  if (details.key === 0) {
     return (
       <Box p="16px 20px" fontFamily="mono" borderWidth="1px" borderColor="red.300" borderRadius="12px" bg="red.50">
-        <Text fontSize="sm" color="var(--text)">gcd(0, 26) = {divisor}, not 1.</Text>
+        <Text fontSize="sm" color="var(--text)">gcd(0, 26) = {details.gcd}, not 1.</Text>
         <Text mt="4px" fontSize="sm" color="var(--text)">This key has no inverse modulo 26.</Text>
       </Box>
     )
@@ -237,14 +235,14 @@ function CoprimeCheck({ keyValue }: { keyValue: number }) {
     <Box p="16px 20px" fontFamily="mono" borderWidth="1px" borderColor="red.300" borderRadius="12px" bg="red.50" position="relative">
       <Link
         to="/basic/gcd"
-        search={{ a: normalizedKey, b: 26 }}
-        aria-label={`View gcd(${normalizedKey}, 26) calculation`}
+        search={{ a: details.key, b: 26 }}
+        aria-label={`View gcd(${details.key}, 26) calculation`}
         title="View the GCD calculation"
         style={{ position: 'absolute', top: '12px', right: '12px', color: 'var(--accent)' }}
       >
         <ExternalLink size={15} />
       </Link>
-      <Text fontSize="sm" color="var(--text)">gcd({normalizedKey}, 26) = {divisor}, not 1.</Text>
+      <Text fontSize="sm" color="var(--text)">gcd({details.key}, 26) = {details.gcd}, not 1.</Text>
       <Text mt="4px" fontSize="sm" color="var(--text)">
         This key has no inverse modulo 26.
       </Text>
@@ -257,6 +255,7 @@ export function AdditiveCipherPage() {
   const [keyRaw, setKeyRaw] = useState('7')
   const [mode, setMode] = useState<CipherMode>('encrypt')
   const key = integer(keyRaw)
+  const details = key === null ? null : additiveKeyDetails(key)
   const result = key === null ? { output: '', steps: [] } : additiveCipherResult(input, key, mode)
 
   return (
@@ -269,7 +268,7 @@ export function AdditiveCipherPage() {
       steps={result.steps}
       mode={mode}
       error={key === null ? 'Enter an integer key.' : undefined}
-      inverseNote={mode === 'decrypt' && key !== null ? <AdditiveInverseNote keyValue={key} /> : undefined}
+      inverseNote={mode === 'decrypt' && details ? <AdditiveInverseNote details={details} /> : undefined}
       onInputChange={setInput}
       onModeChange={setMode}
     >
@@ -283,9 +282,10 @@ export function MultiplicativeCipherPage() {
   const [keyRaw, setKeyRaw] = useState('5')
   const [mode, setMode] = useState<CipherMode>('encrypt')
   const key = integer(keyRaw)
-  const valid = key !== null && gcd(key, 26) === 1
+  const details = key === null ? null : multiplicativeKeyDetails(key)
+  const valid = details !== null && details.inverse !== null
   const error = key === null ? 'Enter an integer key.' : !valid ? 'The key must be coprime with 26.' : undefined
-  const result = valid ? multiplicativeCipherResult(input, key, mode) : { output: '', steps: [] }
+  const result = key !== null && valid ? multiplicativeCipherResult(input, key, mode) : { output: '', steps: [] }
 
   return (
     <CipherShell
@@ -297,8 +297,8 @@ export function MultiplicativeCipherPage() {
       steps={result.steps}
       mode={mode}
       error={error}
-      inverseNote={mode === 'decrypt' && valid && key !== null ? <MultiplicativeInverseNote keyValue={key} /> : undefined}
-      gcdCheck={key !== null && !valid ? <CoprimeCheck keyValue={key} /> : undefined}
+      inverseNote={mode === 'decrypt' && details !== null && details.inverse !== null ? <MultiplicativeInverseNote details={details} /> : undefined}
+      gcdCheck={details !== null && details.inverse === null ? <CoprimeCheck details={details} /> : undefined}
       onInputChange={setInput}
       onModeChange={setMode}
     >
@@ -314,7 +314,8 @@ export function AffineCipherPage() {
   const [mode, setMode] = useState<CipherMode>('encrypt')
   const a = integer(aRaw)
   const b = integer(bRaw)
-  const aValid = a !== null && gcd(a, 26) === 1
+  const details = a === null ? null : multiplicativeKeyDetails(a)
+  const aValid = details !== null && details.inverse !== null
   const error = a === null || b === null
     ? 'Enter integer keys.'
     : !aValid
@@ -334,8 +335,8 @@ export function AffineCipherPage() {
       steps={result.steps}
       mode={mode}
       error={error}
-      inverseNote={mode === 'decrypt' && !error && a !== null ? <MultiplicativeInverseNote keyValue={a} label="Inverse of a" /> : undefined}
-      gcdCheck={a !== null && !aValid ? <CoprimeCheck keyValue={a} /> : undefined}
+      inverseNote={mode === 'decrypt' && !error && details ? <MultiplicativeInverseNote details={details} label="Inverse of a" /> : undefined}
+      gcdCheck={details !== null && details.inverse === null ? <CoprimeCheck details={details} /> : undefined}
       onInputChange={setInput}
       onModeChange={setMode}
     >

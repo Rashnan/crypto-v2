@@ -30,15 +30,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   useEffect(() => {
     if (open) {
-      setQuery('')
-      setActiveIndex(0)
       setTimeout(() => inputRef.current?.focus(), 50)
     }
   }, [open])
-
-  useEffect(() => {
-    setActiveIndex(0)
-  }, [query])
 
   useEffect(() => {
     const handler = (e: globalThis.KeyboardEvent) => {
@@ -52,6 +46,8 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   }, [open, onOpenChange])
 
   function navigateTo(page: NavigationItem) {
+    setQuery('')
+    setActiveIndex(0)
     onOpenChange(false)
     navigate({ to: page.to })
   }
@@ -70,7 +66,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   }
 
   return (
-    <Dialog.Root open={open} onOpenChange={({ open }) => onOpenChange(open)}>
+    <Dialog.Root open={open} onOpenChange={({ open: nextOpen }) => { if (!nextOpen) { setQuery(''); setActiveIndex(0) }; onOpenChange(nextOpen) }}>
       <Dialog.Backdrop />
       <Dialog.Positioner>
         <Dialog.Content
@@ -94,7 +90,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 variant="flushed"
                 placeholder="Search pages…"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => { setQuery(e.target.value); setActiveIndex(0) }}
                 onKeyDown={handleKeyDown}
                 px="12px"
                 h="48px"

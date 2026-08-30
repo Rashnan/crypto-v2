@@ -47,12 +47,15 @@ export function additiveInverse(x: number, m: number): number {
  * Returns an array of { x, inverse } for x = 0..m−1. Together the pairs
  * describe the full set of additive inverses in the ring.
  */
-export function allAdditiveInverses(m: number): AdditiveInversePair[] {
+export function allAdditiveInverses(m: number, limit = m): AdditiveInversePair[] {
   if (!Number.isInteger(m) || m < 2) {
     throw new Error(`additive inverse expects a modulus m >= 2, got ${m}`)
   }
+  if (!Number.isInteger(limit) || limit < 0) {
+    throw new Error(`additive inverse limit must be a non-negative integer, got ${limit}`)
+  }
   const pairs: AdditiveInversePair[] = []
-  for (let x = 0; x < m; x++) {
+  for (let x = 0; x < Math.min(m, limit); x++) {
     pairs.push({ x, inverse: additiveInverse(x, m) })
   }
   return pairs

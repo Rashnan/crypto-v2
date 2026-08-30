@@ -62,7 +62,15 @@ export function SimultaneousPage() {
     return a !== null && m !== null ? { a, m } : null
   })
   const valid = rows.length > 0 && parsed.every((c) => c !== null)
-  const result = valid ? solveCrtSystem(parsed as Congruence[]) : null
+  let result = null
+  let calculationError = ''
+  if (valid) {
+    try {
+      result = solveCrtSystem(parsed as Congruence[])
+    } catch (caught) {
+      calculationError = caught instanceof Error ? caught.message : 'Unable to solve this system.'
+    }
+  }
 
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
@@ -115,6 +123,7 @@ export function SimultaneousPage() {
           </Field.ErrorText>
         </Field.Root>
       )}
+      {calculationError && <Box mt="12px" p="16px 20px" fontFamily="mono" borderWidth="1px" borderColor="red.300" borderRadius="12px" bg="red.50"><Text fontSize="sm" color="#ef4444">{calculationError}</Text></Box>}
 
       {result && (
         <Box mt="32px">

@@ -61,6 +61,10 @@ describe('allAdditiveInverses', () => {
     expect(() => allAdditiveInverses(0)).toThrow()
     expect(() => allAdditiveInverses(2.5)).toThrow()
   })
+
+  it('can limit the number of generated pairs', () => {
+    expect(allAdditiveInverses(1_000, 3).map((pair) => pair.x)).toEqual([0, 1, 2])
+  })
 })
 
 describe('multiplicativeInverse', () => {

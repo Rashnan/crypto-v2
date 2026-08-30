@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearch } from '@tanstack/react-router'
 import {
   Box,
   createListCollection,
@@ -96,11 +97,20 @@ function matmulMod(a: number[][], b: number[][], m: number): number[][] {
   )
 }
 
-export function MatrixInversePage() {
-  const [mRaw, setMRaw] = useState('5')
-  const [size, setSize] = useState(2)
+export interface MatrixInverseSearch {
+  m?: number
+  size?: number
+  entries?: string
+}
+
+export function MatrixInversePage({ search = {} }: { search?: MatrixInverseSearch }) {
+  const initialSize = search.size ?? 2
+  const initialEntries = search.entries?.split(',') ?? []
+  const queryEntriesAreValid = initialEntries.length === initialSize * initialSize && initialEntries.every((entry) => /^-?\d+$/.test(entry))
+  const [mRaw, setMRaw] = useState(String(search.m ?? 5))
+  const [size, setSize] = useState(initialSize)
   const defaultMatrix = size === 2 ? ['3', '4', '2', '3'] : ['2', '1', '1', '3', '4', '5', '1', '6', '7']
-  const [entries, setEntries] = useState<string[]>(defaultMatrix)
+  const [entries, setEntries] = useState<string[]>(queryEntriesAreValid ? initialEntries : defaultMatrix)
 
   const m = parseModulus(mRaw)
   const mValid = m !== null
@@ -426,4 +436,9 @@ export function MatrixInversePage() {
       )}
     </Box>
   )
+}
+
+export function MatrixInverseSearchPage() {
+  const search = useSearch({ from: '/modular/matrix-inverse' })
+  return <MatrixInversePage key={JSON.stringify(search)} search={search} />
 }

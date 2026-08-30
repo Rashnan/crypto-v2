@@ -15,7 +15,12 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
 import { Route as CiphersAdditiveRouteImport } from './routes/ciphers/additive'
 import { Route as CiphersAffineRouteImport } from './routes/ciphers/affine'
+import { Route as CiphersAutokeyRouteImport } from './routes/ciphers/autokey'
+import { Route as CiphersHillRouteImport } from './routes/ciphers/hill'
 import { Route as CiphersMultiplicativeRouteImport } from './routes/ciphers/multiplicative'
+import { Route as CiphersPlayfairRouteImport } from './routes/ciphers/playfair'
+import { Route as CiphersSubstitutionRouteImport } from './routes/ciphers/substitution'
+import { Route as CiphersVigenereRouteImport } from './routes/ciphers/vigenere'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
 import { Route as DiophantineSimultaneousRouteImport } from './routes/diophantine/simultaneous'
 import { Route as DiophantineSingleVarRouteImport } from './routes/diophantine/single-var'
@@ -53,9 +58,34 @@ const CiphersAffineRoute = CiphersAffineRouteImport.update({
   path: '/ciphers/affine',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CiphersAutokeyRoute = CiphersAutokeyRouteImport.update({
+  id: '/ciphers/autokey',
+  path: '/ciphers/autokey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersHillRoute = CiphersHillRouteImport.update({
+  id: '/ciphers/hill',
+  path: '/ciphers/hill',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CiphersMultiplicativeRoute = CiphersMultiplicativeRouteImport.update({
   id: '/ciphers/multiplicative',
   path: '/ciphers/multiplicative',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersPlayfairRoute = CiphersPlayfairRouteImport.update({
+  id: '/ciphers/playfair',
+  path: '/ciphers/playfair',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersSubstitutionRoute = CiphersSubstitutionRouteImport.update({
+  id: '/ciphers/substitution',
+  path: '/ciphers/substitution',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiphersVigenereRoute = CiphersVigenereRouteImport.update({
+  id: '/ciphers/vigenere',
+  path: '/ciphers/vigenere',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiophantineLinearRoute = DiophantineLinearRouteImport.update({
@@ -97,7 +127,12 @@ export interface FileRoutesByFullPath {
   '/basic/gcd': typeof BasicGcdRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
+  '/ciphers/autokey': typeof CiphersAutokeyRoute
+  '/ciphers/hill': typeof CiphersHillRoute
   '/ciphers/multiplicative': typeof CiphersMultiplicativeRoute
+  '/ciphers/playfair': typeof CiphersPlayfairRoute
+  '/ciphers/substitution': typeof CiphersSubstitutionRoute
+  '/ciphers/vigenere': typeof CiphersVigenereRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
@@ -112,7 +147,12 @@ export interface FileRoutesByTo {
   '/basic/gcd': typeof BasicGcdRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
+  '/ciphers/autokey': typeof CiphersAutokeyRoute
+  '/ciphers/hill': typeof CiphersHillRoute
   '/ciphers/multiplicative': typeof CiphersMultiplicativeRoute
+  '/ciphers/playfair': typeof CiphersPlayfairRoute
+  '/ciphers/substitution': typeof CiphersSubstitutionRoute
+  '/ciphers/vigenere': typeof CiphersVigenereRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
@@ -128,7 +168,12 @@ export interface FileRoutesById {
   '/basic/gcd': typeof BasicGcdRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
+  '/ciphers/autokey': typeof CiphersAutokeyRoute
+  '/ciphers/hill': typeof CiphersHillRoute
   '/ciphers/multiplicative': typeof CiphersMultiplicativeRoute
+  '/ciphers/playfair': typeof CiphersPlayfairRoute
+  '/ciphers/substitution': typeof CiphersSubstitutionRoute
+  '/ciphers/vigenere': typeof CiphersVigenereRoute
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
@@ -145,7 +190,12 @@ export interface FileRouteTypes {
     | '/basic/gcd'
     | '/ciphers/additive'
     | '/ciphers/affine'
+    | '/ciphers/autokey'
+    | '/ciphers/hill'
     | '/ciphers/multiplicative'
+    | '/ciphers/playfair'
+    | '/ciphers/substitution'
+    | '/ciphers/vigenere'
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
@@ -160,7 +210,12 @@ export interface FileRouteTypes {
     | '/basic/gcd'
     | '/ciphers/additive'
     | '/ciphers/affine'
+    | '/ciphers/autokey'
+    | '/ciphers/hill'
     | '/ciphers/multiplicative'
+    | '/ciphers/playfair'
+    | '/ciphers/substitution'
+    | '/ciphers/vigenere'
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
@@ -175,7 +230,12 @@ export interface FileRouteTypes {
     | '/basic/gcd'
     | '/ciphers/additive'
     | '/ciphers/affine'
+    | '/ciphers/autokey'
+    | '/ciphers/hill'
     | '/ciphers/multiplicative'
+    | '/ciphers/playfair'
+    | '/ciphers/substitution'
+    | '/ciphers/vigenere'
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
@@ -191,7 +251,12 @@ export interface RootRouteChildren {
   BasicGcdRoute: typeof BasicGcdRoute
   CiphersAdditiveRoute: typeof CiphersAdditiveRoute
   CiphersAffineRoute: typeof CiphersAffineRoute
+  CiphersAutokeyRoute: typeof CiphersAutokeyRoute
+  CiphersHillRoute: typeof CiphersHillRoute
   CiphersMultiplicativeRoute: typeof CiphersMultiplicativeRoute
+  CiphersPlayfairRoute: typeof CiphersPlayfairRoute
+  CiphersSubstitutionRoute: typeof CiphersSubstitutionRoute
+  CiphersVigenereRoute: typeof CiphersVigenereRoute
   DiophantineLinearRoute: typeof DiophantineLinearRoute
   DiophantineSimultaneousRoute: typeof DiophantineSimultaneousRoute
   DiophantineSingleVarRoute: typeof DiophantineSingleVarRoute
@@ -244,11 +309,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CiphersAffineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ciphers/autokey': {
+      id: '/ciphers/autokey'
+      path: '/ciphers/autokey'
+      fullPath: '/ciphers/autokey'
+      preLoaderRoute: typeof CiphersAutokeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/hill': {
+      id: '/ciphers/hill'
+      path: '/ciphers/hill'
+      fullPath: '/ciphers/hill'
+      preLoaderRoute: typeof CiphersHillRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ciphers/multiplicative': {
       id: '/ciphers/multiplicative'
       path: '/ciphers/multiplicative'
       fullPath: '/ciphers/multiplicative'
       preLoaderRoute: typeof CiphersMultiplicativeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/playfair': {
+      id: '/ciphers/playfair'
+      path: '/ciphers/playfair'
+      fullPath: '/ciphers/playfair'
+      preLoaderRoute: typeof CiphersPlayfairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/substitution': {
+      id: '/ciphers/substitution'
+      path: '/ciphers/substitution'
+      fullPath: '/ciphers/substitution'
+      preLoaderRoute: typeof CiphersSubstitutionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciphers/vigenere': {
+      id: '/ciphers/vigenere'
+      path: '/ciphers/vigenere'
+      fullPath: '/ciphers/vigenere'
+      preLoaderRoute: typeof CiphersVigenereRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diophantine/linear': {
@@ -303,7 +403,12 @@ const rootRouteChildren: RootRouteChildren = {
   BasicGcdRoute: BasicGcdRoute,
   CiphersAdditiveRoute: CiphersAdditiveRoute,
   CiphersAffineRoute: CiphersAffineRoute,
+  CiphersAutokeyRoute: CiphersAutokeyRoute,
+  CiphersHillRoute: CiphersHillRoute,
   CiphersMultiplicativeRoute: CiphersMultiplicativeRoute,
+  CiphersPlayfairRoute: CiphersPlayfairRoute,
+  CiphersSubstitutionRoute: CiphersSubstitutionRoute,
+  CiphersVigenereRoute: CiphersVigenereRoute,
   DiophantineLinearRoute: DiophantineLinearRoute,
   DiophantineSimultaneousRoute: DiophantineSimultaneousRoute,
   DiophantineSingleVarRoute: DiophantineSingleVarRoute,

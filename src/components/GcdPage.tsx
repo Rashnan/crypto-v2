@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearch } from '@tanstack/react-router'
 import {
   Box,
   Field,
@@ -52,19 +53,9 @@ function ResultStat({ label, value, mono }: { label: string; value: string; mono
   )
 }
 
-function getInitialParams() {
-  if (typeof window === 'undefined') return { a: '240', b: '46' }
-  const params = new URLSearchParams(window.location.search)
-  return {
-    a: params.get('a') || '240',
-    b: params.get('b') || '46',
-  }
-}
-
-export function GcdPage() {
-  const initial = getInitialParams()
-  const [aRaw, setARaw] = useState(initial.a)
-  const [bRaw, setBRaw] = useState(initial.b)
+export function GcdPage({ initialA = 240, initialB = 46 }: { initialA?: number; initialB?: number }) {
+  const [aRaw, setARaw] = useState(String(initialA))
+  const [bRaw, setBRaw] = useState(String(initialB))
 
   const { result, error } = computeResult(aRaw, bRaw)
 
@@ -257,4 +248,9 @@ export function GcdPage() {
       )}
     </Box>
   )
+}
+
+export function GcdSearchPage() {
+  const { a, b } = useSearch({ from: '/basic/gcd' })
+  return <GcdPage key={`${a ?? 240}-${b ?? 46}`} initialA={a} initialB={b} />
 }

@@ -48,6 +48,11 @@ export const navigationSections: NavigationSection[] = [
       { label: 'Additive Cipher', to: '/ciphers/additive', icon: Plus },
       { label: 'Multiplicative Cipher', to: '/ciphers/multiplicative', icon: X },
       { label: 'Affine Cipher', to: '/ciphers/affine', icon: Braces },
+      { label: 'Substitution Cipher', to: '/ciphers/substitution', icon: Variable },
+      { label: 'Vigenère Cipher', to: '/ciphers/vigenere', icon: Sigma },
+      { label: 'Autokey Cipher', to: '/ciphers/autokey', icon: FunctionSquare },
+      { label: 'Playfair Cipher', to: '/ciphers/playfair', icon: Grid3x3 },
+      { label: 'Hill Cipher', to: '/ciphers/hill', icon: Braces },
     ],
   },
 ]

@@ -65,6 +65,9 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     return { congruences, solvable: true, x0: 0, M: 1, steps: [] }
   }
 
+  if (!congruences.every(({ a, m }) => Number.isSafeInteger(a) && Number.isSafeInteger(m) && m >= 2)) {
+    throw new Error('CRT expects safe-integer residues and moduli of at least 2.')
+  }
   const norm = congruences.map(({ a, m }) => ({ a: mod(a, m), m }))
 
   let x0 = norm[0].a
@@ -95,6 +98,9 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     // Solve M·k ≡ (a − x0) (mod m/d), where (M/d) is invertible mod (m/d).
     const mRed = m / d
     const MRed = M / d
+    if (M > Number.MAX_SAFE_INTEGER / mRed) {
+      throw new RangeError('Combined modulus exceeds Number.MAX_SAFE_INTEGER. Use fewer or smaller moduli.')
+    }
     const mInv = (() => {
       for (let y = 0; y < mRed; y++) {
         if ((MRed * y) % mRed === 1) return y

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
+import { Route as BasicMatrixDeterminantRouteImport } from './routes/basic/matrix-determinant'
 import { Route as CiphersAdditiveRouteImport } from './routes/ciphers/additive'
 import { Route as CiphersAffineRouteImport } from './routes/ciphers/affine'
 import { Route as CiphersAutokeyRouteImport } from './routes/ciphers/autokey'
@@ -46,6 +47,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const BasicGcdRoute = BasicGcdRouteImport.update({
   id: '/basic/gcd',
   path: '/basic/gcd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BasicMatrixDeterminantRoute = BasicMatrixDeterminantRouteImport.update({
+  id: '/basic/matrix-determinant',
+  path: '/basic/matrix-determinant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CiphersAdditiveRoute = CiphersAdditiveRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
   '/ciphers/autokey': typeof CiphersAutokeyRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
   '/ciphers/autokey': typeof CiphersAutokeyRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
+  '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
   '/ciphers/autokey': typeof CiphersAutokeyRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/basic/gcd'
+    | '/basic/matrix-determinant'
     | '/ciphers/additive'
     | '/ciphers/affine'
     | '/ciphers/autokey'
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/basic/gcd'
+    | '/basic/matrix-determinant'
     | '/ciphers/additive'
     | '/ciphers/affine'
     | '/ciphers/autokey'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/basic/gcd'
+    | '/basic/matrix-determinant'
     | '/ciphers/additive'
     | '/ciphers/affine'
     | '/ciphers/autokey'
@@ -249,6 +261,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SettingsRoute: typeof SettingsRoute
   BasicGcdRoute: typeof BasicGcdRoute
+  BasicMatrixDeterminantRoute: typeof BasicMatrixDeterminantRoute
   CiphersAdditiveRoute: typeof CiphersAdditiveRoute
   CiphersAffineRoute: typeof CiphersAffineRoute
   CiphersAutokeyRoute: typeof CiphersAutokeyRoute
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       path: '/basic/gcd'
       fullPath: '/basic/gcd'
       preLoaderRoute: typeof BasicGcdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/basic/matrix-determinant': {
+      id: '/basic/matrix-determinant'
+      path: '/basic/matrix-determinant'
+      fullPath: '/basic/matrix-determinant'
+      preLoaderRoute: typeof BasicMatrixDeterminantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ciphers/additive': {
@@ -401,6 +421,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SettingsRoute: SettingsRoute,
   BasicGcdRoute: BasicGcdRoute,
+  BasicMatrixDeterminantRoute: BasicMatrixDeterminantRoute,
   CiphersAdditiveRoute: CiphersAdditiveRoute,
   CiphersAffineRoute: CiphersAffineRoute,
   CiphersAutokeyRoute: CiphersAutokeyRoute,

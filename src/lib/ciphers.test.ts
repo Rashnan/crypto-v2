@@ -5,6 +5,7 @@ import {
   affineCipher,
   autokeyCipher,
   hillCipher,
+  hillKeyDetails,
   multiplicativeCipher,
   playfairCipher,
   substitutionCipher,
@@ -75,6 +76,11 @@ describe('classical ciphers', () => {
     const encrypted = hillCipher('ACT', key, 'encrypt')
     expect(encrypted).toBe('POH')
     expect(hillCipher(encrypted, key, 'decrypt')).toBe('ACT')
+  })
+
+  it('reports whether a Hill key is invertible', () => {
+    expect(hillKeyDetails([3, 3, 2, 5])).toMatchObject({ dimension: 2, determinant: 9, gcd: 1, invertible: true })
+    expect(hillKeyDetails([2, 4, 1, 2])).toMatchObject({ determinant: 0, gcd: 26, invertible: false })
   })
 })
 

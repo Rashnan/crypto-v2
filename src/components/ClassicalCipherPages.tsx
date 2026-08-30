@@ -6,6 +6,7 @@ import { MathMatrix } from './MathMatrix'
 import {
   autokeyCipherResult,
   hillCipherResult,
+  hillKeyDetails,
   playfairCipherResult,
   substitutionCipherResult,
   vigenereCipherResult,
@@ -22,6 +23,7 @@ interface CipherPageProps {
   error?: string
   steps: ClassicalCipherResult['steps']
   matrix?: ClassicalCipherResult['matrix']
+  keyStatus?: ReactNode
   matrixLabel?: string
   matrixLink?: { size: number; entries: string[] }
   children: ReactNode
@@ -29,7 +31,7 @@ interface CipherPageProps {
   onModeChange: (mode: CipherMode) => void
 }
 
-function CipherPage({ title, description, input, output, mode, error, steps, matrix, matrixLabel = 'Key matrix', matrixLink, children, onInputChange, onModeChange }: CipherPageProps) {
+function CipherPage({ title, description, input, output, mode, error, steps, matrix, keyStatus, matrixLabel = 'Key matrix', matrixLink, children, onInputChange, onModeChange }: CipherPageProps) {
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
       <Heading as="h1" m="0" fontSize={{ base: '2xl', md: '3xl' }} letterSpacing="tight">{title}</Heading>
@@ -42,6 +44,7 @@ function CipherPage({ title, description, input, output, mode, error, steps, mat
         ))}
       </Flex>
       <Flex mt="20px" gap="16px" flexWrap="wrap" align="end">{children}</Flex>
+      {keyStatus && <Box mt="20px">{keyStatus}</Box>}
       {matrix && (
         <Box mt="20px" p="16px 20px" borderRadius="12px" bg="var(--accent-bg)" boxShadow="0 4px 14px rgb(0 0 0 / 8%)">
           <Flex align="center" justify="space-between" gap="12px" mb="8px">
@@ -103,13 +106,14 @@ export function HillCipherPage() {
   const [dimension, setDimension] = useState(2)
   const [mode, setMode] = useState<CipherMode>('encrypt')
   const key = entries.map((entry) => /^\d+$/.test(entry) ? Number(entry) : null)
+  const details = key.some((value) => value === null) ? null : hillKeyDetails(key as number[])
   let result: ClassicalCipherResult = { output: '', steps: [] }
   let error: string | undefined
   if (key.some((value) => value === null)) error = 'Enter non-negative integer matrix values.'
   else { try { result = hillCipherResult(input, key as number[], mode) } catch (caught) { error = caught instanceof Error ? caught.message : 'Invalid key matrix.' } }
   return (
-    <CipherPage title="Hill Cipher" description={`Encrypt letter blocks with a ${dimension} × ${dimension} key matrix modulo 26.`} input={input} output={result.output} steps={result.steps} matrix={result.matrix} matrixLabel={mode === 'decrypt' ? 'Inverse key matrix (mod 26)' : 'Key matrix'} matrixLink={mode === 'decrypt' ? { size: dimension, entries } : undefined} mode={mode} error={error} onInputChange={setInput} onModeChange={setMode}>
-      <Field.Root invalid={Boolean(error)}><Field.Label>Matrix dimension</Field.Label><Input mt="8px" type="number" min="2" max="3" value={dimension} onChange={(event) => { const next = Math.min(3, Math.max(2, Number(event.target.value) || 2)); setDimension(next); setEntries(Array.from({ length: next * next }, (_, index) => String(index % (next + 1) === 0 ? 1 : 0))) }} /></Field.Root>
+    <CipherPage title="Hill Cipher" description={`Encrypt letter blocks with a ${dimension} × ${dimension} key matrix modulo 26.`} input={input} output={result.output} steps={result.steps} matrix={result.matrix} keyStatus={details && <SimpleGrid columns={{ base: 1, sm: 3 }} gap="12px"><Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px"><Text fontSize="sm" color="var(--text)">det(A) mod 26</Text><Text mt="4px" fontSize="2xl" fontWeight="bold" color="var(--accent)">{details.determinant}</Text></Box><Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px"><Text fontSize="sm" color="var(--text)">gcd(det(A), 26)</Text><Text mt="4px" fontSize="2xl" fontWeight="bold" color="var(--accent)">{details.gcd}</Text></Box><Link to="/basic/matrix-determinant" search={{ m: 26, size: details.dimension, entries: entries.join(',') }}><Box h="full" p="16px 20px" borderWidth="1px" borderColor={details.invertible ? 'var(--border)' : 'red.300'} borderRadius="12px" bg={details.invertible ? 'var(--bg)' : 'red.50'} position="relative"><ExternalLink size={15} style={{ position: 'absolute', top: '12px', right: '12px', color: 'var(--accent)' }} /><Text fontSize="sm" color="var(--text)">Key matrix</Text><Text mt="4px" fontSize="2xl" fontWeight="bold" color={details.invertible ? 'var(--accent)' : '#ef4444'}>{details.invertible ? 'Invertible' : 'Not invertible'}</Text><Text mt="4px" fontSize="sm" color="var(--text)">View determinant calculation</Text></Box></Link></SimpleGrid>} matrixLabel={mode === 'decrypt' ? 'Inverse key matrix (mod 26)' : 'Key matrix'} matrixLink={mode === 'decrypt' ? { size: dimension, entries } : undefined} mode={mode} error={error} onInputChange={setInput} onModeChange={setMode}>
+      <Field.Root invalid={Boolean(error)}><Field.Label>Matrix dimension</Field.Label><Input mt="8px" type="number" min="2" max="4" value={dimension} onChange={(event) => { const next = Math.min(4, Math.max(2, Number(event.target.value) || 2)); setDimension(next); setEntries(Array.from({ length: next * next }, (_, index) => String(index % (next + 1) === 0 ? 1 : 0))) }} /></Field.Root>
       <Field.Root invalid={Boolean(error)}><Field.Label>Key matrix</Field.Label><SimpleGrid mt="8px" columns={dimension} gap="8px" maxW="420px">{entries.map((value, index) => <Input key={index} type="number" min="0" value={value} onChange={(event) => setEntries((current) => current.map((entry, itemIndex) => itemIndex === index ? event.target.value : entry))} />)}</SimpleGrid></Field.Root>
     </CipherPage>
   )

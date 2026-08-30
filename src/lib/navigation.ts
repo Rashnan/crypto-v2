@@ -25,7 +25,7 @@ export interface NavigationSection {
 export const overviewItem: NavigationItem = { label: 'Overview', to: '/', icon: LayoutGrid }
 
 export const navigationSections: NavigationSection[] = [
-  { label: 'Basic', items: [{ label: 'GCD', to: '/basic/gcd', icon: Variable }] },
+  { label: 'Basic', items: [{ label: 'GCD', to: '/basic/gcd', icon: Variable }, { label: 'Matrix Determinant', to: '/basic/matrix-determinant', icon: Grid3x3 }] },
   {
     label: 'Inverses',
     items: [

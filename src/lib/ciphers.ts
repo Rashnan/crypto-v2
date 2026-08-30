@@ -1,5 +1,5 @@
 import { gcd, mod, multiplicativeInverse } from './modular'
-import { matrixInverseMod } from './matmod'
+import { determinantMod, matrixInverseMod } from './matmod'
 
 export type CipherMode = 'encrypt' | 'decrypt'
 
@@ -220,6 +220,20 @@ function matrixFromKey(key: number[]): number[][] {
   const dimension = Math.sqrt(key.length)
   if (!Number.isInteger(dimension) || dimension < 2) throw new Error('Use a square key matrix with at least two rows.')
   return Array.from({ length: dimension }, (_, row) => key.slice(row * dimension, (row + 1) * dimension).map((value) => mod(value, 26)))
+}
+
+export interface HillKeyDetails {
+  dimension: number
+  determinant: number
+  gcd: number
+  invertible: boolean
+}
+
+export function hillKeyDetails(key: number[]): HillKeyDetails {
+  const matrix = matrixFromKey(key)
+  const determinant = determinantMod(matrix, 26)
+  const determinantGcd = gcd(determinant, 26)
+  return { dimension: matrix.length, determinant, gcd: determinantGcd, invertible: determinantGcd === 1 }
 }
 
 function inverseMatrix(matrix: number[][]): number[][] {

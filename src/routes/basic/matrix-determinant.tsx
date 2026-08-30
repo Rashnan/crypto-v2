@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
-import { MatrixInverseSearchPage } from '../../components/MatrixInversePage'
+import { MatrixDeterminantSearchPage } from '../../components/MatrixDeterminantPage'
 
-export const Route = createFileRoute('/modular/matrix-inverse')({
+export const Route = createFileRoute('/basic/matrix-determinant')({
   validateSearch: z.object({
     m: z.coerce.number().int().min(2).optional(),
     size: z.coerce.number().int().min(2).max(4).optional(),
     entries: z.string().optional(),
   }),
-  component: MatrixInverseSearchPage,
+  component: MatrixDeterminantSearchPage,
 })

@@ -18,6 +18,7 @@ const sizeCollection = createListCollection({
   items: [
     { label: '2×2', value: '2' },
     { label: '3×3', value: '3' },
+    { label: '4×4', value: '4' },
   ],
 })
 
@@ -109,7 +110,7 @@ export function MatrixInversePage({ search = {} }: { search?: MatrixInverseSearc
   const queryEntriesAreValid = initialEntries.length === initialSize * initialSize && initialEntries.every((entry) => /^-?\d+$/.test(entry))
   const [mRaw, setMRaw] = useState(String(search.m ?? 5))
   const [size, setSize] = useState(initialSize)
-  const defaultMatrix = size === 2 ? ['3', '4', '2', '3'] : ['2', '1', '1', '3', '4', '5', '1', '6', '7']
+  const defaultMatrix = size === 2 ? ['3', '4', '2', '3'] : size === 3 ? ['2', '1', '1', '3', '4', '5', '1', '6', '7'] : Array.from({ length: 16 }, (_, index) => String(index % 5 === 0 ? 1 : 0))
   const [entries, setEntries] = useState<string[]>(queryEntriesAreValid ? initialEntries : defaultMatrix)
 
   const m = parseModulus(mRaw)
@@ -160,7 +161,7 @@ export function MatrixInversePage({ search = {} }: { search?: MatrixInverseSearc
 
   const changeSize = (s: number) => {
     setSize(s)
-    const defaults = s === 2 ? ['3', '4', '2', '3'] : ['2', '1', '1', '3', '4', '5', '1', '6', '7']
+    const defaults = s === 2 ? ['3', '4', '2', '3'] : s === 3 ? ['2', '1', '1', '3', '4', '5', '1', '6', '7'] : Array.from({ length: 16 }, (_, index) => String(index % 5 === 0 ? 1 : 0))
     setEntries(defaults)
   }
 
@@ -203,6 +204,7 @@ export function MatrixInversePage({ search = {} }: { search?: MatrixInverseSearc
             <Select.Content>
               <Select.Item item="2">2×2</Select.Item>
               <Select.Item item="3">3×3</Select.Item>
+              <Select.Item item="4">4×4</Select.Item>
             </Select.Content>
           </Select.Root>
         </Field.Root>

@@ -45,6 +45,15 @@ export function determinantMod(a: Matrix, m: number): number {
   return mod(det, m)
 }
 
+export function determinant(a: Matrix): number {
+  const n = a.length
+  if (n === 0 || !a.every((row) => row.length === n)) {
+    throw new Error('matrix must be square and non-empty')
+  }
+  if (n === 1) return a[0][0]
+  return a[0].reduce((total, value, column) => total + (column % 2 === 0 ? 1 : -1) * value * determinant(minor(a, 0, column)), 0)
+}
+
 /**
  * Compute the adjugate (classical adjoint) of a square matrix mod m.
  *
@@ -108,6 +117,8 @@ export interface MinorStep {
   minorMatrix: Matrix
   /** det(minor) reduced mod m. */
   minorDet: number
+  /** det(minor) before modular reduction. */
+  minorDetRaw: number
   /** cofactor = sign * minorDet, reduced mod m. */
   cofactor: number
 }
@@ -136,9 +147,10 @@ export function matrixInverseDetail(a: Matrix, m: number): MatrixInverseDetail {
       const sign: 1 | -1 = (i + j) % 2 === 0 ? 1 : -1
       const minorMatrix = minor(a, i, j)
       const minorDet = determinantMod(minorMatrix, m)
+      const minorDetRaw = determinant(minorMatrix)
       const cofactor = mod(sign * minorDet, m)
       cofactorMatrix[i][j] = cofactor
-      cofactors.push({ i, j, sign, minorMatrix, minorDet, cofactor })
+      cofactors.push({ i, j, sign, minorMatrix, minorDet, minorDetRaw, cofactor })
     }
   }
   const adjugate = adjugateMod(a, m)
@@ -157,6 +169,8 @@ export interface DeterminantTerm {
   minor: Matrix
   /** det(minor) reduced mod m. */
   minorDet: number
+  /** det(minor) before modular reduction. */
+  minorDetRaw: number
   /** Cofactor = (−1)^j · det(minor) mod m. */
   cofactor: number
   /** Term contributed to the sum: a[0][j] · cofactor mod m. */
@@ -193,13 +207,13 @@ export function determinantModDetail(a: Matrix, m: number): DeterminantDetail {
       terms: [
         {
           j: 0, sign: 1, a0j: a[0][0],
-          minor: minor(a, 0, 0), minorDet: mod(a[1][1], m),
+          minor: minor(a, 0, 0), minorDet: mod(a[1][1], m), minorDetRaw: a[1][1],
           cofactor: mod(a[1][1], m),
           product: mod(a[0][0] * a[1][1], m),
         },
         {
           j: 1, sign: -1, a0j: a[0][1],
-          minor: minor(a, 0, 1), minorDet: mod(a[1][0], m),
+          minor: minor(a, 0, 1), minorDet: mod(a[1][0], m), minorDetRaw: a[1][0],
           cofactor: mod(-a[1][0], m),
           product: mod(-a[0][1] * a[1][0], m),
         },
@@ -213,12 +227,13 @@ export function determinantModDetail(a: Matrix, m: number): DeterminantDetail {
     const sign: 1 | -1 = j % 2 === 0 ? 1 : -1
     const minorMatrix = minor(a, 0, j)
     const minorDet = determinantMod(minorMatrix, m)
+    const minorDetRaw = determinant(minorMatrix)
     const cofactor = mod(sign * minorDet, m)
     // cofactor already carries the (−1)^j sign, so the term contribution is
     // just a[0][j] · cofactor.
     const product = mod(a[0][j] * cofactor, m)
     det = mod(det + product, m)
-    terms.push({ j, sign, a0j: a[0][j], minor: minorMatrix, minorDet, cofactor, product })
+    terms.push({ j, sign, a0j: a[0][j], minor: minorMatrix, minorDet, minorDetRaw, cofactor, product })
   }
   det = mod(det, m)
   return { det, terms, is2x2: false }

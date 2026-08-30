@@ -12,6 +12,7 @@ import {
   vigenereCipherResult,
   type ClassicalCipherResult,
   type CipherMode,
+  type HillKeyDetails,
 } from '../lib/ciphers'
 
 interface CipherPageProps {
@@ -100,6 +101,28 @@ export function VigenereCipherPage() { return <LetterKeyCipher title="Vigenère 
 export function AutokeyCipherPage() { return <LetterKeyCipher title="Autokey Cipher" description="Start with a keyword, then extend it with the plaintext itself." initialInput="ATTACKATDAWN" initialKey="QUEENLY" run={autokeyCipherResult} /> }
 export function PlayfairCipherPage() { return <LetterKeyCipher title="Playfair Cipher" description="Encrypt letter pairs with a keyed 5 × 5 square. I and J share a cell." initialInput="HIDETHEGOLD" initialKey="PLAYFAIR EXAMPLE" run={playfairCipherResult} /> }
 
+function HillKeyStatus({ details, entries }: { details: HillKeyDetails; entries: string[] }) {
+  const determinantSearch = { m: 26, size: details.dimension, entries: entries.join(',') }
+  return (
+    <SimpleGrid columns={{ base: 1, sm: 3 }} gap="12px">
+      <Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" position="relative">
+        <Link to="/basic/matrix-determinant" search={determinantSearch} aria-label="View determinant calculation" style={{ position: 'absolute', top: '12px', right: '12px', color: 'var(--accent)' }}><ExternalLink size={15} /></Link>
+        <Text fontSize="sm" color="var(--text)">det(A) mod 26</Text>
+        <Text mt="4px" fontSize="2xl" fontWeight="bold" color="var(--accent)">{details.determinant}</Text>
+      </Box>
+      <Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" position="relative">
+        <Link to="/basic/gcd" search={{ a: details.determinant, b: 26 }} aria-label="View GCD calculation" style={{ position: 'absolute', top: '12px', right: '12px', color: 'var(--accent)' }}><ExternalLink size={15} /></Link>
+        <Text fontSize="sm" color="var(--text)">gcd(det(A), 26)</Text>
+        <Text mt="4px" fontSize="2xl" fontWeight="bold" color="var(--accent)">{details.gcd}</Text>
+      </Box>
+      <Box p="16px 20px" borderWidth="1px" borderColor={details.invertible ? 'var(--border)' : 'red.300'} borderRadius="12px" bg={details.invertible ? 'var(--bg)' : 'red.50'}>
+        <Text fontSize="sm" color="var(--text)">Key matrix</Text>
+        <Text mt="4px" fontSize="2xl" fontWeight="bold" color={details.invertible ? 'var(--accent)' : '#ef4444'}>{details.invertible ? 'Invertible' : 'Not invertible'}</Text>
+      </Box>
+    </SimpleGrid>
+  )
+}
+
 export function HillCipherPage() {
   const [input, setInput] = useState('HELP')
   const [entries, setEntries] = useState(['3', '3', '2', '5'])
@@ -112,7 +135,7 @@ export function HillCipherPage() {
   if (key.some((value) => value === null)) error = 'Enter non-negative integer matrix values.'
   else { try { result = hillCipherResult(input, key as number[], mode) } catch (caught) { error = caught instanceof Error ? caught.message : 'Invalid key matrix.' } }
   return (
-    <CipherPage title="Hill Cipher" description={`Encrypt letter blocks with a ${dimension} × ${dimension} key matrix modulo 26.`} input={input} output={result.output} steps={result.steps} matrix={result.matrix} keyStatus={details && <SimpleGrid columns={{ base: 1, sm: 3 }} gap="12px"><Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px"><Text fontSize="sm" color="var(--text)">det(A) mod 26</Text><Text mt="4px" fontSize="2xl" fontWeight="bold" color="var(--accent)">{details.determinant}</Text></Box><Box p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px"><Text fontSize="sm" color="var(--text)">gcd(det(A), 26)</Text><Text mt="4px" fontSize="2xl" fontWeight="bold" color="var(--accent)">{details.gcd}</Text></Box><Link to="/basic/matrix-determinant" search={{ m: 26, size: details.dimension, entries: entries.join(',') }}><Box h="full" p="16px 20px" borderWidth="1px" borderColor={details.invertible ? 'var(--border)' : 'red.300'} borderRadius="12px" bg={details.invertible ? 'var(--bg)' : 'red.50'} position="relative"><ExternalLink size={15} style={{ position: 'absolute', top: '12px', right: '12px', color: 'var(--accent)' }} /><Text fontSize="sm" color="var(--text)">Key matrix</Text><Text mt="4px" fontSize="2xl" fontWeight="bold" color={details.invertible ? 'var(--accent)' : '#ef4444'}>{details.invertible ? 'Invertible' : 'Not invertible'}</Text><Text mt="4px" fontSize="sm" color="var(--text)">View determinant calculation</Text></Box></Link></SimpleGrid>} matrixLabel={mode === 'decrypt' ? 'Inverse key matrix (mod 26)' : 'Key matrix'} matrixLink={mode === 'decrypt' ? { size: dimension, entries } : undefined} mode={mode} error={error} onInputChange={setInput} onModeChange={setMode}>
+    <CipherPage title="Hill Cipher" description={`Encrypt letter blocks with a ${dimension} × ${dimension} key matrix modulo 26.`} input={input} output={result.output} steps={result.steps} matrix={result.matrix} keyStatus={details && <HillKeyStatus details={details} entries={entries} />} matrixLabel={mode === 'decrypt' ? 'Inverse key matrix (mod 26)' : 'Key matrix'} matrixLink={mode === 'decrypt' ? { size: dimension, entries } : undefined} mode={mode} error={error} onInputChange={setInput} onModeChange={setMode}>
       <Field.Root invalid={Boolean(error)}><Field.Label>Matrix dimension</Field.Label><Input mt="8px" type="number" min="2" max="4" value={dimension} onChange={(event) => { const next = Math.min(4, Math.max(2, Number(event.target.value) || 2)); setDimension(next); setEntries(Array.from({ length: next * next }, (_, index) => String(index % (next + 1) === 0 ? 1 : 0))) }} /></Field.Root>
       <Field.Root invalid={Boolean(error)}><Field.Label>Key matrix</Field.Label><SimpleGrid mt="8px" columns={dimension} gap="8px" maxW="420px">{entries.map((value, index) => <Input key={index} type="number" min="0" value={value} onChange={(event) => setEntries((current) => current.map((entry, itemIndex) => itemIndex === index ? event.target.value : entry))} />)}</SimpleGrid></Field.Root>
     </CipherPage>

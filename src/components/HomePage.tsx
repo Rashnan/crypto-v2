@@ -27,6 +27,13 @@ const sections: Section[] = [
         to: '/basic/gcd',
         icon: Variable,
       },
+      {
+        title: 'Matrix Determinant',
+        description: 'Compute det(A) modulo m and inspect every cofactor-expansion term.',
+        example: 'det([[6,24,1],[13,16,10],[20,17,15]]) ≡ 25 (mod 26)',
+        to: '/basic/matrix-determinant',
+        icon: Grid3x3,
+      },
     ],
   },
   {

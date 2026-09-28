@@ -199,6 +199,11 @@ const sections: Section[] = [
         to: '/modern/lfsr',
         icon: RefreshCw,
       },
+    ],
+  },
+  {
+    label: 'DES',
+    pages: [
       {
         title: 'DES Round',
         description: 'One Feistel round: expansion, subkey XOR, eight S-boxes, and the P permutation.',
@@ -227,6 +232,11 @@ const sections: Section[] = [
         to: '/modern/des-decrypt',
         icon: Unlock,
       },
+    ],
+  },
+  {
+    label: 'AES',
+    pages: [
       {
         title: 'AES Round',
         description: 'SubBytes, ShiftRows, MixColumns and AddRoundKey over the 4 × 4 state.',

@@ -321,9 +321,10 @@ export function aesDecrypt(blockHex: string, keyHex: string): string {
 }
 
 /** Return one encryption round (0 = initial AddRoundKey, 1..10 = rounds). */
-export function aesRoundDetail(blockHex: string, keyHex: string, round: number): AesRoundDetail {
+export function aesRoundDetail(blockHex: string, keyHex: string, round: number, mode: 'encrypt' | 'decrypt' = 'encrypt'): AesRoundDetail {
   if (!Number.isInteger(round) || round < 0 || round > 10) throw new Error('Choose a round between 0 and 10.')
-  const selected = aesEncryptDetail(blockHex, keyHex).rounds.find((entry) => entry.round === round)
+  const detail = mode === 'decrypt' ? aesDecryptDetail(blockHex, keyHex) : aesEncryptDetail(blockHex, keyHex)
+  const selected = detail.rounds.find((entry) => entry.round === round)
   if (!selected) throw new Error('Choose a round between 0 and 10.')
   return selected
 }

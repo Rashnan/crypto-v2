@@ -248,16 +248,20 @@ export interface DesRoundResult {
   detail: DesRoundDetail
 }
 
-/** Run the block up to `round` and return that round's full working. */
-export function desRoundDetail(blockHex: string, keyHex: string, round: number): DesRoundResult {
+/**
+ * Run the block up to `round` and return that round's full working. In decrypt
+ * mode the subkeys are consumed in reverse order.
+ */
+export function desRoundDetail(blockHex: string, keyHex: string, round: number, mode: 'encrypt' | 'decrypt' = 'encrypt'): DesRoundResult {
   if (!Number.isInteger(round) || round < 1 || round > 16) throw new Error('Choose a round between 1 and 16.')
   const schedule = desKeySchedule(keyHex)
+  const order = mode === 'decrypt' ? [...schedule.subkeys].reverse() : schedule.subkeys
   const block = permute(hexToBits(blockHex, 64), IP)
   let left = block.slice(0, 32)
   let right = block.slice(32)
-  let detail = desRound(left, right, bitsOf(schedule.subkeys[0].subkey), 1).detail
+  let detail = desRound(left, right, bitsOf(order[0].subkey), 1).detail
   for (let index = 1; index < round; index++) {
-    const result = desRound(left, right, bitsOf(schedule.subkeys[index].subkey), index + 1)
+    const result = desRound(left, right, bitsOf(order[index].subkey), index + 1)
     left = result.left
     right = result.right
     detail = result.detail

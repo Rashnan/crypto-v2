@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Box, Field, Flex, Heading, Input, Table, Text } from '@chakra-ui/react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { Box, Button, Field, Flex, Heading, Input, Table, Text } from '@chakra-ui/react'
 import {
   aesDecryptDetail,
   aesEncryptDetail,
@@ -8,6 +9,8 @@ import {
   type AesCipherDetail,
   type AesRoundDetail,
 } from '../lib/aes'
+import type { CipherMode } from '../lib/ciphers'
+import { AesKeyExpansionDiagram, AesRoundDiagram } from './CipherDiagrams'
 import { ErrorNote, ResultBox, SectionHeading, StateMatrix } from './BlockCipherUi'
 
 const sampleBlock = '00112233445566778899AABBCCDDEEFF'
@@ -19,6 +22,18 @@ function HexField({ label, value, onChange, maxW = '320px', invalid }: { label: 
       <Field.Label>{label}</Field.Label>
       <Input mt="8px" fontFamily="mono" value={value} onChange={(event) => onChange(event.target.value)} />
     </Field.Root>
+  )
+}
+
+function ModeToggle({ mode, onChange }: { mode: CipherMode; onChange: (mode: CipherMode) => void }) {
+  return (
+    <Flex gap="8px">
+      {(['encrypt', 'decrypt'] as const).map((value) => (
+        <Button key={value} size="sm" variant={mode === value ? 'solid' : 'outline'} bg={mode === value ? 'var(--accent)' : undefined} color={mode === value ? 'white' : 'var(--text)'} onClick={() => onChange(value)}>
+          {value === 'encrypt' ? 'Encrypt' : 'Decrypt'}
+        </Button>
+      ))}
+    </Flex>
   )
 }
 
@@ -39,15 +54,16 @@ export function AesOperations({ round }: { round: AesRoundDetail }) {
   )
 }
 
-export function AesRoundPage() {
-  const [block, setBlock] = useState(sampleBlock)
-  const [key, setKey] = useState(sampleKey)
-  const [roundRaw, setRoundRaw] = useState('1')
+export function AesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKey, initialRound = '1', initialMode = 'encrypt' }: { initialBlock?: string; initialKey?: string; initialRound?: string; initialMode?: CipherMode }) {
+  const [block, setBlock] = useState(initialBlock)
+  const [key, setKey] = useState(initialKey)
+  const [roundRaw, setRoundRaw] = useState(initialRound)
+  const [mode, setMode] = useState<CipherMode>(initialMode)
 
   let detail: AesRoundDetail | null = null
   let error = ''
   try {
-    detail = aesRoundDetail(block, key, Number(roundRaw))
+    detail = aesRoundDetail(block, key, Number(roundRaw), mode)
   } catch (caught) {
     error = caught instanceof Error ? caught.message : 'Invalid input.'
   }
@@ -60,6 +76,8 @@ export function AesRoundPage() {
         is the initial AddRoundKey.
       </Text>
 
+      <AesRoundDiagram />
+
       <Flex mt="24px" gap="16px" flexWrap="wrap" align="end">
         <HexField label="Block (32 hex)" value={block} onChange={setBlock} invalid={Boolean(error)} />
         <HexField label="Key (32 hex)" value={key} onChange={setKey} invalid={Boolean(error)} />
@@ -67,6 +85,10 @@ export function AesRoundPage() {
           <Field.Label>Round</Field.Label>
           <Input mt="8px" type="number" min="0" max="10" value={roundRaw} onChange={(event) => setRoundRaw(event.target.value)} />
         </Field.Root>
+        <Box>
+          <Text fontSize="sm" color="var(--text)" mb="10px">Direction</Text>
+          <ModeToggle mode={mode} onChange={setMode} />
+        </Box>
       </Flex>
 
       {error && <ErrorNote message={error} />}
@@ -82,6 +104,11 @@ export function AesRoundPage() {
       )}
     </Box>
   )
+}
+
+export function AesRoundSearchPage() {
+  const { block, key, round, mode } = useSearch({ from: '/modern/aes-round' })
+  return <AesRoundPage key={`${block}-${key}-${round}-${mode}`} initialBlock={block} initialKey={key} initialRound={round?.toString()} initialMode={mode} />
 }
 
 export function AesKeyPage() {
@@ -101,6 +128,8 @@ export function AesKeyPage() {
         AES-128 expands the 16-byte key into 44 words (11 round keys). Every fourth word runs RotWord, SubWord and an
         Rcon XOR before being combined with the word four positions back.
       </Text>
+
+      <AesKeyExpansionDiagram />
 
       <Flex mt="24px" gap="16px" flexWrap="wrap" align="end">
         <HexField label="Key (32 hex)" value={key} onChange={setKey} invalid={Boolean(error)} />
@@ -167,10 +196,10 @@ export function AesKeyPage() {
   )
 }
 
-function AesCipherPage({ title, description, run }: { title: string; description: string; run: (block: string, key: string) => AesCipherDetail }) {
+function AesCipherPage({ title, description, run, direction }: { title: string; description: string; run: (block: string, key: string) => AesCipherDetail; direction: CipherMode }) {
   const [block, setBlock] = useState(sampleBlock)
   const [key, setKey] = useState(sampleKey)
-  const [selected, setSelected] = useState<number | null>(null)
+  const navigate = useNavigate()
 
   let detail: AesCipherDetail | null = null
   let error = ''
@@ -179,8 +208,6 @@ function AesCipherPage({ title, description, run }: { title: string; description
   } catch (caught) {
     error = caught instanceof Error ? caught.message : 'Invalid input.'
   }
-
-  const selectedRound = detail && selected !== null ? detail.rounds.find((round) => round.round === selected) : null
 
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
@@ -209,27 +236,22 @@ function AesCipherPage({ title, description, run }: { title: string; description
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {detail.rounds.map((round) => {
-                  const active = round.round === selected
-                  return (
-                    <Table.Row key={`${round.label}-${round.round}`} cursor="pointer" bg={active ? 'var(--accent-bg)' : undefined} _hover={{ bg: 'var(--accent-bg)' }} onClick={() => setSelected(round.round)}>
-                      <Table.Cell fontWeight="semibold" color={active ? 'var(--accent)' : undefined}>{round.label}</Table.Cell>
-                      <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{round.endState}</Table.Cell>
-                      <Table.Cell fontSize="xs">{round.operations.map((operation) => operation.name).join(' → ')}</Table.Cell>
-                    </Table.Row>
-                  )
-                })}
+                {detail.rounds.map((round) => (
+                  <Table.Row
+                    key={`${round.label}-${round.round}`}
+                    cursor="pointer"
+                    _hover={{ bg: 'var(--accent-bg)' }}
+                    onClick={() => navigate({ to: '/modern/aes-round', search: { block, key, round: round.round, mode: direction } })}
+                  >
+                    <Table.Cell fontWeight="semibold" color="var(--accent)">{round.label}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{round.endState}</Table.Cell>
+                    <Table.Cell fontSize="xs">{round.operations.map((operation) => operation.name).join(' → ')}</Table.Cell>
+                  </Table.Row>
+                ))}
               </Table.Body>
             </Table.Root>
           </Box>
-          <Text mt="8px" fontSize="sm" color="var(--text)">Click a stage to see its full working below.</Text>
-
-          {selectedRound && (
-            <Box mt="8px">
-              <SectionHeading>{selectedRound.label} working</SectionHeading>
-              <AesOperations round={selectedRound} />
-            </Box>
-          )}
+          <Text mt="8px" fontSize="sm" color="var(--text)">Click a stage to open its full working on the One Round page.</Text>
         </>
       )}
     </Box>
@@ -237,9 +259,9 @@ function AesCipherPage({ title, description, run }: { title: string; description
 }
 
 export function AesEncryptPage() {
-  return <AesCipherPage title="AES — Encryption" description="Initial AddRoundKey, nine full rounds, and a final round without MixColumns." run={aesEncryptDetail} />
+  return <AesCipherPage title="AES — Encryption" description="Initial AddRoundKey, nine full rounds, and a final round without MixColumns." run={aesEncryptDetail} direction="encrypt" />
 }
 
 export function AesDecryptPage() {
-  return <AesCipherPage title="AES — Decryption" description="The inverse cipher: AddRoundKey, then InvShiftRows, InvSubBytes, AddRoundKey and InvMixColumns, ending with the initial key." run={aesDecryptDetail} />
+  return <AesCipherPage title="AES — Decryption" description="The inverse cipher: AddRoundKey, then InvShiftRows, InvSubBytes, AddRoundKey and InvMixColumns, ending with the initial key." run={aesDecryptDetail} direction="decrypt" />
 }

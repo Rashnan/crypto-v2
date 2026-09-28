@@ -79,11 +79,21 @@ export const navigationSections: NavigationSection[] = [
       { label: 'P-Boxes', to: '/modern/p-boxes', icon: Shuffle },
       { label: 'S-Boxes', to: '/modern/s-boxes', icon: Replace },
       { label: 'LFSR', to: '/modern/lfsr', icon: RefreshCw },
-      { label: 'DES Round', shortLabel: 'DES Round', to: '/modern/des-round', icon: Layers },
+    ],
+  },
+  {
+    label: 'DES',
+    items: [
+      { label: 'DES Round', to: '/modern/des-round', icon: Layers },
       { label: 'DES Key Generation', shortLabel: 'DES Key Gen', to: '/modern/des-key', icon: KeyRound },
       { label: 'DES Encryption', shortLabel: 'DES Encrypt', to: '/modern/des-encrypt', icon: Lock },
       { label: 'DES Decryption', shortLabel: 'DES Decrypt', to: '/modern/des-decrypt', icon: Unlock },
-      { label: 'AES Round', shortLabel: 'AES Round', to: '/modern/aes-round', icon: Boxes },
+    ],
+  },
+  {
+    label: 'AES',
+    items: [
+      { label: 'AES Round', to: '/modern/aes-round', icon: Boxes },
       { label: 'AES Key Expansion', shortLabel: 'AES Key Exp', to: '/modern/aes-key', icon: Binary },
       { label: 'AES Encryption', shortLabel: 'AES Encrypt', to: '/modern/aes-encrypt', icon: Lock },
       { label: 'AES Decryption', shortLabel: 'AES Decrypt', to: '/modern/aes-decrypt', icon: Unlock },

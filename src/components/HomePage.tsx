@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
-import { Braces, ExternalLink, FunctionSquare, Grid3x3, Plus, Sigma, Variable, X } from 'lucide-react'
+import { Braces, ExternalLink, FunctionSquare, Grid3x3, Plus, RefreshCw, Replace, Shuffle, Sigma, Variable, X } from 'lucide-react'
 
 interface PageCard {
   title: string
@@ -172,6 +172,32 @@ const sections: Section[] = [
         example: '12 × 26 = 312 candidate plaintexts',
         to: '/brute-force/affine',
         icon: Braces,
+      },
+    ],
+  },
+  {
+    label: 'Modern Block Ciphers',
+    pages: [
+      {
+        title: 'P-Boxes',
+        description: 'Straight, expansion, and compression permutation boxes with inverse P-box working.',
+        example: '11010010  →  11001001',
+        to: '/modern/p-boxes',
+        icon: Shuffle,
+      },
+      {
+        title: 'S-Boxes',
+        description: 'Substitution lookup tables with the inverse S-box computed for bijections.',
+        example: 'S[1011] = 1100',
+        to: '/modern/s-boxes',
+        icon: Replace,
+      },
+      {
+        title: 'LFSR',
+        description: 'Clock a linear feedback shift register and trace each feedback XOR step.',
+        example: '1001 → 0100 → 0010 …',
+        to: '/modern/lfsr',
+        icon: RefreshCw,
       },
     ],
   },

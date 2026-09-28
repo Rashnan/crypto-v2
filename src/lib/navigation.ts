@@ -4,7 +4,10 @@ import {
   Grid3x3,
   LayoutGrid,
   Plus,
+  RefreshCw,
+  Replace,
   Settings,
+  Shuffle,
   Sigma,
   Variable,
   X,
@@ -62,6 +65,14 @@ export const navigationSections: NavigationSection[] = [
       { label: 'Additive Brute Force', shortLabel: 'Additive', to: '/brute-force/additive', icon: Plus },
       { label: 'Multiplicative Brute Force', shortLabel: 'Multiplicative', to: '/brute-force/multiplicative', icon: X },
       { label: 'Affine Brute Force', shortLabel: 'Affine', to: '/brute-force/affine', icon: Braces },
+    ],
+  },
+  {
+    label: 'Modern Block Ciphers',
+    items: [
+      { label: 'P-Boxes', to: '/modern/p-boxes', icon: Shuffle },
+      { label: 'S-Boxes', to: '/modern/s-boxes', icon: Replace },
+      { label: 'LFSR', to: '/modern/lfsr', icon: RefreshCw },
     ],
   },
 ]

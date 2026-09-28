@@ -28,6 +28,9 @@ import { Route as CiphersVigenereRouteImport } from './routes/ciphers/vigenere'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
 import { Route as DiophantineSimultaneousRouteImport } from './routes/diophantine/simultaneous'
 import { Route as DiophantineSingleVarRouteImport } from './routes/diophantine/single-var'
+import { Route as ModernLfsrRouteImport } from './routes/modern/lfsr'
+import { Route as ModernPBoxesRouteImport } from './routes/modern/p-boxes'
+import { Route as ModernSBoxesRouteImport } from './routes/modern/s-boxes'
 import { Route as ModularAdditiveInverseRouteImport } from './routes/modular/additive-inverse'
 import { Route as ModularMatrixInverseRouteImport } from './routes/modular/matrix-inverse'
 import { Route as ModularMultiplicativeInverseRouteImport } from './routes/modular/multiplicative-inverse'
@@ -128,6 +131,21 @@ const DiophantineSingleVarRoute = DiophantineSingleVarRouteImport.update({
   path: '/diophantine/single-var',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModernLfsrRoute = ModernLfsrRouteImport.update({
+  id: '/modern/lfsr',
+  path: '/modern/lfsr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernPBoxesRoute = ModernPBoxesRouteImport.update({
+  id: '/modern/p-boxes',
+  path: '/modern/p-boxes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernSBoxesRoute = ModernSBoxesRouteImport.update({
+  id: '/modern/s-boxes',
+  path: '/modern/s-boxes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModularAdditiveInverseRoute = ModularAdditiveInverseRouteImport.update({
   id: '/modular/additive-inverse',
   path: '/modular/additive-inverse',
@@ -165,6 +183,9 @@ export interface FileRoutesByFullPath {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/modern/lfsr': typeof ModernLfsrRoute
+  '/modern/p-boxes': typeof ModernPBoxesRoute
+  '/modern/s-boxes': typeof ModernSBoxesRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
   '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
@@ -189,6 +210,9 @@ export interface FileRoutesByTo {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/modern/lfsr': typeof ModernLfsrRoute
+  '/modern/p-boxes': typeof ModernPBoxesRoute
+  '/modern/s-boxes': typeof ModernSBoxesRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
   '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
@@ -214,6 +238,9 @@ export interface FileRoutesById {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/modern/lfsr': typeof ModernLfsrRoute
+  '/modern/p-boxes': typeof ModernPBoxesRoute
+  '/modern/s-boxes': typeof ModernSBoxesRoute
   '/modular/additive-inverse': typeof ModularAdditiveInverseRoute
   '/modular/matrix-inverse': typeof ModularMatrixInverseRoute
   '/modular/multiplicative-inverse': typeof ModularMultiplicativeInverseRoute
@@ -240,6 +267,9 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/modern/lfsr'
+    | '/modern/p-boxes'
+    | '/modern/s-boxes'
     | '/modular/additive-inverse'
     | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
@@ -264,6 +294,9 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/modern/lfsr'
+    | '/modern/p-boxes'
+    | '/modern/s-boxes'
     | '/modular/additive-inverse'
     | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
@@ -288,6 +321,9 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/modern/lfsr'
+    | '/modern/p-boxes'
+    | '/modern/s-boxes'
     | '/modular/additive-inverse'
     | '/modular/matrix-inverse'
     | '/modular/multiplicative-inverse'
@@ -313,6 +349,9 @@ export interface RootRouteChildren {
   DiophantineLinearRoute: typeof DiophantineLinearRoute
   DiophantineSimultaneousRoute: typeof DiophantineSimultaneousRoute
   DiophantineSingleVarRoute: typeof DiophantineSingleVarRoute
+  ModernLfsrRoute: typeof ModernLfsrRoute
+  ModernPBoxesRoute: typeof ModernPBoxesRoute
+  ModernSBoxesRoute: typeof ModernSBoxesRoute
   ModularAdditiveInverseRoute: typeof ModularAdditiveInverseRoute
   ModularMatrixInverseRoute: typeof ModularMatrixInverseRoute
   ModularMultiplicativeInverseRoute: typeof ModularMultiplicativeInverseRoute
@@ -453,6 +492,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiophantineSingleVarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modern/lfsr': {
+      id: '/modern/lfsr'
+      path: '/modern/lfsr'
+      fullPath: '/modern/lfsr'
+      preLoaderRoute: typeof ModernLfsrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/p-boxes': {
+      id: '/modern/p-boxes'
+      path: '/modern/p-boxes'
+      fullPath: '/modern/p-boxes'
+      preLoaderRoute: typeof ModernPBoxesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/s-boxes': {
+      id: '/modern/s-boxes'
+      path: '/modern/s-boxes'
+      fullPath: '/modern/s-boxes'
+      preLoaderRoute: typeof ModernSBoxesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modular/additive-inverse': {
       id: '/modular/additive-inverse'
       path: '/modular/additive-inverse'
@@ -497,6 +557,9 @@ const rootRouteChildren: RootRouteChildren = {
   DiophantineLinearRoute: DiophantineLinearRoute,
   DiophantineSimultaneousRoute: DiophantineSimultaneousRoute,
   DiophantineSingleVarRoute: DiophantineSingleVarRoute,
+  ModernLfsrRoute: ModernLfsrRoute,
+  ModernPBoxesRoute: ModernPBoxesRoute,
+  ModernSBoxesRoute: ModernSBoxesRoute,
   ModularAdditiveInverseRoute: ModularAdditiveInverseRoute,
   ModularMatrixInverseRoute: ModularMatrixInverseRoute,
   ModularMultiplicativeInverseRoute: ModularMultiplicativeInverseRoute,

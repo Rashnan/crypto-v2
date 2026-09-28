@@ -3,7 +3,7 @@ import { Drawer } from "@chakra-ui/react";
 import { Tooltip } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ReactElement } from "react";
-import { PanelLeftClose } from "lucide-react";
+import { ChevronDown, PanelLeftClose } from "lucide-react";
 import { navigationSections, overviewItem, preferenceItems, type NavigationItem } from '../lib/navigation';
 
 interface SidebarProps {
@@ -103,6 +103,10 @@ function LogoBlock({ onClose }: { onClose?: () => void }) {
 }
 
 function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => void }) {
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const toggleSection = (label: string) =>
+    setCollapsed((current) => ({ ...current, [label]: !current[label] }));
+
   return (
     <>
       <Box display="grid" gap="4px">
@@ -112,7 +116,15 @@ function NavSections({ open, onNavigate }: { open: boolean; onNavigate?: () => v
       </Box>
 
       {navigationSections.map((section) => (
-        <Section key={section.label} title={section.label} items={section.items} open={open} onNavigate={onNavigate} />
+        <Section
+          key={section.label}
+          title={section.label}
+          items={section.items}
+          open={open}
+          collapsed={Boolean(collapsed[section.label])}
+          onToggle={() => toggleSection(section.label)}
+          onNavigate={onNavigate}
+        />
       ))}
 
       <Box mt="auto">
@@ -138,27 +150,54 @@ function Section({
   title,
   items,
   open,
+  collapsed,
+  onToggle,
   onNavigate,
 }: {
   title: string;
   items: NavigationItem[];
   open: boolean;
+  collapsed: boolean;
+  onToggle: () => void;
   onNavigate?: () => void;
 }) {
   return (
     <Box mt="12px">
       {open && (
-        <Text px="12px" pb="6px" color="var(--text)" fontSize="xs" fontWeight="medium">
-          {title}
-        </Text>
+        <Button
+          variant="ghost"
+          w="full"
+          h="28px"
+          px="12px"
+          gap="8px"
+          justifyContent="space-between"
+          color="var(--text)"
+          fontSize="xs"
+          fontWeight="medium"
+          aria-expanded={!collapsed}
+          onClick={onToggle}
+          _hover={{ bg: "var(--accent-bg)", color: "var(--accent)" }}
+        >
+          <Text>{title}</Text>
+          <ChevronDown
+            size={14}
+            aria-hidden
+            style={{
+              transform: collapsed ? "rotate(-90deg)" : "none",
+              transition: "transform 150ms ease",
+            }}
+          />
+        </Button>
       )}
-      <Box display="grid" gap="4px">
-        {items.map((item) => (
-          <Box key={item.to} onClick={onNavigate}>
-            <NavButton item={item} open={open} />
-          </Box>
-        ))}
-      </Box>
+      {(!open || !collapsed) && (
+        <Box display="grid" gap="4px">
+          {items.map((item) => (
+            <Box key={item.to} onClick={onNavigate}>
+              <NavButton item={item} open={open} />
+            </Box>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

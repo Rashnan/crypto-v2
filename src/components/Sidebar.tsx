@@ -190,7 +190,7 @@ function Section({
         </Button>
       )}
       {(!open || !collapsed) && (
-        <Box display="grid" gap="4px">
+        <Box display="grid" gap="4px" mt={open ? "8px" : undefined}>
           {items.map((item) => (
             <Box key={item.to} onClick={onNavigate}>
               <NavButton item={item} open={open} />

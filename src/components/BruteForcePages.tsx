@@ -155,26 +155,35 @@ function KeyListTable({ keyHeaders, rows, selectedId, onSelect }: { keyHeaders: 
   )
 }
 
+const axisStyle = {
+  bg: 'var(--bg)',
+  backgroundImage: 'linear-gradient(var(--accent-bg), var(--accent-bg))',
+  color: 'var(--accent)',
+  fontWeight: 'semibold',
+  whiteSpace: 'nowrap',
+  borderColor: 'var(--accent)',
+} as const
+
 function AffineGridTable({ outputs, selectedId, onSelect }: { outputs: Map<string, string>; selectedId: string | null; onSelect: (id: string) => void }) {
   return (
     <Box mt="24px" maxH="520px" maxW="full" overflow="auto" borderWidth="1px" borderTopWidth="2px" borderBottomWidth="3px" borderColor="var(--border)" borderRadius="12px">
       <Table.Root size="sm" variant="line">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader borderBottomWidth="1px" borderRightWidth="1px" borderColor="var(--border)" />
-            <Table.ColumnHeader colSpan={coprimeKeys.length} borderBottomWidth="1px" borderColor="var(--border)" textAlign="left" fontWeight="semibold" color="var(--accent)">Multiplicative key (a) →</Table.ColumnHeader>
+            <Table.ColumnHeader {...axisStyle} borderBottomWidth="1px" />
+            <Table.ColumnHeader {...axisStyle} colSpan={coprimeKeys.length} borderBottomWidth="1px" textAlign="left">Multiplicative key (a) →</Table.ColumnHeader>
           </Table.Row>
           <Table.Row>
-            <Table.ColumnHeader position="sticky" top="0" left="0" zIndex="3" bg="var(--accent-bg)" borderBottomWidth="2px" borderRightWidth="1px" borderColor="var(--accent)" whiteSpace="nowrap">Additive key (b) ↓</Table.ColumnHeader>
+            <Table.ColumnHeader {...axisStyle} position="sticky" top="0" left="0" zIndex="3" borderBottomWidth="2px" borderRightWidth="1px" textAlign="center">Additive key (b) ↓</Table.ColumnHeader>
             {coprimeKeys.map((a) => (
-              <Table.ColumnHeader key={a} position="sticky" top="0" zIndex="2" bg="var(--accent-bg)" borderBottomWidth="2px" borderColor="var(--accent)" whiteSpace="nowrap" textAlign="center">a = {a}</Table.ColumnHeader>
+              <Table.ColumnHeader {...axisStyle} key={a} position="sticky" top="0" zIndex="2" borderBottomWidth="2px" textAlign="center">a = {a}</Table.ColumnHeader>
             ))}
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {additiveKeys.map((b) => (
             <Table.Row key={b} _hover={{ bg: 'var(--accent-bg)' }}>
-              <Table.Cell position="sticky" left="0" zIndex="1" bg="var(--bg)" fontWeight="semibold" whiteSpace="nowrap" borderRightWidth="1px" borderColor="var(--border)">b = {b}</Table.Cell>
+              <Table.Cell {...axisStyle} position="sticky" left="0" zIndex="1" borderRightWidth="1px" textAlign="center">b = {b}</Table.Cell>
               {coprimeKeys.map((a) => {
                 const id = `${a}-${b}`
                 const active = id === selectedId

@@ -328,3 +328,32 @@ export function aesRoundDetail(blockHex: string, keyHex: string, round: number, 
   if (!selected) throw new Error('Choose a round between 0 and 10.')
   return selected
 }
+
+export interface AesTables {
+  sbox: number[]
+  invSbox: number[]
+  rcon: number[]
+  mixMatrix: number[][]
+  invMixMatrix: number[][]
+}
+
+/** The fixed AES substitution and diffusion tables, for display. */
+export function aesTables(): AesTables {
+  return {
+    sbox: [...SBOX],
+    invSbox: [...INV_SBOX],
+    rcon: [...RCON],
+    mixMatrix: [
+      [2, 3, 1, 1],
+      [1, 2, 3, 1],
+      [1, 1, 2, 3],
+      [3, 1, 1, 2],
+    ],
+    invMixMatrix: [
+      [14, 11, 13, 9],
+      [9, 14, 11, 13],
+      [13, 9, 14, 11],
+      [11, 13, 9, 14],
+    ],
+  }
+}

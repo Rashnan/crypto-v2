@@ -32,19 +32,24 @@ function DiagramFrame({ label, children, viewBox, maxWidth = '680px' }: { label:
   )
 }
 
-export function DesRoundDiagram() {
+export function DesRoundDiagram({ mode = 'encrypt' }: { mode?: 'encrypt' | 'decrypt' }) {
   const marker = 'des-round-arrow'
+  const subkey = mode === 'encrypt' ? 'Kᵢ' : 'K₁₇₋ᵢ'
+  const caption =
+    mode === 'encrypt'
+      ? 'Encryption consumes K₁ … K₁₆ in order; the F output is XORed with L and the halves swap.'
+      : 'Decryption reuses this exact round but consumes the subkeys in reverse (K₁₆ … K₁).'
   return (
-    <DiagramFrame label="DES round diagram" viewBox="0 0 620 480">
+    <DiagramFrame label={`DES ${mode} round diagram`} viewBox="0 0 620 480">
       <defs><Marker id={marker} /></defs>
-      <text x="16" y="16" fontSize="13" fontWeight="600" fill="var(--text)">One DES Feistel round</text>
+      <text x="16" y="16" fontSize="13" fontWeight="600" fill="var(--text)">One DES Feistel round ({mode})</text>
       <Node x={30} y={28} w={150} h={46} label="L" sub="32 bits" />
       <Node x={430} y={28} w={150} h={46} label="R" sub="32 bits" />
       <Node x={430} y={108} w={150} h={44} label="E expansion" sub="32 → 48" />
-      <Node x={430} y={180} w={150} h={44} label="⊕ subkey Kᵢ" sub="48 bits" />
+      <Node x={430} y={180} w={150} h={44} label={`⊕ subkey ${subkey}`} sub="48 bits" />
       <Node x={430} y={252} w={150} h={44} label="S1 … S8" sub="48 → 32" />
       <Node x={430} y={324} w={150} h={44} label="P permutation" sub="32 → 32" />
-      <Node x={30} y={396} w={150} h={44} label="⊕ combine" sub="L ⊕ F(R, Kᵢ)" />
+      <Node x={30} y={396} w={150} h={44} label="⊕ combine" sub="L ⊕ F(R, K)" />
       <Node x={430} y={396} w={150} h={44} label="R′" sub="new right half" />
       <Arrow d="M505,74 V108" markerId={marker} />
       <Arrow d="M505,152 V180" markerId={marker} />
@@ -54,7 +59,7 @@ export function DesRoundDiagram() {
       <Arrow d="M105,74 V366 H64 V396" markerId={marker} />
       <Arrow d="M180,418 H430" markerId={marker} />
       <text x="430" y="22" fontSize="11" fill="var(--text)">L′ = R</text>
-      <text x="16" y="466" fontSize="11" fill="var(--text)">The F output is XORed with L to make the new right half; R becomes the new left half (the halves swap).</text>
+      <text x="16" y="466" fontSize="11" fill="var(--text)">{caption}</text>
     </DiagramFrame>
   )
 }
@@ -131,20 +136,40 @@ function AesCard({ x, title, description, variant }: { x: number; title: string;
   )
 }
 
-export function AesRoundDiagram() {
+type AesCardVariant = 'sub' | 'shift' | 'mix' | 'key'
+
+const aesEncryptCards: Array<{ title: string; description: string; variant: AesCardVariant }> = [
+  { title: 'SubBytes', description: 'every byte b → S[b]', variant: 'sub' },
+  { title: 'ShiftRows', description: 'row r shifts left by r', variant: 'shift' },
+  { title: 'MixColumns', description: 'each column × fixed matrix', variant: 'mix' },
+  { title: 'AddRoundKey', description: 'state ⊕ round key', variant: 'key' },
+]
+
+const aesDecryptCards: Array<{ title: string; description: string; variant: AesCardVariant }> = [
+  { title: 'InvShiftRows', description: 'row r shifts right by r', variant: 'shift' },
+  { title: 'InvSubBytes', description: 'every byte b → S⁻¹[b]', variant: 'sub' },
+  { title: 'AddRoundKey', description: 'state ⊕ round key (reversed)', variant: 'key' },
+  { title: 'InvMixColumns', description: 'each column × inverse matrix', variant: 'mix' },
+]
+
+export function AesRoundDiagram({ mode = 'encrypt' }: { mode?: 'encrypt' | 'decrypt' }) {
   const marker = 'aes-round-arrow'
+  const cards = mode === 'encrypt' ? aesEncryptCards : aesDecryptCards
+  const caption =
+    mode === 'encrypt'
+      ? 'Round 10 omits MixColumns.'
+      : 'The final decryption stage omits InvMixColumns; AddRoundKey uses the round keys in reverse.'
   return (
-    <DiagramFrame label="AES round diagram" viewBox="0 0 760 280" maxWidth="780px">
+    <DiagramFrame label={`AES ${mode} round diagram`} viewBox="0 0 760 280" maxWidth="780px">
       <defs><Marker id={marker} /></defs>
-      <text x="16" y="18" fontSize="13" fontWeight="600" fill="var(--text)">The 4 × 4 state passes through four operations each round</text>
-      <AesCard x={20} title="SubBytes" description="every byte b → S[b]" variant="sub" />
-      <AesCard x={205} title="ShiftRows" description="row r shifts left by r" variant="shift" />
-      <AesCard x={390} title="MixColumns" description="each column × fixed matrix" variant="mix" />
-      <AesCard x={575} title="AddRoundKey" description="state ⊕ round key" variant="key" />
+      <text x="16" y="18" fontSize="13" fontWeight="600" fill="var(--text)">The 4 × 4 state passes through four operations each {mode} round</text>
+      {cards.map((card, index) => (
+        <AesCard key={card.title} x={20 + index * 185} title={card.title} description={card.description} variant={card.variant} />
+      ))}
       <Arrow d="M185,145 H205" markerId={marker} />
       <Arrow d="M370,145 H390" markerId={marker} />
       <Arrow d="M555,145 H575" markerId={marker} />
-      <text x="16" y="272" fontSize="11" fill="var(--text)">Round 10 omits MixColumns. Decryption runs the inverses in reverse order.</text>
+      <text x="16" y="272" fontSize="11" fill="var(--text)">{caption}</text>
     </DiagramFrame>
   )
 }

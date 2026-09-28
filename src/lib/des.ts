@@ -315,3 +315,28 @@ export function desEncrypt(blockHex: string, keyHex: string): DesCipherDetail {
 export function desDecrypt(blockHex: string, keyHex: string): DesCipherDetail {
   return desCipher(blockHex, keyHex, true)
 }
+
+export interface DesTables {
+  ip: number[]
+  fp: number[]
+  expansion: number[]
+  permutation: number[]
+  pc1: number[]
+  pc2: number[]
+  shifts: number[]
+  sboxes: number[][][]
+}
+
+/** The fixed DES permutation and substitution tables, for display. */
+export function desTables(): DesTables {
+  return {
+    ip: [...IP],
+    fp: [...FP],
+    expansion: [...E],
+    permutation: [...P],
+    pc1: [...PC1],
+    pc2: [...PC2],
+    shifts: [...SHIFTS],
+    sboxes: SBOXES.map((box) => box.map((row) => [...row])),
+  }
+}

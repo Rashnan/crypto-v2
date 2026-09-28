@@ -54,3 +54,43 @@ export function StateMatrix({ label, hex }: { label?: string; hex: string }) {
 export function SectionHeading({ children }: { children: ReactNode }) {
   return <Box as="h2" mt="32px" mb="16px" fontSize="lg" fontWeight="semibold" color="var(--text-h)" textAlign="left">{children}</Box>
 }
+
+export function ConstantBlock({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+  return (
+    <Box p="12px 14px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
+      <Text fontSize="sm" fontWeight="semibold" color="var(--text-h)">{label}</Text>
+      {hint && <Text mt="2px" fontSize="xs" color="var(--text)">{hint}</Text>}
+      <Box mt="8px">{children}</Box>
+    </Box>
+  )
+}
+
+export function NumberGrid({ values, perRow = 16 }: { values: number[]; perRow?: number }) {
+  return (
+    <SimpleGrid columns={perRow} gap="2px" fontFamily="mono" fontSize="11px">
+      {values.map((value, index) => (
+        <Box key={index} textAlign="center" py="1px" borderWidth="1px" borderColor="var(--border)" borderRadius="3px" bg="var(--bg)" color="var(--text-h)">{value}</Box>
+      ))}
+    </SimpleGrid>
+  )
+}
+
+export function HexGrid({ values }: { values: number[] }) {
+  return (
+    <SimpleGrid columns={16} gap="1px" fontFamily="mono" fontSize="10px">
+      {values.map((value, index) => (
+        <Box key={index} textAlign="center" py="1px" borderWidth="1px" borderColor="var(--border)" borderRadius="2px" bg="var(--bg)" color="var(--text-h)">{value.toString(16).toUpperCase().padStart(2, '0')}</Box>
+      ))}
+    </SimpleGrid>
+  )
+}
+
+export function NumberMatrix({ matrix }: { matrix: number[][] }) {
+  return (
+    <SimpleGrid columns={matrix[0]?.length ?? 1} gap="2px" fontFamily="mono" fontSize="12px" maxW="200px">
+      {matrix.flatMap((row, rowIndex) => row.map((value, columnIndex) => (
+        <Box key={`${rowIndex}-${columnIndex}`} textAlign="center" py="3px" borderWidth="1px" borderColor="var(--border)" borderRadius="4px" bg="var(--bg)" color="var(--text-h)">{value}</Box>
+      )))}
+    </SimpleGrid>
+  )
+}

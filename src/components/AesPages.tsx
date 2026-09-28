@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { Box, Button, Field, Flex, Heading, Input, Table, Text } from '@chakra-ui/react'
+import { Box, Button, Field, Flex, Heading, Input, SimpleGrid, Table, Text } from '@chakra-ui/react'
 import {
   aesDecryptDetail,
   aesEncryptDetail,
   aesKeyExpansion,
   aesRoundDetail,
+  aesTables,
   type AesCipherDetail,
   type AesRoundDetail,
 } from '../lib/aes'
 import type { CipherMode } from '../lib/ciphers'
 import { AesKeyExpansionDiagram, AesRoundDiagram } from './CipherDiagrams'
-import { ErrorNote, ResultBox, SectionHeading, StateMatrix } from './BlockCipherUi'
+import { ConstantBlock, ErrorNote, HexGrid, NumberGrid, NumberMatrix, ResultBox, SectionHeading, StateMatrix } from './BlockCipherUi'
 
 const sampleBlock = '00112233445566778899AABBCCDDEEFF'
 const sampleKey = '000102030405060708090A0B0C0D0E0F'
+const tables = aesTables()
 
 function HexField({ label, value, onChange, maxW = '320px', invalid }: { label: string; value: string; onChange: (value: string) => void; maxW?: string; invalid?: boolean }) {
   return (
@@ -73,10 +75,15 @@ export function AesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKe
       <Heading as="h1" m="0" fontSize={{ base: '2xl', md: '3xl' }} letterSpacing="tight">AES — One Round</Heading>
       <Text mt="8px" color="var(--text)">
         Each AES round applies SubBytes, ShiftRows, MixColumns and AddRoundKey. Round 10 omits MixColumns, and round 0
-        is the initial AddRoundKey.
+        is the initial AddRoundKey. Decryption applies the inverses in reverse order.
       </Text>
 
-      <AesRoundDiagram />
+      <Box mt="24px">
+        <Text fontSize="sm" color="var(--text)" mb="10px">Diagram</Text>
+        <ModeToggle mode={mode} onChange={setMode} />
+      </Box>
+
+      <AesRoundDiagram mode={mode} />
 
       <Flex mt="24px" gap="16px" flexWrap="wrap" align="end">
         <HexField label="Block (32 hex)" value={block} onChange={setBlock} invalid={Boolean(error)} />
@@ -85,10 +92,6 @@ export function AesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKe
           <Field.Label>Round</Field.Label>
           <Input mt="8px" type="number" min="0" max="10" value={roundRaw} onChange={(event) => setRoundRaw(event.target.value)} />
         </Field.Root>
-        <Box>
-          <Text fontSize="sm" color="var(--text)" mb="10px">Direction</Text>
-          <ModeToggle mode={mode} onChange={setMode} />
-        </Box>
       </Flex>
 
       {error && <ErrorNote message={error} />}
@@ -102,6 +105,24 @@ export function AesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKe
           <AesOperations round={detail} />
         </>
       )}
+
+      <SectionHeading>Constant tables</SectionHeading>
+      <Box display="grid" gap="12px">
+        <ConstantBlock label="S-box" hint="SubBytes lookup (16 × 16, row = high nibble)">
+          <HexGrid values={tables.sbox} />
+        </ConstantBlock>
+        <ConstantBlock label="Inverse S-box" hint="InvSubBytes lookup">
+          <HexGrid values={tables.invSbox} />
+        </ConstantBlock>
+        <SimpleGrid columns={{ base: 1, md: 2 }} gap="12px">
+          <ConstantBlock label="MixColumns matrix" hint="multiply each column in GF(2⁸)">
+            <NumberMatrix matrix={tables.mixMatrix} />
+          </ConstantBlock>
+          <ConstantBlock label="InvMixColumns matrix" hint="inverse diffusion">
+            <NumberMatrix matrix={tables.invMixMatrix} />
+          </ConstantBlock>
+        </SimpleGrid>
+      </Box>
     </Box>
   )
 }
@@ -189,6 +210,16 @@ export function AesKeyPage() {
                 ))}
               </Table.Body>
             </Table.Root>
+          </Box>
+
+          <SectionHeading>Constant tables</SectionHeading>
+          <Box display="grid" gap="12px">
+            <ConstantBlock label="Rcon" hint="added to every 4th word (rounds 1 … 10)">
+              <NumberGrid values={tables.rcon} perRow={10} />
+            </ConstantBlock>
+            <ConstantBlock label="S-box (SubWord)" hint="applied byte-wise during key expansion">
+              <HexGrid values={tables.sbox} />
+            </ConstantBlock>
           </Box>
         </>
       )}

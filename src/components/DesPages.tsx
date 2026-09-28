@@ -6,15 +6,17 @@ import {
   desEncrypt,
   desKeySchedule,
   desRoundDetail,
+  desTables,
   type DesCipherDetail,
   type DesRoundDetail,
 } from '../lib/des'
 import type { CipherMode } from '../lib/ciphers'
 import { DesKeyScheduleDiagram, DesRoundDiagram } from './CipherDiagrams'
-import { BitsView, ErrorNote, ResultBox, SectionHeading } from './BlockCipherUi'
+import { BitsView, ConstantBlock, ErrorNote, NumberGrid, ResultBox, SectionHeading } from './BlockCipherUi'
 
 const sampleBlock = '0123456789ABCDEF'
 const sampleKey = '133457799BBCDFF1'
+const tables = desTables()
 
 function HexField({ label, value, onChange, maxW = '320px', invalid }: { label: string; value: string; onChange: (value: string) => void; maxW?: string; invalid?: boolean }) {
   return (
@@ -106,10 +108,16 @@ export function DesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKe
       <Heading as="h1" m="0" fontSize={{ base: '2xl', md: '3xl' }} letterSpacing="tight">DES — One Round</Heading>
       <Text mt="8px" color="var(--text)">
         The Feistel function expands R to 48 bits, XORs the round subkey, sends each 6-bit group through its S-box,
-        then applies the P permutation and XORs the result into L.
+        then applies the P permutation and XORs the result into L. The same round is used for encryption and
+        decryption; only the subkey order changes.
       </Text>
 
-      <DesRoundDiagram />
+      <Box mt="24px">
+        <Text fontSize="sm" color="var(--text)" mb="10px">Diagram</Text>
+        <ModeToggle mode={mode} onChange={setMode} />
+      </Box>
+
+      <DesRoundDiagram mode={mode} />
 
       <Flex mt="24px" gap="16px" flexWrap="wrap" align="end">
         <HexField label="Block (16 hex)" value={block} onChange={setBlock} invalid={Boolean(error)} />
@@ -118,10 +126,6 @@ export function DesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKe
           <Field.Label>Round</Field.Label>
           <Input mt="8px" type="number" min="1" max="16" value={roundRaw} onChange={(event) => setRoundRaw(event.target.value)} />
         </Field.Root>
-        <Box>
-          <Text fontSize="sm" color="var(--text)" mb="10px">Direction</Text>
-          <ModeToggle mode={mode} onChange={setMode} />
-        </Box>
       </Flex>
 
       {error && <ErrorNote message={error} />}
@@ -134,6 +138,26 @@ export function DesRoundPage({ initialBlock = sampleBlock, initialKey = sampleKe
           </Box>
         </>
       )}
+
+      <SectionHeading>Constant tables</SectionHeading>
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap="12px">
+        <ConstantBlock label="E — expansion permutation" hint="32 → 48">
+          <NumberGrid values={tables.expansion} perRow={6} />
+        </ConstantBlock>
+        <ConstantBlock label="P — permutation" hint="32 → 32">
+          <NumberGrid values={tables.permutation} perRow={8} />
+        </ConstantBlock>
+      </SimpleGrid>
+      <Box mt="12px">
+        <Text fontSize="sm" color="var(--text)">S-boxes — each 6-bit input selects a row (outer bits) and column (inner bits)</Text>
+        <SimpleGrid mt="8px" columns={{ base: 1, md: 2 }} gap="12px">
+          {tables.sboxes.map((box, index) => (
+            <ConstantBlock key={index} label={`S${index + 1}`}>
+              <NumberGrid values={box.flat()} perRow={16} />
+            </ConstantBlock>
+          ))}
+        </SimpleGrid>
+      </Box>
     </Box>
   )
 }
@@ -202,6 +226,19 @@ export function DesKeyPage() {
               </Table.Body>
             </Table.Root>
           </Box>
+
+          <SectionHeading>Constant tables</SectionHeading>
+          <SimpleGrid columns={{ base: 1, md: 2 }} gap="12px">
+            <ConstantBlock label="PC-1" hint="64 → 56">
+              <NumberGrid values={tables.pc1} perRow={7} />
+            </ConstantBlock>
+            <ConstantBlock label="PC-2" hint="56 → 48">
+              <NumberGrid values={tables.pc2} perRow={6} />
+            </ConstantBlock>
+            <ConstantBlock label="Left shift per round" hint="rounds 1 … 16">
+              <NumberGrid values={tables.shifts} perRow={16} />
+            </ConstantBlock>
+          </SimpleGrid>
         </>
       )}
     </Box>

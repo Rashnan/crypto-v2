@@ -28,6 +28,14 @@ import { Route as CiphersVigenereRouteImport } from './routes/ciphers/vigenere'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
 import { Route as DiophantineSimultaneousRouteImport } from './routes/diophantine/simultaneous'
 import { Route as DiophantineSingleVarRouteImport } from './routes/diophantine/single-var'
+import { Route as ModernAesDecryptRouteImport } from './routes/modern/aes-decrypt'
+import { Route as ModernAesEncryptRouteImport } from './routes/modern/aes-encrypt'
+import { Route as ModernAesKeyRouteImport } from './routes/modern/aes-key'
+import { Route as ModernAesRoundRouteImport } from './routes/modern/aes-round'
+import { Route as ModernDesDecryptRouteImport } from './routes/modern/des-decrypt'
+import { Route as ModernDesEncryptRouteImport } from './routes/modern/des-encrypt'
+import { Route as ModernDesKeyRouteImport } from './routes/modern/des-key'
+import { Route as ModernDesRoundRouteImport } from './routes/modern/des-round'
 import { Route as ModernLfsrRouteImport } from './routes/modern/lfsr'
 import { Route as ModernPBoxesRouteImport } from './routes/modern/p-boxes'
 import { Route as ModernSBoxesRouteImport } from './routes/modern/s-boxes'
@@ -131,6 +139,46 @@ const DiophantineSingleVarRoute = DiophantineSingleVarRouteImport.update({
   path: '/diophantine/single-var',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModernAesDecryptRoute = ModernAesDecryptRouteImport.update({
+  id: '/modern/aes-decrypt',
+  path: '/modern/aes-decrypt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernAesEncryptRoute = ModernAesEncryptRouteImport.update({
+  id: '/modern/aes-encrypt',
+  path: '/modern/aes-encrypt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernAesKeyRoute = ModernAesKeyRouteImport.update({
+  id: '/modern/aes-key',
+  path: '/modern/aes-key',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernAesRoundRoute = ModernAesRoundRouteImport.update({
+  id: '/modern/aes-round',
+  path: '/modern/aes-round',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernDesDecryptRoute = ModernDesDecryptRouteImport.update({
+  id: '/modern/des-decrypt',
+  path: '/modern/des-decrypt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernDesEncryptRoute = ModernDesEncryptRouteImport.update({
+  id: '/modern/des-encrypt',
+  path: '/modern/des-encrypt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernDesKeyRoute = ModernDesKeyRouteImport.update({
+  id: '/modern/des-key',
+  path: '/modern/des-key',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModernDesRoundRoute = ModernDesRoundRouteImport.update({
+  id: '/modern/des-round',
+  path: '/modern/des-round',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModernLfsrRoute = ModernLfsrRouteImport.update({
   id: '/modern/lfsr',
   path: '/modern/lfsr',
@@ -183,6 +231,14 @@ export interface FileRoutesByFullPath {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/modern/aes-decrypt': typeof ModernAesDecryptRoute
+  '/modern/aes-encrypt': typeof ModernAesEncryptRoute
+  '/modern/aes-key': typeof ModernAesKeyRoute
+  '/modern/aes-round': typeof ModernAesRoundRoute
+  '/modern/des-decrypt': typeof ModernDesDecryptRoute
+  '/modern/des-encrypt': typeof ModernDesEncryptRoute
+  '/modern/des-key': typeof ModernDesKeyRoute
+  '/modern/des-round': typeof ModernDesRoundRoute
   '/modern/lfsr': typeof ModernLfsrRoute
   '/modern/p-boxes': typeof ModernPBoxesRoute
   '/modern/s-boxes': typeof ModernSBoxesRoute
@@ -210,6 +266,14 @@ export interface FileRoutesByTo {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/modern/aes-decrypt': typeof ModernAesDecryptRoute
+  '/modern/aes-encrypt': typeof ModernAesEncryptRoute
+  '/modern/aes-key': typeof ModernAesKeyRoute
+  '/modern/aes-round': typeof ModernAesRoundRoute
+  '/modern/des-decrypt': typeof ModernDesDecryptRoute
+  '/modern/des-encrypt': typeof ModernDesEncryptRoute
+  '/modern/des-key': typeof ModernDesKeyRoute
+  '/modern/des-round': typeof ModernDesRoundRoute
   '/modern/lfsr': typeof ModernLfsrRoute
   '/modern/p-boxes': typeof ModernPBoxesRoute
   '/modern/s-boxes': typeof ModernSBoxesRoute
@@ -238,6 +302,14 @@ export interface FileRoutesById {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/modern/aes-decrypt': typeof ModernAesDecryptRoute
+  '/modern/aes-encrypt': typeof ModernAesEncryptRoute
+  '/modern/aes-key': typeof ModernAesKeyRoute
+  '/modern/aes-round': typeof ModernAesRoundRoute
+  '/modern/des-decrypt': typeof ModernDesDecryptRoute
+  '/modern/des-encrypt': typeof ModernDesEncryptRoute
+  '/modern/des-key': typeof ModernDesKeyRoute
+  '/modern/des-round': typeof ModernDesRoundRoute
   '/modern/lfsr': typeof ModernLfsrRoute
   '/modern/p-boxes': typeof ModernPBoxesRoute
   '/modern/s-boxes': typeof ModernSBoxesRoute
@@ -267,6 +339,14 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/modern/aes-decrypt'
+    | '/modern/aes-encrypt'
+    | '/modern/aes-key'
+    | '/modern/aes-round'
+    | '/modern/des-decrypt'
+    | '/modern/des-encrypt'
+    | '/modern/des-key'
+    | '/modern/des-round'
     | '/modern/lfsr'
     | '/modern/p-boxes'
     | '/modern/s-boxes'
@@ -294,6 +374,14 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/modern/aes-decrypt'
+    | '/modern/aes-encrypt'
+    | '/modern/aes-key'
+    | '/modern/aes-round'
+    | '/modern/des-decrypt'
+    | '/modern/des-encrypt'
+    | '/modern/des-key'
+    | '/modern/des-round'
     | '/modern/lfsr'
     | '/modern/p-boxes'
     | '/modern/s-boxes'
@@ -321,6 +409,14 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/modern/aes-decrypt'
+    | '/modern/aes-encrypt'
+    | '/modern/aes-key'
+    | '/modern/aes-round'
+    | '/modern/des-decrypt'
+    | '/modern/des-encrypt'
+    | '/modern/des-key'
+    | '/modern/des-round'
     | '/modern/lfsr'
     | '/modern/p-boxes'
     | '/modern/s-boxes'
@@ -349,6 +445,14 @@ export interface RootRouteChildren {
   DiophantineLinearRoute: typeof DiophantineLinearRoute
   DiophantineSimultaneousRoute: typeof DiophantineSimultaneousRoute
   DiophantineSingleVarRoute: typeof DiophantineSingleVarRoute
+  ModernAesDecryptRoute: typeof ModernAesDecryptRoute
+  ModernAesEncryptRoute: typeof ModernAesEncryptRoute
+  ModernAesKeyRoute: typeof ModernAesKeyRoute
+  ModernAesRoundRoute: typeof ModernAesRoundRoute
+  ModernDesDecryptRoute: typeof ModernDesDecryptRoute
+  ModernDesEncryptRoute: typeof ModernDesEncryptRoute
+  ModernDesKeyRoute: typeof ModernDesKeyRoute
+  ModernDesRoundRoute: typeof ModernDesRoundRoute
   ModernLfsrRoute: typeof ModernLfsrRoute
   ModernPBoxesRoute: typeof ModernPBoxesRoute
   ModernSBoxesRoute: typeof ModernSBoxesRoute
@@ -492,6 +596,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiophantineSingleVarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modern/aes-decrypt': {
+      id: '/modern/aes-decrypt'
+      path: '/modern/aes-decrypt'
+      fullPath: '/modern/aes-decrypt'
+      preLoaderRoute: typeof ModernAesDecryptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/aes-encrypt': {
+      id: '/modern/aes-encrypt'
+      path: '/modern/aes-encrypt'
+      fullPath: '/modern/aes-encrypt'
+      preLoaderRoute: typeof ModernAesEncryptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/aes-key': {
+      id: '/modern/aes-key'
+      path: '/modern/aes-key'
+      fullPath: '/modern/aes-key'
+      preLoaderRoute: typeof ModernAesKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/aes-round': {
+      id: '/modern/aes-round'
+      path: '/modern/aes-round'
+      fullPath: '/modern/aes-round'
+      preLoaderRoute: typeof ModernAesRoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/des-decrypt': {
+      id: '/modern/des-decrypt'
+      path: '/modern/des-decrypt'
+      fullPath: '/modern/des-decrypt'
+      preLoaderRoute: typeof ModernDesDecryptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/des-encrypt': {
+      id: '/modern/des-encrypt'
+      path: '/modern/des-encrypt'
+      fullPath: '/modern/des-encrypt'
+      preLoaderRoute: typeof ModernDesEncryptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/des-key': {
+      id: '/modern/des-key'
+      path: '/modern/des-key'
+      fullPath: '/modern/des-key'
+      preLoaderRoute: typeof ModernDesKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modern/des-round': {
+      id: '/modern/des-round'
+      path: '/modern/des-round'
+      fullPath: '/modern/des-round'
+      preLoaderRoute: typeof ModernDesRoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modern/lfsr': {
       id: '/modern/lfsr'
       path: '/modern/lfsr'
@@ -557,6 +717,14 @@ const rootRouteChildren: RootRouteChildren = {
   DiophantineLinearRoute: DiophantineLinearRoute,
   DiophantineSimultaneousRoute: DiophantineSimultaneousRoute,
   DiophantineSingleVarRoute: DiophantineSingleVarRoute,
+  ModernAesDecryptRoute: ModernAesDecryptRoute,
+  ModernAesEncryptRoute: ModernAesEncryptRoute,
+  ModernAesKeyRoute: ModernAesKeyRoute,
+  ModernAesRoundRoute: ModernAesRoundRoute,
+  ModernDesDecryptRoute: ModernDesDecryptRoute,
+  ModernDesEncryptRoute: ModernDesEncryptRoute,
+  ModernDesKeyRoute: ModernDesKeyRoute,
+  ModernDesRoundRoute: ModernDesRoundRoute,
   ModernLfsrRoute: ModernLfsrRoute,
   ModernPBoxesRoute: ModernPBoxesRoute,
   ModernSBoxesRoute: ModernSBoxesRoute,

@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
-import { Braces, ExternalLink, FunctionSquare, Grid3x3, Plus, RefreshCw, Replace, Shuffle, Sigma, Variable, X } from 'lucide-react'
+import { Binary, Boxes, Braces, ExternalLink, FunctionSquare, Grid3x3, KeyRound, Layers, Lock, Plus, RefreshCw, Replace, Shuffle, Sigma, Unlock, Variable, X } from 'lucide-react'
 
 interface PageCard {
   title: string
@@ -198,6 +198,62 @@ const sections: Section[] = [
         example: '1001 → 0100 → 0010 …',
         to: '/modern/lfsr',
         icon: RefreshCw,
+      },
+      {
+        title: 'DES Round',
+        description: 'One Feistel round: expansion, subkey XOR, eight S-boxes, and the P permutation.',
+        example: 'R ⊕ F(R, K) → L′',
+        to: '/modern/des-round',
+        icon: Layers,
+      },
+      {
+        title: 'DES Key Generation',
+        description: 'PC-1 selection, the rotating C/D halves, and all sixteen 48-bit subkeys.',
+        example: 'PC-1 → C₀/D₀ → 16 subkeys',
+        to: '/modern/des-key',
+        icon: KeyRound,
+      },
+      {
+        title: 'DES Encryption',
+        description: 'The full cipher: initial permutation, sixteen rounds, and the final permutation.',
+        example: '0123456789ABCDEF → 85E813540F0AB405',
+        to: '/modern/des-encrypt',
+        icon: Lock,
+      },
+      {
+        title: 'DES Decryption',
+        description: 'The same network with the subkeys applied in reverse order.',
+        example: '85E813540F0AB405 → 0123456789ABCDEF',
+        to: '/modern/des-decrypt',
+        icon: Unlock,
+      },
+      {
+        title: 'AES Round',
+        description: 'SubBytes, ShiftRows, MixColumns and AddRoundKey over the 4 × 4 state.',
+        example: 'SubBytes → ShiftRows → MixColumns → AddRoundKey',
+        to: '/modern/aes-round',
+        icon: Boxes,
+      },
+      {
+        title: 'AES Key Expansion',
+        description: 'Expand the key into 44 words with RotWord, SubWord and Rcon.',
+        example: '11 round keys from 16 bytes',
+        to: '/modern/aes-key',
+        icon: Binary,
+      },
+      {
+        title: 'AES Encryption',
+        description: 'Initial AddRoundKey, nine full rounds, and a final round without MixColumns.',
+        example: '00112233… → 69C4E0D8…',
+        to: '/modern/aes-encrypt',
+        icon: Lock,
+      },
+      {
+        title: 'AES Decryption',
+        description: 'The inverse cipher with InvShiftRows, InvSubBytes and InvMixColumns.',
+        example: '69C4E0D8… → 00112233…',
+        to: '/modern/aes-decrypt',
+        icon: Unlock,
       },
     ],
   },

@@ -51,7 +51,7 @@ function NavButton({ item, open }: { item: NavigationItem; open: boolean }) {
     <Button asChild variant="ghost" {...navButtonStyles} _hover={hoverStyles}>
       <Link to={item.to} activeProps={{ style: activeStyles }}>
         <Icon size={20} />
-        {open && <Text>{item.label}</Text>}
+        {open && <Text>{item.shortLabel ?? item.label}</Text>}
       </Link>
     </Button>
   );

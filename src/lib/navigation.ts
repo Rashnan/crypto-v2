@@ -15,6 +15,7 @@ export interface NavigationItem {
   label: string
   to: string
   icon: LucideIcon
+  shortLabel?: string
 }
 
 export interface NavigationSection {
@@ -53,6 +54,14 @@ export const navigationSections: NavigationSection[] = [
       { label: 'Autokey Cipher', to: '/ciphers/autokey', icon: FunctionSquare },
       { label: 'Playfair Cipher', to: '/ciphers/playfair', icon: Grid3x3 },
       { label: 'Hill Cipher', to: '/ciphers/hill', icon: Braces },
+    ],
+  },
+  {
+    label: 'Brute Force',
+    items: [
+      { label: 'Additive Brute Force', shortLabel: 'Additive', to: '/brute-force/additive', icon: Plus },
+      { label: 'Multiplicative Brute Force', shortLabel: 'Multiplicative', to: '/brute-force/multiplicative', icon: X },
+      { label: 'Affine Brute Force', shortLabel: 'Affine', to: '/brute-force/affine', icon: Braces },
     ],
   },
 ]

@@ -149,6 +149,32 @@ const sections: Section[] = [
       },
     ],
   },
+  {
+    label: 'Brute Force',
+    pages: [
+      {
+        title: 'Additive Brute Force',
+        description: 'Try all 26 Caesar shifts and click any row for the full calculation.',
+        example: '26 candidate plaintexts',
+        to: '/brute-force/additive',
+        icon: Plus,
+      },
+      {
+        title: 'Multiplicative Brute Force',
+        description: 'Try every invertible multiplier and click any row for the full calculation.',
+        example: '12 candidate plaintexts',
+        to: '/brute-force/multiplicative',
+        icon: X,
+      },
+      {
+        title: 'Affine Brute Force',
+        description: 'Try every affine key pair and click any row for the full calculation.',
+        example: '12 × 26 = 312 candidate plaintexts',
+        to: '/brute-force/affine',
+        icon: Braces,
+      },
+    ],
+  },
 ]
 
 function Card({ page }: { page: PageCard }) {

@@ -14,6 +14,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
 import { Route as BasicMatrixDeterminantRouteImport } from './routes/basic/matrix-determinant'
+import { Route as BruteForceAdditiveRouteImport } from './routes/brute-force/additive'
+import { Route as BruteForceAffineRouteImport } from './routes/brute-force/affine'
+import { Route as BruteForceMultiplicativeRouteImport } from './routes/brute-force/multiplicative'
 import { Route as CiphersAdditiveRouteImport } from './routes/ciphers/additive'
 import { Route as CiphersAffineRouteImport } from './routes/ciphers/affine'
 import { Route as CiphersAutokeyRouteImport } from './routes/ciphers/autokey'
@@ -54,6 +57,22 @@ const BasicMatrixDeterminantRoute = BasicMatrixDeterminantRouteImport.update({
   path: '/basic/matrix-determinant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BruteForceAdditiveRoute = BruteForceAdditiveRouteImport.update({
+  id: '/brute-force/additive',
+  path: '/brute-force/additive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BruteForceAffineRoute = BruteForceAffineRouteImport.update({
+  id: '/brute-force/affine',
+  path: '/brute-force/affine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BruteForceMultiplicativeRoute =
+  BruteForceMultiplicativeRouteImport.update({
+    id: '/brute-force/multiplicative',
+    path: '/brute-force/multiplicative',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CiphersAdditiveRoute = CiphersAdditiveRouteImport.update({
   id: '/ciphers/additive',
   path: '/ciphers/additive',
@@ -132,6 +151,9 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
+  '/brute-force/additive': typeof BruteForceAdditiveRoute
+  '/brute-force/affine': typeof BruteForceAffineRoute
+  '/brute-force/multiplicative': typeof BruteForceMultiplicativeRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
   '/ciphers/autokey': typeof CiphersAutokeyRoute
@@ -153,6 +175,9 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
+  '/brute-force/additive': typeof BruteForceAdditiveRoute
+  '/brute-force/affine': typeof BruteForceAffineRoute
+  '/brute-force/multiplicative': typeof BruteForceMultiplicativeRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
   '/ciphers/autokey': typeof CiphersAutokeyRoute
@@ -175,6 +200,9 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
+  '/brute-force/additive': typeof BruteForceAdditiveRoute
+  '/brute-force/affine': typeof BruteForceAffineRoute
+  '/brute-force/multiplicative': typeof BruteForceMultiplicativeRoute
   '/ciphers/additive': typeof CiphersAdditiveRoute
   '/ciphers/affine': typeof CiphersAffineRoute
   '/ciphers/autokey': typeof CiphersAutokeyRoute
@@ -198,6 +226,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/basic/gcd'
     | '/basic/matrix-determinant'
+    | '/brute-force/additive'
+    | '/brute-force/affine'
+    | '/brute-force/multiplicative'
     | '/ciphers/additive'
     | '/ciphers/affine'
     | '/ciphers/autokey'
@@ -219,6 +250,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/basic/gcd'
     | '/basic/matrix-determinant'
+    | '/brute-force/additive'
+    | '/brute-force/affine'
+    | '/brute-force/multiplicative'
     | '/ciphers/additive'
     | '/ciphers/affine'
     | '/ciphers/autokey'
@@ -240,6 +274,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/basic/gcd'
     | '/basic/matrix-determinant'
+    | '/brute-force/additive'
+    | '/brute-force/affine'
+    | '/brute-force/multiplicative'
     | '/ciphers/additive'
     | '/ciphers/affine'
     | '/ciphers/autokey'
@@ -262,6 +299,9 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   BasicGcdRoute: typeof BasicGcdRoute
   BasicMatrixDeterminantRoute: typeof BasicMatrixDeterminantRoute
+  BruteForceAdditiveRoute: typeof BruteForceAdditiveRoute
+  BruteForceAffineRoute: typeof BruteForceAffineRoute
+  BruteForceMultiplicativeRoute: typeof BruteForceMultiplicativeRoute
   CiphersAdditiveRoute: typeof CiphersAdditiveRoute
   CiphersAffineRoute: typeof CiphersAffineRoute
   CiphersAutokeyRoute: typeof CiphersAutokeyRoute
@@ -313,6 +353,27 @@ declare module '@tanstack/react-router' {
       path: '/basic/matrix-determinant'
       fullPath: '/basic/matrix-determinant'
       preLoaderRoute: typeof BasicMatrixDeterminantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brute-force/additive': {
+      id: '/brute-force/additive'
+      path: '/brute-force/additive'
+      fullPath: '/brute-force/additive'
+      preLoaderRoute: typeof BruteForceAdditiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brute-force/affine': {
+      id: '/brute-force/affine'
+      path: '/brute-force/affine'
+      fullPath: '/brute-force/affine'
+      preLoaderRoute: typeof BruteForceAffineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brute-force/multiplicative': {
+      id: '/brute-force/multiplicative'
+      path: '/brute-force/multiplicative'
+      fullPath: '/brute-force/multiplicative'
+      preLoaderRoute: typeof BruteForceMultiplicativeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ciphers/additive': {
@@ -422,6 +483,9 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   BasicGcdRoute: BasicGcdRoute,
   BasicMatrixDeterminantRoute: BasicMatrixDeterminantRoute,
+  BruteForceAdditiveRoute: BruteForceAdditiveRoute,
+  BruteForceAffineRoute: BruteForceAffineRoute,
+  BruteForceMultiplicativeRoute: BruteForceMultiplicativeRoute,
   CiphersAdditiveRoute: CiphersAdditiveRoute,
   CiphersAffineRoute: CiphersAffineRoute,
   CiphersAutokeyRoute: CiphersAutokeyRoute,

@@ -12,6 +12,7 @@ import {
 } from '../lib/des'
 import type { CipherMode } from '../lib/ciphers'
 import { DesKeyScheduleDiagram, DesRoundDiagram } from './CipherDiagrams'
+import { groupEvery } from '../lib/format'
 import { BitsView, ConstantBlock, ErrorNote, NumberGrid, ResultBox, SectionHeading } from './BlockCipherUi'
 
 const sampleBlock = '0123456789ABCDEF'
@@ -74,14 +75,14 @@ export function DesRoundWorking({ detail }: { detail: DesRoundDetail }) {
   return (
     <>
       <SimpleGrid columns={{ base: 1, md: 2 }} gap="16px">
-        <BitsView label="L (32)" bits={detail.leftIn} group={8} />
-        <BitsView label="R (32)" bits={detail.rightIn} group={8} />
-        <BitsView label="E(R) expansion (48)" bits={detail.expanded} group={6} />
-        <BitsView label={`Subkey K${detail.round} (48)`} bits={detail.subkey} group={6} />
-        <BitsView label="E(R) ⊕ K (48)" bits={detail.xored} group={6} />
-        <BitsView label="S-box output (32)" bits={detail.sboxOutput} group={4} />
-        <BitsView label="P permutation (32)" bits={detail.pboxed} group={4} />
-        <BitsView label="L′, R′ (64)" bits={detail.leftOut + detail.rightOut} group={8} />
+        <BitsView label="L (32)" bits={detail.leftIn} />
+        <BitsView label="R (32)" bits={detail.rightIn} />
+        <BitsView label="E(R) expansion (48)" bits={detail.expanded} />
+        <BitsView label={`Subkey K${detail.round} (48)`} bits={detail.subkey} />
+        <BitsView label="E(R) ⊕ K (48)" bits={detail.xored} />
+        <BitsView label="S-box output (32)" bits={detail.sboxOutput} />
+        <BitsView label="P permutation (32)" bits={detail.pboxed} />
+        <BitsView label="L′, R′ (64)" bits={detail.leftOut + detail.rightOut} />
       </SimpleGrid>
       <SectionHeading>S-box substitution</SectionHeading>
       <DesSBoxTable detail={detail} />
@@ -197,8 +198,8 @@ export function DesKeyPage() {
         <>
           <ResultBox label="PC-1 output (56 bits)" value={schedule.pc1} />
           <SimpleGrid mt="16px" columns={{ base: 1, md: 2 }} gap="16px">
-            <BitsView label="C₀ (28)" bits={schedule.c0} group={7} />
-            <BitsView label="D₀ (28)" bits={schedule.d0} group={7} />
+            <BitsView label="C₀ (28)" bits={schedule.c0} />
+            <BitsView label="D₀ (28)" bits={schedule.d0} />
           </SimpleGrid>
 
           <SectionHeading>Round subkeys</SectionHeading>
@@ -218,9 +219,9 @@ export function DesKeyPage() {
                   <Table.Row key={step.round}>
                     <Table.Cell>{step.round}</Table.Cell>
                     <Table.Cell>{step.shift}</Table.Cell>
-                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{step.c}</Table.Cell>
-                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{step.d}</Table.Cell>
-                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap" color="var(--accent)">{step.subkey}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{groupEvery(step.c)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{groupEvery(step.d)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap" color="var(--accent)">{groupEvery(step.subkey)}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -274,8 +275,8 @@ function DesCipherPage({ title, description, run, direction }: { title: string; 
         <>
           <ResultBox label="Output (hex)" value={detail.outputHex} />
           <SimpleGrid mt="16px" columns={{ base: 1, md: 2 }} gap="16px">
-            <BitsView label="Input (64)" bits={detail.input} group={8} />
-            <BitsView label="After IP (64)" bits={detail.ip} group={8} />
+            <BitsView label="Input (64)" bits={detail.input} />
+            <BitsView label="After IP (64)" bits={detail.ip} />
           </SimpleGrid>
 
           <SectionHeading>Round summary</SectionHeading>
@@ -297,8 +298,8 @@ function DesCipherPage({ title, description, run, direction }: { title: string; 
                     onClick={() => navigate({ to: '/modern/des-round', search: { block, key, round: round.round, mode: direction } })}
                   >
                     <Table.Cell fontWeight="semibold" color="var(--accent)">{round.round}</Table.Cell>
-                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{round.leftOut}</Table.Cell>
-                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{round.rightOut}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{groupEvery(round.leftOut)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{groupEvery(round.rightOut)}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>

@@ -1,11 +1,12 @@
 import { type ReactNode } from 'react'
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react'
+import { groupEvery } from '../lib/format'
 
 export function ResultBox({ label, value }: { label: string; value: string }) {
   return (
     <Box mt="24px" p="16px 20px" borderRadius="12px" bg="var(--accent-bg)" boxShadow="0 4px 14px rgb(0 0 0 / 8%)">
       <Text fontSize="sm" color="var(--text)">{label}</Text>
-      <Text mt="4px" fontFamily="mono" fontSize="xl" fontWeight="bold" color="var(--accent)" wordBreak="break-all">{value}</Text>
+      <Text mt="4px" fontFamily="mono" fontSize="xl" fontWeight="bold" color="var(--accent)" wordBreak="break-all">{groupEvery(value)}</Text>
     </Box>
   )
 }
@@ -18,8 +19,8 @@ export function ErrorNote({ message }: { message: string }) {
   )
 }
 
-export function BitsView({ label, bits, group = 8 }: { label: string; bits: string; group?: number }) {
-  const chunks = bits.match(new RegExp(`.{1,${group}}`, 'g')) ?? []
+export function BitsView({ label, bits }: { label: string; bits: string }) {
+  const chunks = bits.match(/.{1,4}/g) ?? []
   return (
     <Box>
       <Text fontSize="sm" color="var(--text)">{label}</Text>

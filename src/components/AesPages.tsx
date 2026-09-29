@@ -12,6 +12,7 @@ import {
 } from '../lib/aes'
 import type { CipherMode } from '../lib/ciphers'
 import { AesKeyExpansionDiagram, AesRoundDiagram } from './CipherDiagrams'
+import { groupEvery } from '../lib/format'
 import { ConstantBlock, ErrorNote, HexGrid, NumberGrid, NumberMatrix, ResultBox, SectionHeading, StateMatrix } from './BlockCipherUi'
 
 const sampleBlock = '00112233445566778899AABBCCDDEEFF'
@@ -175,7 +176,7 @@ export function AesKeyPage() {
                   <Table.Row key={round}>
                     <Table.Cell fontWeight="semibold">{round}</Table.Cell>
                     <Table.Cell fontFamily="mono">{`w${4 * round}–w${4 * round + 3}`}</Table.Cell>
-                    <Table.Cell fontFamily="mono" color="var(--accent)" fontWeight="semibold" whiteSpace="nowrap">{value}</Table.Cell>
+                    <Table.Cell fontFamily="mono" color="var(--accent)" fontWeight="semibold" whiteSpace="nowrap">{groupEvery(value)}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -200,12 +201,12 @@ export function AesKeyPage() {
                 {expansion.steps.map((step) => (
                   <Table.Row key={step.word}>
                     <Table.Cell fontWeight="semibold">{step.word}</Table.Cell>
-                    <Table.Cell fontFamily="mono">{step.previous}</Table.Cell>
-                    <Table.Cell fontFamily="mono">{step.rotated}</Table.Cell>
-                    <Table.Cell fontFamily="mono">{step.substituted}</Table.Cell>
-                    <Table.Cell fontFamily="mono">{step.rcon}</Table.Cell>
-                    <Table.Cell fontFamily="mono">{step.temp}</Table.Cell>
-                    <Table.Cell fontFamily="mono" color="var(--accent)" fontWeight="semibold">{step.result}</Table.Cell>
+                    <Table.Cell fontFamily="mono" whiteSpace="nowrap">{groupEvery(step.previous)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" whiteSpace="nowrap">{groupEvery(step.rotated)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" whiteSpace="nowrap">{groupEvery(step.substituted)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" whiteSpace="nowrap">{groupEvery(step.rcon)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" whiteSpace="nowrap">{groupEvery(step.temp)}</Table.Cell>
+                    <Table.Cell fontFamily="mono" color="var(--accent)" fontWeight="semibold" whiteSpace="nowrap">{groupEvery(step.result)}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -275,7 +276,7 @@ function AesCipherPage({ title, description, run, direction }: { title: string; 
                     onClick={() => navigate({ to: '/modern/aes-round', search: { block, key, round: round.round, mode: direction } })}
                   >
                     <Table.Cell fontWeight="semibold" color="var(--accent)">{round.label}</Table.Cell>
-                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{round.endState}</Table.Cell>
+                    <Table.Cell fontFamily="mono" fontSize="xs" whiteSpace="nowrap">{groupEvery(round.endState)}</Table.Cell>
                     <Table.Cell fontSize="xs">{round.operations.map((operation) => operation.name).join(' → ')}</Table.Cell>
                   </Table.Row>
                 ))}

@@ -232,12 +232,13 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
             boxShadow="none"
           >
             <Flex
-              h="100vh"
+              h="100dvh"
               p="16px 20px"
               direction="column"
+              overflow="hidden"
               display={{ base: "flex", md: "none" }}
             >
-              <Flex h="40px" align="center" gap="4px">
+              <Flex h="40px" align="center" gap="4px" flex="0 0 auto">
                 <LogoBlock onClose={() => onToggle()} />
                 <IconButton
                   variant="ghost"
@@ -251,9 +252,17 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
                 </IconButton>
               </Flex>
 
-              <Separator my="20px" borderColor="var(--border)" />
+              <Separator my="20px" borderColor="var(--border)" flex="0 0 auto" />
 
-              <NavSections open onNavigate={() => onToggle()} />
+              <Flex
+                direction="column"
+                flex="1"
+                minH="0"
+                overflowY="auto"
+                overscrollBehavior="contain"
+              >
+                <NavSections open onNavigate={() => onToggle()} />
+              </Flex>
             </Flex>
           </Drawer.Content>
         </Drawer.Positioner>

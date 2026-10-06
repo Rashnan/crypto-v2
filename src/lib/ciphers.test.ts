@@ -91,8 +91,12 @@ describe('multiplicativeCipher', () => {
     expect(multiplicativeCipher(encrypted, 5, 'decrypt')).toBe('Hello, World!')
   })
 
-  it('rejects a key without an inverse modulo 26', () => {
-    expect(() => multiplicativeCipher('test', 2, 'encrypt')).toThrow('coprime with 26')
+  it('still encrypts with a key that has no inverse modulo 26', () => {
+    expect(multiplicativeCipher('test', 2, 'encrypt')).toBe('mikm')
+  })
+
+  it('rejects decryption with a key that has no inverse modulo 26', () => {
+    expect(() => multiplicativeCipher('test', 2, 'decrypt')).toThrow('coprime with 26')
   })
 })
 

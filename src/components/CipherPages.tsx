@@ -283,9 +283,15 @@ export function MultiplicativeCipherPage() {
   const [mode, setMode] = useState<CipherMode>('encrypt')
   const key = integer(keyRaw)
   const details = key === null ? null : multiplicativeKeyDetails(key)
-  const valid = details !== null && details.inverse !== null
-  const error = key === null ? 'Enter an integer key.' : !valid ? 'The key must be coprime with 26.' : undefined
-  const result = key !== null && valid ? multiplicativeCipherResult(input, key, mode) : { output: '', steps: [] }
+  const hasInverse = details !== null && details.inverse !== null
+  const error = key === null
+    ? 'Enter an integer key.'
+    : mode === 'decrypt' && !hasInverse
+      ? 'The key must be coprime with 26.'
+      : undefined
+  const result = key !== null && error === undefined
+    ? multiplicativeCipherResult(input, key, mode)
+    : { output: '', steps: [] }
 
   return (
     <CipherShell
@@ -302,7 +308,7 @@ export function MultiplicativeCipherPage() {
       onInputChange={setInput}
       onModeChange={setMode}
     >
-      <KeyField label="Key (k)" value={keyRaw} onChange={setKeyRaw} invalid={!valid} />
+      <KeyField label="Key (k)" value={keyRaw} onChange={setKeyRaw} invalid={!hasInverse} />
     </CipherShell>
   )
 }

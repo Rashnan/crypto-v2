@@ -78,9 +78,17 @@ export function additiveCipher(text: string, key: number, mode: CipherMode): str
 }
 
 export function multiplicativeCipherResult(text: string, key: number, mode: CipherMode): CipherResult {
-  const inverse = multiplicativeInverse(key, 26)
-  if (!inverse.exists) throw new Error('The key must be coprime with 26.')
-  const factor = mode === 'encrypt' ? mod(key, 26) : inverse.inverse
+  if (mode === 'decrypt') {
+    const inverse = multiplicativeInverse(key, 26)
+    if (!inverse.exists) throw new Error('The key must be coprime with 26.')
+    return transformLetters(
+      text,
+      (value) => value * inverse.inverse,
+      (value, result) => `(${inverse.inverse} × ${value}) mod 26 = ${result}`,
+    )
+  }
+
+  const factor = mod(key, 26)
   return transformLetters(
     text,
     (value) => value * factor,

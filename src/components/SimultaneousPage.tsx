@@ -4,6 +4,7 @@ import { Plus, Trash } from 'lucide-react'
 import { solveCrtSystem, type Congruence } from '../lib/crt'
 import { mod } from '../lib/modular'
 import { attemptCalculation } from '../lib/calculation'
+import { MathEquation } from './MathEquation'
 
 const modulusLimit = 100000
 
@@ -194,10 +195,10 @@ export function SimultaneousPage({ title = 'Simultaneous (mod)' }: { title?: str
 
           <Heading as="h2" fontSize="lg" mt="28px" mb="12px">Calculation</Heading>
           <Flex direction="column" gap="12px">
-            {(result.table ? [{ equations: result.table.equations }] : result.steps).map((step, i) => (
+            {(result.table ? [{ latexEquations: result.table.latexEquations }] : result.steps).map((step, i) => (
               <Box key={i} p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
                 {!result.table && <Text mb="8px" fontWeight="semibold">Combine congruence {i + 2}</Text>}
-                {step.equations.map((equation, j) => <Text key={j} mt={j ? '8px' : '0'} fontFamily="mono" fontSize="sm" color="var(--text-h)" overflowWrap="anywhere">{equation}</Text>)}
+                {step.latexEquations.map((latex, j) => <MathEquation key={j} latex={latex} />)}
               </Box>
             ))}
           </Flex>

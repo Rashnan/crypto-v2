@@ -1,5 +1,6 @@
 import { Box, Flex, Heading, Text, chakra } from '@chakra-ui/react'
 import type { CalculationStep } from '../lib/asymmetric'
+import { MathEquation } from './MathEquation'
 
 export type NumberedStep = CalculationStep & { number?: number }
 
@@ -16,13 +17,17 @@ function Step({ step, number }: { step: CalculationStep; number: number }) {
       <Text mt="12px" fontSize="sm" color="var(--text)">{step.explanation}</Text>
       {step.equations.map((equation, i) => <Text key={i} mt="8px" fontFamily="mono" fontSize="sm" color="var(--text-h)" overflowWrap="anywhere">{equation}</Text>)}
       {step.detail && (
-        <chakra.details open mt="12px" borderTopWidth="1px" borderColor="var(--border)" pt="12px">
+        <chakra.details mt="12px" borderTopWidth="1px" borderColor="var(--border)" pt="12px">
           <Box as="summary" cursor="pointer" fontSize="sm" fontWeight="medium" color="var(--accent)">{step.detail.label}</Box>
           <Box as="ol" listStyleType="none" m="0" p="0">
             {step.detail.equations.map((equation, i) => (
               <Box as="li" key={i} mt="8px" display="flex" gap="10px" alignItems="flex-start">
                 <Text flexShrink="0" fontSize="xs" fontFamily="mono" color="var(--accent)">{number}.{i + 1}</Text>
-                <Text fontFamily="mono" fontSize="sm" color="var(--text)" overflowWrap="anywhere" minW="0">{equation}</Text>
+                <Box minW="0" flex="1">
+                  {step.detail?.latexEquations?.[i]
+                    ? <MathEquation latex={step.detail.latexEquations[i]} />
+                    : <Text fontFamily="mono" fontSize="sm" color="var(--text)" overflowWrap="anywhere">{equation}</Text>}
+                </Box>
               </Box>
             ))}
           </Box>

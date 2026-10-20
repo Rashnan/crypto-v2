@@ -13,7 +13,7 @@ export interface CalculationStep {
   actor: 'Alice' | 'Bob' | 'Alice → Bob' | 'Alice ↔ Bob'
   phase?: 'parameters' | 'keys' | 'exchange' | 'shared-secret' | 'verification'
   explanation: string
-  detail?: { label: string; equations: string[] }
+  detail?: { label: string; equations: string[]; latexEquations?: string[] }
 }
 
 export interface MessageExchange {
@@ -340,18 +340,25 @@ export function rabinDetail({ p, q, value, mode }: RabinInput): AsymmetricResult
     },
   )
   const candidates: number[] = []
+  const crtSummary: string[] = []
+  const crtWorking: string[] = []
+  const crtLatexWorking: string[] = []
   for (const a of [...new Set([rp.value, mod(-rp.value, p)])]) {
     for (const b of [...new Set([rq.value, mod(-rq.value, q)])]) {
       const crt = solveCrtSystem([{ a, m: p }, { a: b, m: q }])
       candidates.push(crt.x0)
-      steps.push({
-        label: `Bob combines roots ${a} and ${b} with CRT`, actor: 'Bob',
-        explanation: 'Choose one signed root for each prime and solve the two congruences modulo n.',
-        equations: [`m ≡ ${a} (mod ${p}), m ≡ ${b} (mod ${q})`, ...crt.table!.equations],
-      })
+      crtSummary.push(`m ≡ ${a} (mod ${p}), m ≡ ${b} (mod ${q}) → m = ${crt.x0}`)
+      crtWorking.push(`Roots ${a} and ${b}:`, ...crt.table!.equations)
+      crtLatexWorking.push(String.raw`\text{Roots }${a}\text{ and }${b}:`, ...crt.table!.latexEquations)
     }
   }
   const roots = [...new Set(candidates)].sort((a, b) => a - b)
+  steps.push({
+    label: 'Bob combines the roots with CRT', actor: 'Bob',
+    explanation: 'Combine each possible pair of roots to get the candidate messages.',
+    equations: crtSummary,
+    detail: { label: 'Show full CRT calculation', equations: crtWorking, latexEquations: crtLatexWorking },
+  })
   steps.push({
     label: 'Bob verifies the candidate plaintexts', actor: 'Bob',
     explanation: 'Each candidate squares to the received ciphertext. Textbook Rabin alone does not tell Bob which candidate Alice sent; message encoding is needed to choose.',

@@ -50,6 +50,7 @@ export interface CrtStep {
   /** After combining: new modulus M' = lcm(M, m). */
   Mnext: number
   equations: string[]
+  latexEquations: string[]
 }
 
 export interface CrtTableRow {
@@ -64,6 +65,7 @@ export interface CrtTable {
   rows: CrtTableRow[]
   sum: string
   equations: string[]
+  latexEquations: string[]
 }
 
 export interface CrtResult {
@@ -122,11 +124,18 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
       `d = gcd(${M}, ${m}) = ${d}`,
     ]
 
+    const latexEquations = [
+      `x = ${x0} + ${M}k`,
+      String.raw`${M}k \equiv ${a} - ${x0} \equiv ${diff} \pmod{${m}}`,
+      String.raw`d = \gcd(${M}, ${m}) = ${d}`,
+    ]
+
     if (diff % d !== 0) {
       steps.push({
         index: i, x0, M, a, m, d,
         consistent: false, x: x0, Mnext: M * (m / d),
         equations: [...equations, `${d} does not divide ${diff}, so no common solution exists.`],
+        latexEquations: [...latexEquations, String.raw`${d} \nmid ${diff} \;\Rightarrow\; \text{No common solution}`],
       })
       return {
         congruences: norm,
@@ -153,6 +162,17 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     steps.push({
       index: i, x0, M, a, m, d,
       consistent: true, x, Mnext,
+      latexEquations: mRed === 1 ? [
+        ...latexEquations,
+        String.raw`k = 0, \qquad x \equiv ${x} \pmod{${Mnext}}`,
+      ] : [
+        ...latexEquations,
+        String.raw`\frac{${M}}{${d}}k \equiv \frac{${diff}}{${d}} \pmod{${mRed}}`,
+        String.raw`${MRed}^{-1} \bmod ${mRed} = ${exactMod(mInv, mRed)}`,
+        String.raw`k \equiv ${diff / d} \times ${exactMod(mInv, mRed)} \equiv ${k} \pmod{${mRed}}`,
+        String.raw`M' = \operatorname{lcm}(${M}, ${m}) = ${M} \times ${mRed} = ${Mnext}`,
+        String.raw`x \equiv ${x0} + ${M} \times ${k} \equiv ${x} \pmod{${Mnext}}`,
+      ],
       equations: mRed === 1 ? [
         ...equations,
         `${d} divides ${diff}; the new congruence adds no restriction.`,
@@ -183,6 +203,18 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     table = {
       rows,
       sum,
+      latexEquations: [
+        String.raw`M = ${norm.map(({ m }) => m).join(' \\times ')} = ${M}`,
+        ...rows.flatMap((row, i) => [
+          String.raw`M_{${i + 1}} = \frac{M}{m_{${i + 1}}} = \frac{${M}}{${row.m}} = ${row.partialModulus}`,
+          String.raw`y_{${i + 1}} = M_{${i + 1}}^{-1} \bmod m_{${i + 1}} = ${row.partialModulus}^{-1} \bmod ${row.m} = ${row.inverse}`,
+          String.raw`${row.partialModulus} \times ${row.inverse} \equiv 1 \pmod{${row.m}}`,
+          String.raw`a_{${i + 1}}M_{${i + 1}}y_{${i + 1}} = ${row.a} \times ${row.partialModulus} \times ${row.inverse} = ${row.term}`,
+        ]),
+        String.raw`x \equiv \sum_i a_i M_i y_i \pmod{M}`,
+        String.raw`x \equiv ${rows.map((row) => row.term).join(' + ')} \equiv ${sum} \equiv ${x0} \pmod{${M}}`,
+        String.raw`x = ${x0} + ${M}t, \quad t \in \mathbb{Z}`,
+      ],
       equations: [
         `M = ${norm.map(({ m }) => m).join(' × ')} = ${M}`,
         ...rows.flatMap((row, i) => [

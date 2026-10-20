@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import katex from 'katex'
 import { elGamalDetail, modularPower, rabinDetail, rsaDetail } from './asymmetric'
 
 describe('modularPower', () => {
@@ -99,8 +100,13 @@ describe('Rabin', () => {
     const journey = rabinDetail({ ...key, value: 20, mode: 'encrypt' })
     expect(journey.exchange.receiver).toContain('Candidates = {13, 20, 57, 64}')
     expect(journey.exchange.receiver).toContain('Encoding is needed to select the original.')
-    expect(journey.steps.filter((step) => step.label.includes('with CRT'))).toHaveLength(4)
-    expect(journey.steps.find((step) => step.label.includes('with CRT'))?.equations).toContain('x ≡ Σ aᵢMᵢyᵢ (mod M)')
+    expect(journey.steps.find((step) => step.label.includes('with CRT'))?.equations).toHaveLength(4)
+    expect(journey.steps.find((step) => step.label.includes('with CRT'))?.detail?.equations).toContain('x ≡ Σ aᵢMᵢyᵢ (mod M)')
+    const crtDetail = journey.steps.find((step) => step.label.includes('with CRT'))!.detail!
+    expect(crtDetail.latexEquations).toHaveLength(crtDetail.equations.length)
+    for (const latex of crtDetail.latexEquations!) {
+      expect(() => katex.renderToString(latex, { throwOnError: true, strict: 'error' })).not.toThrow()
+    }
   })
 
   it('handles roots divisible by a prime and zero without duplicates', () => {

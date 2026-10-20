@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import katex from 'katex'
 import { solveCrtSystem } from './crt'
 import { mod } from './modular'
 
@@ -101,6 +102,31 @@ describe('solveCrtSystem', () => {
   it('rejects invalid residues and moduli', () => {
     for (const congruence of [{ a: 0.5, m: 3 }, { a: 1, m: 1 }, { a: NaN, m: 5 }]) {
       expect(() => solveCrtSystem([congruence])).toThrow('safe-integer')
+    }
+  })
+
+  it('renders indexed CRT terms as LaTeX subscripts', () => {
+    const result = solveCrtSystem([{ a: 5, m: 7 }, { a: 2, m: 11 }])
+    const formula = String.raw`a_{2}M_{2}y_{2} = 2 \times 7 \times 8 = 112`
+    expect(result.table?.latexEquations).toContain(formula)
+    const markup = katex.renderToString(formula, { throwOnError: true, strict: 'error' })
+    expect(markup).toContain('<msub>')
+    expect(markup).toContain('<mn>112</mn>')
+  })
+
+  it('produces renderable LaTeX for coprime, non-coprime, repeated and inconsistent systems', () => {
+    for (const input of [
+      [{ a: 2, m: 3 }, { a: 3, m: 5 }],
+      [{ a: 1, m: 4 }, { a: 3, m: 6 }],
+      [{ a: 9, m: 12 }, { a: 1, m: 4 }],
+      [{ a: 2, m: 4 }, { a: 3, m: 6 }],
+      [{ a: -1, m: 3 }, { a: 4, m: 5 }],
+    ]) {
+      const result = solveCrtSystem(input)
+      const formulas = [...(result.table?.latexEquations ?? []), ...result.steps.flatMap((step) => step.latexEquations)]
+      for (const latex of formulas) {
+        expect(() => katex.renderToString(latex, { throwOnError: true, strict: 'error' })).not.toThrow()
+      }
     }
   })
 

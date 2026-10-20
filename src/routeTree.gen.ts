@@ -32,6 +32,7 @@ import { Route as CiphersVigenereRouteImport } from './routes/ciphers/vigenere'
 import { Route as DiophantineLinearRouteImport } from './routes/diophantine/linear'
 import { Route as DiophantineSimultaneousRouteImport } from './routes/diophantine/simultaneous'
 import { Route as DiophantineSingleVarRouteImport } from './routes/diophantine/single-var'
+import { Route as KeyExchangeDiffieHellmanRouteImport } from './routes/key-exchange/diffie-hellman'
 import { Route as ModernAesDecryptRouteImport } from './routes/modern/aes-decrypt'
 import { Route as ModernAesEncryptRouteImport } from './routes/modern/aes-encrypt'
 import { Route as ModernAesKeyRouteImport } from './routes/modern/aes-key'
@@ -163,6 +164,12 @@ const DiophantineSingleVarRoute = DiophantineSingleVarRouteImport.update({
   path: '/diophantine/single-var',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KeyExchangeDiffieHellmanRoute =
+  KeyExchangeDiffieHellmanRouteImport.update({
+    id: '/key-exchange/diffie-hellman',
+    path: '/key-exchange/diffie-hellman',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ModernAesDecryptRoute = ModernAesDecryptRouteImport.update({
   id: '/modern/aes-decrypt',
   path: '/modern/aes-decrypt',
@@ -259,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/key-exchange/diffie-hellman': typeof KeyExchangeDiffieHellmanRoute
   '/modern/aes-decrypt': typeof ModernAesDecryptRoute
   '/modern/aes-encrypt': typeof ModernAesEncryptRoute
   '/modern/aes-key': typeof ModernAesKeyRoute
@@ -298,6 +306,7 @@ export interface FileRoutesByTo {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/key-exchange/diffie-hellman': typeof KeyExchangeDiffieHellmanRoute
   '/modern/aes-decrypt': typeof ModernAesDecryptRoute
   '/modern/aes-encrypt': typeof ModernAesEncryptRoute
   '/modern/aes-key': typeof ModernAesKeyRoute
@@ -338,6 +347,7 @@ export interface FileRoutesById {
   '/diophantine/linear': typeof DiophantineLinearRoute
   '/diophantine/simultaneous': typeof DiophantineSimultaneousRoute
   '/diophantine/single-var': typeof DiophantineSingleVarRoute
+  '/key-exchange/diffie-hellman': typeof KeyExchangeDiffieHellmanRoute
   '/modern/aes-decrypt': typeof ModernAesDecryptRoute
   '/modern/aes-encrypt': typeof ModernAesEncryptRoute
   '/modern/aes-key': typeof ModernAesKeyRoute
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/key-exchange/diffie-hellman'
     | '/modern/aes-decrypt'
     | '/modern/aes-encrypt'
     | '/modern/aes-key'
@@ -418,6 +429,7 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/key-exchange/diffie-hellman'
     | '/modern/aes-decrypt'
     | '/modern/aes-encrypt'
     | '/modern/aes-key'
@@ -457,6 +469,7 @@ export interface FileRouteTypes {
     | '/diophantine/linear'
     | '/diophantine/simultaneous'
     | '/diophantine/single-var'
+    | '/key-exchange/diffie-hellman'
     | '/modern/aes-decrypt'
     | '/modern/aes-encrypt'
     | '/modern/aes-key'
@@ -497,6 +510,7 @@ export interface RootRouteChildren {
   DiophantineLinearRoute: typeof DiophantineLinearRoute
   DiophantineSimultaneousRoute: typeof DiophantineSimultaneousRoute
   DiophantineSingleVarRoute: typeof DiophantineSingleVarRoute
+  KeyExchangeDiffieHellmanRoute: typeof KeyExchangeDiffieHellmanRoute
   ModernAesDecryptRoute: typeof ModernAesDecryptRoute
   ModernAesEncryptRoute: typeof ModernAesEncryptRoute
   ModernAesKeyRoute: typeof ModernAesKeyRoute
@@ -676,6 +690,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiophantineSingleVarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/key-exchange/diffie-hellman': {
+      id: '/key-exchange/diffie-hellman'
+      path: '/key-exchange/diffie-hellman'
+      fullPath: '/key-exchange/diffie-hellman'
+      preLoaderRoute: typeof KeyExchangeDiffieHellmanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modern/aes-decrypt': {
       id: '/modern/aes-decrypt'
       path: '/modern/aes-decrypt'
@@ -801,6 +822,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiophantineLinearRoute: DiophantineLinearRoute,
   DiophantineSimultaneousRoute: DiophantineSimultaneousRoute,
   DiophantineSingleVarRoute: DiophantineSingleVarRoute,
+  KeyExchangeDiffieHellmanRoute: KeyExchangeDiffieHellmanRoute,
   ModernAesDecryptRoute: ModernAesDecryptRoute,
   ModernAesEncryptRoute: ModernAesEncryptRoute,
   ModernAesKeyRoute: ModernAesKeyRoute,

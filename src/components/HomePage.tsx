@@ -209,6 +209,18 @@ const sections: Section[] = [
     ],
   },
   {
+    label: 'Diffie–Hellman',
+    pages: [
+      {
+        title: 'Key Exchange',
+        description: 'Follow Alice and Bob as they exchange public values and independently compute the same shared secret.',
+        example: 'p = 23, g = 5: A = 8, B = 19 → K = 2',
+        to: '/key-exchange/diffie-hellman',
+        icon: RefreshCw,
+      },
+    ],
+  },
+  {
     label: 'Modern Block Ciphers',
     pages: [
       {

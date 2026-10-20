@@ -49,6 +49,21 @@ export interface CrtStep {
   x: number
   /** After combining: new modulus M' = lcm(M, m). */
   Mnext: number
+  equations: string[]
+}
+
+export interface CrtTableRow {
+  a: number
+  m: number
+  partialModulus: number
+  inverse: number
+  term: string
+}
+
+export interface CrtTable {
+  rows: CrtTableRow[]
+  sum: string
+  equations: string[]
 }
 
 export interface CrtResult {
@@ -66,6 +81,7 @@ export interface CrtResult {
   reason?: string
   /** The combination steps performed. */
   steps: CrtStep[]
+  table?: CrtTable
 }
 
 /**
@@ -100,11 +116,17 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     const { a, m } = norm[i]
     const d = gcd(M, m)
     const diff = exactMod(BigInt(a) - BigInt(x0), m)
+    const equations = [
+      `x = ${x0} + ${M}k`,
+      `${M}k ≡ ${a} − ${x0} ≡ ${diff} (mod ${m})`,
+      `d = gcd(${M}, ${m}) = ${d}`,
+    ]
 
     if (diff % d !== 0) {
       steps.push({
         index: i, x0, M, a, m, d,
         consistent: false, x: x0, Mnext: M * (m / d),
+        equations: [...equations, `${d} does not divide ${diff}, so no common solution exists.`],
       })
       return {
         congruences: norm,
@@ -131,11 +153,50 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     steps.push({
       index: i, x0, M, a, m, d,
       consistent: true, x, Mnext,
+      equations: mRed === 1 ? [
+        ...equations,
+        `${d} divides ${diff}; the new congruence adds no restriction.`,
+        `k = 0; x ≡ ${x} (mod ${Mnext})`,
+      ] : [
+        ...equations,
+        `${d} divides ${diff}; divide by ${d}: ${MRed}k ≡ ${diff / d} (mod ${mRed})`,
+        `${MRed}⁻¹ mod ${mRed} = ${exactMod(mInv, mRed)}`,
+        `k ≡ ${diff / d} × ${exactMod(mInv, mRed)} ≡ ${k} (mod ${mRed})`,
+        `M′ = lcm(${M}, ${m}) = ${M} × ${mRed} = ${Mnext}`,
+        `x ≡ ${x0} + ${M} × ${k} ≡ ${x} (mod ${Mnext})`,
+      ],
     })
 
     x0 = x
     M = Mnext
   }
 
-  return { congruences: norm, solvable: true, x0, M, steps }
+  let table: CrtTable | undefined
+  if (steps.every((step) => step.d === 1)) {
+    const rows = norm.map(({ a, m }) => {
+      const partialModulus = M / m
+      const inverse = exactMod(inverseMod(partialModulus, m), m)
+      const term = String(BigInt(a) * BigInt(partialModulus) * BigInt(inverse))
+      return { a, m, partialModulus, inverse, term }
+    })
+    const sum = String(rows.reduce((total, row) => total + BigInt(row.term), 0n))
+    table = {
+      rows,
+      sum,
+      equations: [
+        `M = ${norm.map(({ m }) => m).join(' × ')} = ${M}`,
+        ...rows.flatMap((row, i) => [
+          `M${i + 1} = M / m${i + 1} = ${M} / ${row.m} = ${row.partialModulus}`,
+          `y${i + 1} = M${i + 1}⁻¹ mod m${i + 1} = ${row.partialModulus}⁻¹ mod ${row.m} = ${row.inverse}`,
+          `${row.partialModulus} × ${row.inverse} ≡ 1 (mod ${row.m})`,
+          `a${i + 1}M${i + 1}y${i + 1} = ${row.a} × ${row.partialModulus} × ${row.inverse} = ${row.term}`,
+        ]),
+        `x ≡ Σ aᵢMᵢyᵢ (mod M)`,
+        `x ≡ ${rows.map((row) => row.term).join(' + ')} ≡ ${sum} ≡ ${x0} (mod ${M})`,
+        `All solutions: x = ${x0} + ${M}t, t ∈ ℤ`,
+      ],
+    }
+  }
+
+  return { congruences: norm, solvable: true, x0, M, steps, table }
 }

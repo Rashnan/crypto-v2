@@ -23,7 +23,14 @@ describe('RSA', () => {
     expect(encrypted.output).toEqual([2790])
     expect(encrypted.privateKey).toContain('2753')
     expect(rsaDetail({ ...key, value: 2790, mode: 'decrypt' }).output).toEqual([65])
-    expect(encrypted.steps[1].equations.at(-1)).toBe('65^17 mod 3233 = 2790')
+    expect(encrypted.steps.find((step) => step.actor === 'Alice')?.detail?.equations.at(-1)).toBe('65^17 mod 3233 = 2790')
+    expect(encrypted.participants[0].owner).toBe('Alice')
+    expect(encrypted.participants[1].owner).toBe('Bob')
+    expect(encrypted.participants[0].entries.find((entry) => entry.label.includes('own public/private'))?.value).toContain('Not required')
+    expect(encrypted.participants[1].entries.find((entry) => entry.label.includes('private key'))?.value).toBe('(n, d) = (3233, 2753)')
+    expect(encrypted.exchange.channel).toContain('c = 2790')
+    expect(encrypted.exchange.receiver).toContain('Recovered m = 65')
+    expect(encrypted.steps.find((step) => step.label.includes('private exponent'))?.detail?.equations).toContain('17⁻¹ mod 3120 = -367 mod 3120 = 2753')
   })
 
   it('round trips zero and messages sharing a factor with n', () => {
@@ -47,7 +54,22 @@ describe('ElGamal', () => {
     const encrypted = elGamalDetail({ ...key, k: 10, value: 15, mode: 'encrypt' })
     expect(encrypted.publicKey).toContain('(23, 5, 8)')
     expect(encrypted.output).toEqual([9, 22])
+    expect(encrypted.participants[0].entries.find((entry) => entry.label.includes('temporary private'))?.value).toBe('k = 10')
+    expect(encrypted.participants[1].entries.find((entry) => entry.label.includes('private key'))?.value).toBe('x = 6')
+    expect(encrypted.participants[0].entries.find((entry) => entry.label.includes('shared secret'))?.value).toBe('s_A = y^k mod p = 3')
+    expect(encrypted.participants[1].entries.find((entry) => entry.label.includes('shared secret'))?.value).toBe('s_B = c₁^x mod p = 3')
+    expect(encrypted.exchange.sender).toContain('Alice’s fresh secret k = 10')
+    expect(encrypted.exchange.channel).toContain('(c₁, c₂) = (9, 22)')
+    expect(encrypted.exchange.receiver).toContain('Recovered m = 15')
+    expect(encrypted.steps.filter((step) => step.detail?.label.includes('shared secret')).map((step) => step.actor)).toEqual(['Alice', 'Bob'])
     expect(elGamalDetail({ ...key, c1: 9, value: 22, mode: 'decrypt' }).output).toEqual([15])
+  })
+
+  it('decrypts without inventing an ephemeral key for Alice', () => {
+    const received = elGamalDetail({ ...key, c1: 9, value: 22, mode: 'decrypt' })
+    expect(received.exchange.sender).toContain('Alice’s secret k is not supplied or needed by Bob.')
+    expect(received.steps.some((step) => step.actor === 'Alice')).toBe(false)
+    expect(received.exchange.receiver).toContain('Recovered m = 15')
   })
 
   it('round trips all nonzero messages using different ephemeral keys', () => {
@@ -74,6 +96,11 @@ describe('Rabin', () => {
   it('returns all four verified roots instead of selecting a plaintext', () => {
     expect(rabinDetail({ ...key, value: 20, mode: 'encrypt' }).output).toEqual([15])
     expect(rabinDetail({ ...key, value: 15, mode: 'decrypt' }).output).toEqual([13, 20, 57, 64])
+    const journey = rabinDetail({ ...key, value: 20, mode: 'encrypt' })
+    expect(journey.exchange.receiver).toContain('Candidates = {13, 20, 57, 64}')
+    expect(journey.exchange.receiver).toContain('Encoding is needed to select the original.')
+    expect(journey.steps.filter((step) => step.label.includes('with CRT'))).toHaveLength(4)
+    expect(journey.steps.find((step) => step.label.includes('with CRT'))?.equations).toContain('x ≡ Σ aᵢMᵢyᵢ (mod M)')
   })
 
   it('handles roots divisible by a prime and zero without duplicates', () => {

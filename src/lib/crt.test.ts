@@ -9,6 +9,12 @@ describe('solveCrtSystem', () => {
     expect(r.solvable).toBe(true)
     expect(r.M).toBe(15)
     expect(r.x0).toBe(8)
+    expect(r.table?.rows).toEqual([
+      { a: 2, m: 3, partialModulus: 5, inverse: 2, term: '20' },
+      { a: 3, m: 5, partialModulus: 3, inverse: 2, term: '18' },
+    ])
+    expect(r.table?.sum).toBe('38')
+    expect(r.table?.equations).toContain('x ≡ 20 + 18 ≡ 38 ≡ 8 (mod 15)')
     expect(mod(r.x0, 3)).toBe(2)
     expect(mod(r.x0, 5)).toBe(3)
   })
@@ -30,6 +36,9 @@ describe('solveCrtSystem', () => {
     expect(r.solvable).toBe(true)
     expect(r.M).toBe(12)
     expect(r.x0).toBe(9)
+    expect(r.table).toBeUndefined()
+    expect(r.steps[0].equations).toContain('2 divides 2; divide by 2: 2k ≡ 1 (mod 3)')
+    expect(r.steps[0].equations).toContain('k ≡ 1 × 2 ≡ 2 (mod 3)')
     expect(mod(r.x0, 4)).toBe(1)
     expect(mod(r.x0, 6)).toBe(3)
   })
@@ -39,6 +48,8 @@ describe('solveCrtSystem', () => {
     const r = solveCrtSystem([{ a: 2, m: 4 }, { a: 3, m: 6 }])
     expect(r.solvable).toBe(false)
     expect(r.failIndex).toBe(1)
+    expect(r.table).toBeUndefined()
+    expect(r.steps[0].equations.at(-1)).toBe('2 does not divide 1, so no common solution exists.')
   })
 
   it('handles a single congruence', () => {
@@ -68,6 +79,10 @@ describe('solveCrtSystem', () => {
     const result = solveCrtSystem(congruences)
     expect(result.solvable).toBe(true)
     for (const { a, m } of congruences) expect(BigInt(result.x0) % BigInt(m)).toBe(BigInt(a))
+    const table = result.table!
+    expect(BigInt(table.sum)).toBe(table.rows.reduce((sum, row) => sum + BigInt(row.term), 0n))
+    expect(BigInt(table.sum) % BigInt(result.M)).toBe(BigInt(result.x0))
+    expect(BigInt(table.rows[1].term)).toBeGreaterThan(BigInt(Number.MAX_SAFE_INTEGER))
   })
 
   it('handles repeated moduli and moduli dividing the combined modulus', () => {

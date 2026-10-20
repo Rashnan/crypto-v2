@@ -82,6 +82,12 @@ export const navigationSections: NavigationSection[] = [
     ],
   },
   {
+    label: 'Diffie–Hellman',
+    items: [
+      { label: 'Diffie–Hellman Key Exchange', shortLabel: 'Key Exchange', to: '/key-exchange/diffie-hellman', icon: RefreshCw },
+    ],
+  },
+  {
     label: 'Modern Block Ciphers',
     items: [
       { label: 'P-Boxes', to: '/modern/p-boxes', icon: Shuffle },

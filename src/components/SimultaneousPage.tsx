@@ -3,6 +3,7 @@ import { Box, Button, Field, Flex, Heading, IconButton, Input, SimpleGrid, Stat,
 import { Plus, Trash } from 'lucide-react'
 import { solveCrtSystem, type Congruence } from '../lib/crt'
 import { mod } from '../lib/modular'
+import { attemptCalculation } from '../lib/calculation'
 
 const modulusLimit = 100000
 
@@ -62,15 +63,9 @@ export function SimultaneousPage({ title = 'Simultaneous (mod)' }: { title?: str
     return a !== null && m !== null ? { a, m } : null
   })
   const valid = rows.length > 0 && parsed.every((c) => c !== null)
-  let result = null
-  let calculationError = ''
-  if (valid) {
-    try {
-      result = solveCrtSystem(parsed as Congruence[])
-    } catch (caught) {
-      calculationError = caught instanceof Error ? caught.message : 'Unable to solve this system.'
-    }
-  }
+  const { result, error: calculationError } = valid
+    ? attemptCalculation(() => solveCrtSystem(parsed as Congruence[]))
+    : { result: null, error: '' }
 
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
@@ -83,17 +78,17 @@ export function SimultaneousPage({ title = 'Simultaneous (mod)' }: { title?: str
         are pairwise coprime.
       </Text>
 
-      <Flex gap="12px" flexWrap="wrap" align="center" mt="24px">
+      <Flex direction="column" gap="16px" align="flex-start" mt="24px">
         {rows.map((row, i) => {
           const aInvalid = parseInteger(row.a) === null
           const mInvalid = parseModulus(row.m) === null
           return (
-            <Flex key={i} gap="8px" align="flex-end" wrap="wrap">
-              <Field.Root invalid={aInvalid} maxW="120px">
+            <Flex key={i} gap="8px" align="flex-end" w="full" maxW="320px">
+              <Field.Root invalid={aInvalid} maxW="120px" flex="1" minW="0">
                 <Field.Label color="var(--text-h)" fontSize="sm" fontWeight="medium">a{i + 1}</Field.Label>
                 <Input type="number" step="1" mt="6px" value={row.a} onChange={(e) => setRow(i, 'a', e.target.value)} onKeyDown={(e) => blockInvalidKeys(e, true)} placeholder="residue" />
               </Field.Root>
-              <Field.Root invalid={mInvalid} maxW="120px">
+              <Field.Root invalid={mInvalid} maxW="120px" flex="1" minW="0">
                 <Field.Label color="var(--text-h)" fontSize="sm" fontWeight="medium">m{i + 1}</Field.Label>
                 <Input type="number" step="1" mt="6px" value={row.m} onChange={(e) => setRow(i, 'm', e.target.value)} onKeyDown={(e) => blockInvalidKeys(e, false)} placeholder="modulus" />
               </Field.Root>
@@ -138,6 +133,75 @@ export function SimultaneousPage({ title = 'Simultaneous (mod)' }: { title?: str
             ))}
           </Box>
 
+          <Heading as="h2" fontSize="lg" mt="28px" mb="12px">Solving table</Heading>
+          {result.table ? (
+            <>
+              <Text mb="12px" fontSize="sm" color="var(--text)">
+                M is the product of the moduli, Mᵢ = M / mᵢ, and yᵢ is the inverse of Mᵢ modulo mᵢ.
+              </Text>
+              <Box overflowX="auto" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+                <Table.Root size="sm" variant="line" striped>
+                  <Table.Header>
+                    <Table.Row>
+                      {['i', 'aᵢ', 'mᵢ', 'Mᵢ = M / mᵢ', 'yᵢ = Mᵢ⁻¹ mod mᵢ', 'aᵢMᵢyᵢ'].map((label) => <Table.ColumnHeader key={label} whiteSpace="nowrap">{label}</Table.ColumnHeader>)}
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {result.table.rows.map((row, i) => (
+                      <Table.Row key={i} fontFamily="mono">
+                        <Table.Cell>{i + 1}</Table.Cell>
+                        <Table.Cell>{row.a}</Table.Cell>
+                        <Table.Cell>{row.m}</Table.Cell>
+                        <Table.Cell>{row.partialModulus}</Table.Cell>
+                        <Table.Cell>{row.inverse}</Table.Cell>
+                        <Table.Cell>{row.term}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                    <Table.Row fontFamily="mono" fontWeight="semibold">
+                      <Table.Cell colSpan={5}>Σ aᵢMᵢyᵢ</Table.Cell>
+                      <Table.Cell color="var(--accent)">{result.table.sum}</Table.Cell>
+                    </Table.Row>
+                  </Table.Body>
+                </Table.Root>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Text mb="12px" fontSize="sm" color="var(--text)">The moduli are not pairwise coprime. Combine the congruences using their GCD and LCM.</Text>
+              <Box overflowX="auto" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+                <Table.Root size="sm" variant="line" striped>
+                  <Table.Header>
+                    <Table.Row>
+                      {['Current x₀', 'Current M', 'aᵢ', 'mᵢ', 'gcd(M, mᵢ)', 'Combined solution'].map((label) => <Table.ColumnHeader key={label} whiteSpace="nowrap">{label}</Table.ColumnHeader>)}
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {result.steps.map((step, i) => (
+                      <Table.Row key={i} fontFamily="mono">
+                        <Table.Cell>{step.x0}</Table.Cell>
+                        <Table.Cell>{step.M}</Table.Cell>
+                        <Table.Cell>{step.a}</Table.Cell>
+                        <Table.Cell>{step.m}</Table.Cell>
+                        <Table.Cell>{step.d}</Table.Cell>
+                        <Table.Cell whiteSpace="nowrap">{step.consistent ? `x ≡ ${step.x} (mod ${step.Mnext})` : 'No solution'}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table.Root>
+              </Box>
+            </>
+          )}
+
+          <Heading as="h2" fontSize="lg" mt="28px" mb="12px">Calculation</Heading>
+          <Flex direction="column" gap="12px">
+            {(result.table ? [{ equations: result.table.equations }] : result.steps).map((step, i) => (
+              <Box key={i} p="16px 20px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px">
+                {!result.table && <Text mb="8px" fontWeight="semibold">Combine congruence {i + 2}</Text>}
+                {step.equations.map((equation, j) => <Text key={j} mt={j ? '8px' : '0'} fontFamily="mono" fontSize="sm" color="var(--text-h)" overflowWrap="anywhere">{equation}</Text>)}
+              </Box>
+            ))}
+          </Flex>
+
           <Heading as="h2" fontSize="lg" m="0" mt="28px">
             Result
           </Heading>
@@ -170,28 +234,6 @@ export function SimultaneousPage({ title = 'Simultaneous (mod)' }: { title?: str
                 )}
               </Box>
 
-              {result.steps.length > 0 && (
-                <>
-                  <Heading as="h2" fontSize="lg" mt="28px" mb="12px">
-                    Working (incremental CRT)
-                  </Heading>
-                  <Flex direction="column" gap="12px">
-                    {result.steps.map((s, i) => (
-                      <Box key={i} p="14px 16px" borderWidth="1px" borderColor="var(--border)" borderRadius="12px" bg="var(--bg)">
-                        <Text fontSize="xs" color="var(--text)" fontWeight="medium" mb="6px">
-                          combine x ≡ x0 (mod M) with x ≡ a (mod m) where x0 = {s.x0}
-                        </Text>
-                        <Box fontFamily="mono" fontSize="sm" color="var(--text-h)" whiteSpace="pre-wrap">
-                          {`x ≡ ${s.x0} (mod ${s.M})   ∥   x ≡ ${s.a} (mod ${s.m})`}
-                        </Box>
-                        <Text mt="6px" fontFamily="mono" fontSize="sm" color="var(--text)">
-                          d = gcd({s.M}, {s.m}) = {s.d}{s.consistent ? ' → x ≡ ' + s.x + ' (mod ' + s.Mnext + ')' : ' — inconsistent'}
-                        </Text>
-                      </Box>
-                    ))}
-                  </Flex>
-                </>
-              )}
 
               <Heading as="h2" fontSize="lg" mt="28px" mb="12px">
                 Verification table

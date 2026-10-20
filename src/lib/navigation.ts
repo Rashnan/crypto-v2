@@ -35,7 +35,7 @@ export interface NavigationSection {
 export const overviewItem: NavigationItem = { label: 'Overview', to: '/', icon: LayoutGrid }
 
 export const navigationSections: NavigationSection[] = [
-  { label: 'Basic', items: [{ label: 'GCD', to: '/basic/gcd', icon: Variable }, { label: 'Matrix Determinant', to: '/basic/matrix-determinant', icon: Grid3x3 }] },
+  { label: 'Basic', items: [{ label: 'CRT', to: '/basic/crt', icon: Braces }, { label: 'GCD', to: '/basic/gcd', icon: Variable }, { label: 'Matrix Determinant', to: '/basic/matrix-determinant', icon: Grid3x3 }] },
   {
     label: 'Inverses',
     items: [
@@ -71,6 +71,14 @@ export const navigationSections: NavigationSection[] = [
       { label: 'Additive Brute Force', shortLabel: 'Additive', to: '/brute-force/additive', icon: Plus },
       { label: 'Multiplicative Brute Force', shortLabel: 'Multiplicative', to: '/brute-force/multiplicative', icon: X },
       { label: 'Affine Brute Force', shortLabel: 'Affine', to: '/brute-force/affine', icon: Braces },
+    ],
+  },
+  {
+    label: 'Asymmetric Cryptography',
+    items: [
+      { label: 'ElGamal', to: '/asymmetric/elgamal', icon: KeyRound },
+      { label: 'RSA', to: '/asymmetric/rsa', icon: Lock },
+      { label: 'Rabin', to: '/asymmetric/rabin', icon: Unlock },
     ],
   },
   {

@@ -62,4 +62,31 @@ describe('solveCrtSystem', () => {
   it('rejects combined moduli outside the safe integer range', () => {
     expect(() => solveCrtSystem([{ a: 0, m: 100_000 }, { a: 0, m: 99_991 }, { a: 0, m: 99_989 }, { a: 0, m: 99_971 }])).toThrow('Number.MAX_SAFE_INTEGER')
   })
+
+  it('preserves exact arithmetic when intermediate products exceed number precision', () => {
+    const congruences = [{ a: 2, m: 3 }, { a: 999_999_999_998, m: 1_000_000_000_001 }]
+    const result = solveCrtSystem(congruences)
+    expect(result.solvable).toBe(true)
+    for (const { a, m } of congruences) expect(BigInt(result.x0) % BigInt(m)).toBe(BigInt(a))
+  })
+
+  it('handles repeated moduli and moduli dividing the combined modulus', () => {
+    const result = solveCrtSystem([{ a: 9, m: 12 }, { a: 1, m: 4 }, { a: 9, m: 12 }])
+    expect(result.solvable).toBe(true)
+    expect(result.x0).toBe(9)
+    expect(result.M).toBe(12)
+  })
+
+  it('normalizes safe-integer residues without rounding', () => {
+    const value = Number.MAX_SAFE_INTEGER
+    const result = solveCrtSystem([{ a: value, m: value - 1 }])
+    expect(result.x0).toBe(1)
+  })
+
+  it('rejects invalid residues and moduli', () => {
+    for (const congruence of [{ a: 0.5, m: 3 }, { a: 1, m: 1 }, { a: NaN, m: 5 }]) {
+      expect(() => solveCrtSystem([congruence])).toThrow('safe-integer')
+    }
+  })
+
 })

@@ -42,7 +42,7 @@ interface Row {
   m: string
 }
 
-export function SimultaneousPage() {
+export function SimultaneousPage({ title = 'Simultaneous (mod)' }: { title?: string }) {
   const [rows, setRows] = useState<Row[]>([
     { a: '2', m: '3' },
     { a: '3', m: '5' },
@@ -75,7 +75,7 @@ export function SimultaneousPage() {
   return (
     <Box w="full" p={{ base: '24px 20px', md: '40px' }} textAlign="left">
       <Heading as="h1" m="0" fontSize={{ base: '2xl', md: '3xl' }} letterSpacing="tight">
-        Simultaneous (mod)
+        {title}
       </Heading>
       <Text mt="8px" color="var(--text)">
         Solve a system of linear congruences x ≡ aᵢ (mod mᵢ) with the Chinese

@@ -1,4 +1,26 @@
-import { gcd, mod } from './modular'
+import { gcd } from './modular'
+
+function exactMod(value: bigint, modulus: number): number {
+  const m = BigInt(modulus)
+  return Number((value % m + m) % m)
+}
+
+function inverseMod(value: number, modulus: number): bigint {
+  let a = BigInt(value)
+  let b = BigInt(modulus)
+  let x = 1n
+  let y = 0n
+  while (b !== 0n) {
+    const quotient = a / b
+    const remainder = a % b
+    const coefficient = x - quotient * y
+    a = b
+    b = remainder
+    x = y
+    y = coefficient
+  }
+  return x
+}
 
 export interface Congruence {
   /** Residue: x ≡ a (mod m). */
@@ -68,7 +90,7 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
   if (!congruences.every(({ a, m }) => Number.isSafeInteger(a) && Number.isSafeInteger(m) && m >= 2)) {
     throw new Error('CRT expects safe-integer residues and moduli of at least 2.')
   }
-  const norm = congruences.map(({ a, m }) => ({ a: mod(a, m), m }))
+  const norm = congruences.map(({ a, m }) => ({ a: exactMod(BigInt(a), m), m }))
 
   let x0 = norm[0].a
   let M = norm[0].m
@@ -77,7 +99,7 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
   for (let i = 1; i < norm.length; i++) {
     const { a, m } = norm[i]
     const d = gcd(M, m)
-    const diff = mod(a - x0, m)
+    const diff = exactMod(BigInt(a) - BigInt(x0), m)
 
     if (diff % d !== 0) {
       steps.push({
@@ -101,14 +123,9 @@ export function solveCrtSystem(congruences: Congruence[]): CrtResult {
     if (M > Number.MAX_SAFE_INTEGER / mRed) {
       throw new RangeError('Combined modulus exceeds Number.MAX_SAFE_INTEGER. Use fewer or smaller moduli.')
     }
-    const mInv = (() => {
-      for (let y = 0; y < mRed; y++) {
-        if ((MRed * y) % mRed === 1) return y
-      }
-      return 0
-    })()
-    const k = mod((diff / d) * mInv, mRed)
-    const x = mod(x0 + M * k, M * mRed)
+    const mInv = inverseMod(MRed, mRed)
+    const k = exactMod(BigInt(diff / d) * mInv, mRed)
+    const x = exactMod(BigInt(x0) + BigInt(M) * BigInt(k), M * mRed)
     const Mnext = M * mRed
 
     steps.push({

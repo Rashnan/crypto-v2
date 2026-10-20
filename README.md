@@ -8,7 +8,10 @@ An interactive React app for learning modular arithmetic, classical ciphers, and
 - Additive and multiplicative inverses modulo `m`
 - Linear congruences, linear Diophantine equations, and CRT systems
 - Matrix inverses modulo `m`
+- RSA, ElGamal, and Rabin key generation, encryption, and decryption with worked calculations
 - Additive, multiplicative, affine, substitution, Vigenere, autokey, Playfair, and Hill ciphers
+
+Core calculations and validation live in `src/lib`; React pages render their results and calculation steps. The asymmetric tools use textbook integer operations for learning, with prime inputs up to 1,000,000.
 
 Each cipher page shows its letter or block calculations. Hill decryption also links to the matching matrix-inverse calculation.
 

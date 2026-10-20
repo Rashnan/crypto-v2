@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as AsymmetricElgamalRouteImport } from './routes/asymmetric/elgamal'
+import { Route as AsymmetricRabinRouteImport } from './routes/asymmetric/rabin'
+import { Route as AsymmetricRsaRouteImport } from './routes/asymmetric/rsa'
+import { Route as BasicCrtRouteImport } from './routes/basic/crt'
 import { Route as BasicGcdRouteImport } from './routes/basic/gcd'
 import { Route as BasicMatrixDeterminantRouteImport } from './routes/basic/matrix-determinant'
 import { Route as BruteForceAdditiveRouteImport } from './routes/brute-force/additive'
@@ -56,6 +60,26 @@ const LoginRoute = LoginRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AsymmetricElgamalRoute = AsymmetricElgamalRouteImport.update({
+  id: '/asymmetric/elgamal',
+  path: '/asymmetric/elgamal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AsymmetricRabinRoute = AsymmetricRabinRouteImport.update({
+  id: '/asymmetric/rabin',
+  path: '/asymmetric/rabin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AsymmetricRsaRoute = AsymmetricRsaRouteImport.update({
+  id: '/asymmetric/rsa',
+  path: '/asymmetric/rsa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BasicCrtRoute = BasicCrtRouteImport.update({
+  id: '/basic/crt',
+  path: '/basic/crt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BasicGcdRoute = BasicGcdRouteImport.update({
@@ -215,6 +239,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
+  '/asymmetric/elgamal': typeof AsymmetricElgamalRoute
+  '/asymmetric/rabin': typeof AsymmetricRabinRoute
+  '/asymmetric/rsa': typeof AsymmetricRsaRoute
+  '/basic/crt': typeof BasicCrtRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
   '/brute-force/additive': typeof BruteForceAdditiveRoute
@@ -250,6 +278,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
+  '/asymmetric/elgamal': typeof AsymmetricElgamalRoute
+  '/asymmetric/rabin': typeof AsymmetricRabinRoute
+  '/asymmetric/rsa': typeof AsymmetricRsaRoute
+  '/basic/crt': typeof BasicCrtRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
   '/brute-force/additive': typeof BruteForceAdditiveRoute
@@ -286,6 +318,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/settings': typeof SettingsRoute
+  '/asymmetric/elgamal': typeof AsymmetricElgamalRoute
+  '/asymmetric/rabin': typeof AsymmetricRabinRoute
+  '/asymmetric/rsa': typeof AsymmetricRsaRoute
+  '/basic/crt': typeof BasicCrtRoute
   '/basic/gcd': typeof BasicGcdRoute
   '/basic/matrix-determinant': typeof BasicMatrixDeterminantRoute
   '/brute-force/additive': typeof BruteForceAdditiveRoute
@@ -323,6 +359,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/settings'
+    | '/asymmetric/elgamal'
+    | '/asymmetric/rabin'
+    | '/asymmetric/rsa'
+    | '/basic/crt'
     | '/basic/gcd'
     | '/basic/matrix-determinant'
     | '/brute-force/additive'
@@ -358,6 +398,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/settings'
+    | '/asymmetric/elgamal'
+    | '/asymmetric/rabin'
+    | '/asymmetric/rsa'
+    | '/basic/crt'
     | '/basic/gcd'
     | '/basic/matrix-determinant'
     | '/brute-force/additive'
@@ -393,6 +437,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/settings'
+    | '/asymmetric/elgamal'
+    | '/asymmetric/rabin'
+    | '/asymmetric/rsa'
+    | '/basic/crt'
     | '/basic/gcd'
     | '/basic/matrix-determinant'
     | '/brute-force/additive'
@@ -429,6 +477,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   SettingsRoute: typeof SettingsRoute
+  AsymmetricElgamalRoute: typeof AsymmetricElgamalRoute
+  AsymmetricRabinRoute: typeof AsymmetricRabinRoute
+  AsymmetricRsaRoute: typeof AsymmetricRsaRoute
+  BasicCrtRoute: typeof BasicCrtRoute
   BasicGcdRoute: typeof BasicGcdRoute
   BasicMatrixDeterminantRoute: typeof BasicMatrixDeterminantRoute
   BruteForceAdditiveRoute: typeof BruteForceAdditiveRoute
@@ -482,6 +534,34 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asymmetric/elgamal': {
+      id: '/asymmetric/elgamal'
+      path: '/asymmetric/elgamal'
+      fullPath: '/asymmetric/elgamal'
+      preLoaderRoute: typeof AsymmetricElgamalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asymmetric/rabin': {
+      id: '/asymmetric/rabin'
+      path: '/asymmetric/rabin'
+      fullPath: '/asymmetric/rabin'
+      preLoaderRoute: typeof AsymmetricRabinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asymmetric/rsa': {
+      id: '/asymmetric/rsa'
+      path: '/asymmetric/rsa'
+      fullPath: '/asymmetric/rsa'
+      preLoaderRoute: typeof AsymmetricRsaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/basic/crt': {
+      id: '/basic/crt'
+      path: '/basic/crt'
+      fullPath: '/basic/crt'
+      preLoaderRoute: typeof BasicCrtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/basic/gcd': {
@@ -701,6 +781,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   SettingsRoute: SettingsRoute,
+  AsymmetricElgamalRoute: AsymmetricElgamalRoute,
+  AsymmetricRabinRoute: AsymmetricRabinRoute,
+  AsymmetricRsaRoute: AsymmetricRsaRoute,
+  BasicCrtRoute: BasicCrtRoute,
   BasicGcdRoute: BasicGcdRoute,
   BasicMatrixDeterminantRoute: BasicMatrixDeterminantRoute,
   BruteForceAdditiveRoute: BruteForceAdditiveRoute,

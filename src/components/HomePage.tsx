@@ -21,6 +21,13 @@ const sections: Section[] = [
     label: 'Basic',
     pages: [
       {
+        title: 'Chinese Remainder Theorem (CRT)',
+        description: 'Combine congruences, including consistent systems with non-coprime moduli.',
+        example: 'x ≡ 2 (mod 3), x ≡ 3 (mod 5) → x ≡ 8 (mod 15)',
+        to: '/basic/crt',
+        icon: Braces,
+      },
+      {
         title: 'GCD',
         description: 'Extended Euclidean algorithm — compute gcd(a, b) with full Bézout coefficients.',
         example: 'gcd(240, 46) = 2,  s = −9,  t = 47',
@@ -172,6 +179,32 @@ const sections: Section[] = [
         example: '12 × 26 = 312 candidate plaintexts',
         to: '/brute-force/affine',
         icon: Braces,
+      },
+    ],
+  },
+  {
+    label: 'Asymmetric Cryptography',
+    pages: [
+      {
+        title: 'ElGamal',
+        description: 'Generate keys and trace encryption or decryption in a prime field.',
+        example: 'p = 23, g = 5, x = 6: m = 15 → (9, 22)',
+        to: '/asymmetric/elgamal',
+        icon: KeyRound,
+      },
+      {
+        title: 'RSA',
+        description: 'Compute the key pair and follow square-and-multiply for each operation.',
+        example: 'p = 61, q = 53, e = 17: 65 → 2790',
+        to: '/asymmetric/rsa',
+        icon: Lock,
+      },
+      {
+        title: 'Rabin',
+        description: 'Encrypt by squaring and combine square roots with CRT to decrypt.',
+        example: 'p = 7, q = 11: 20 → 15 → {13, 20, 57, 64}',
+        to: '/asymmetric/rabin',
+        icon: Unlock,
       },
     ],
   },
